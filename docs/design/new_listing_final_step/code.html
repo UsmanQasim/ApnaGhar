@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ur"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Agent Listing Wizard - Step 5</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#f8f9ff",
+                        "inverse-surface": "#213145",
+                        "outline": "#6d7a72",
+                        "on-background": "#0b1c30",
+                        "outline-variant": "#bccac0",
+                        "secondary-container": "#d5e0f8",
+                        "on-secondary-container": "#586377",
+                        "on-primary-fixed-variant": "#005137",
+                        "secondary-fixed": "#d8e3fb",
+                        "surface-container-low": "#eff4ff",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-secondary-fixed": "#111c2d",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "tertiary": "#825100",
+                        "tertiary-container": "#a36700",
+                        "on-tertiary-container": "#fffbff",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#85f8c4",
+                        "on-primary-container": "#f5fff7",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#d3e4fe",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed-dim": "#68dba9",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#68dba9",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface": "#f8f9ff",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#3d4a42",
+                        "on-primary-fixed": "#002114",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "background": "#f8f9ff",
+                        "surface-container-high": "#dce9ff",
+                        "surface-dim": "#cbdbf5",
+                        "secondary": "#545f73",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#e5eeff",
+                        "surface-tint": "#006c4a",
+                        "primary": "#006948",
+                        "primary-container": "#00855d",
+                        "inverse-on-surface": "#eaf1ff",
+                        "on-surface": "#0b1c30"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "md": "16px",
+                        "sm": "12px",
+                        "xs": "8px",
+                        "touch-target": "48px",
+                        "xl": "32px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Noto Nastaliq Urdu", "sans-serif"],
+                        "body-lg": ["Noto Nastaliq Urdu", "sans-serif"],
+                        "label-sm": ["Plus Jakarta Sans", "sans-serif"],
+                        "number-lg": ["Plus Jakarta Sans", "sans-serif"],
+                        "headline-sm": ["Noto Nastaliq Urdu", "sans-serif"],
+                        "headline-md": ["Noto Nastaliq Urdu", "sans-serif"],
+                        "headline-lg": ["Noto Nastaliq Urdu", "sans-serif"],
+                        "number-md": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "32px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "36px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "number-lg": ["20px", { "lineHeight": "24px", "fontWeight": "700" }],
+                        "headline-sm": ["20px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "48px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "64px", "fontWeight": "700" }],
+                        "number-md": ["16px", { "lineHeight": "20px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-on-background flex flex-row-reverse justify-between items-center w-full px-md h-touch-target sticky top-0 z-50">
+<button aria-label="Menu" class="w-touch-target h-touch-target flex items-center justify-center text-primary dark:text-primary-fixed scale-95 transition-transform duration-200 hover:bg-surface-container dark:hover:bg-inverse-surface rounded-full">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<div class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed flex-1 text-center">
+            گھر
+        </div>
+<button aria-label="Voice Search" class="w-touch-target h-touch-target flex items-center justify-center text-primary dark:text-primary-fixed scale-95 transition-transform duration-200 hover:bg-surface-container dark:hover:bg-inverse-surface rounded-full">
+<span class="material-symbols-outlined" data-icon="mic">mic</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col px-md py-lg w-full max-w-3xl mx-auto pb-32">
+<!-- Progress Bar -->
+<div class="w-full mb-lg">
+<div class="flex justify-between items-center mb-xs font-number-md text-number-md text-on-surface-variant">
+<span>مرحلہ 5</span>
+<span>5/5</span>
+</div>
+<div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-full"></div>
+</div>
+</div>
+<!-- Headline -->
+<h1 class="font-headline-md text-headline-md text-on-surface mb-xl">تفصیل اور پرائیویسی</h1>
+<!-- Content Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md flex-1">
+<!-- Description Card (Voice Input) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col gap-md shadow-sm h-full row-span-2">
+<label class="font-headline-sm text-headline-sm text-on-surface">تفصیل ریکارڈ کریں</label>
+<p class="text-on-surface-variant mb-4">آواز کے ذریعے پراپرٹی کی تفصیلات درج کریں۔</p>
+<div class="flex-1 flex flex-col items-center justify-center bg-surface-container-low rounded-lg p-lg border border-dashed border-outline-variant relative overflow-hidden group">
+<!-- Pulsing background effect -->
+<div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg"></div>
+<button class="w-24 h-24 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-all duration-300 z-10 relative mb-md">
+<span class="material-symbols-outlined text-[48px]" data-icon="mic" data-weight="fill" style="font-variation-settings: 'FILL' 1;">mic</span>
+<!-- Ripple effect circles -->
+<span class="absolute inset-0 rounded-full border-2 border-primary-container animate-ping opacity-50"></span>
+</button>
+<span class="text-primary-container font-body-lg text-body-lg">ٹیپ کریں اور بولیں</span>
+</div>
+<div class="mt-md">
+<label class="font-body-md text-body-md text-on-surface-variant mb-xs block">ٹیکسٹ پیش نظارہ</label>
+<textarea class="w-full bg-surface-container-low border border-outline-variant rounded-lg p-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors resize-none h-32 font-body-md" placeholder="آپ کی آواز یہاں ٹیکسٹ میں تبدیل ہو جائے گی..."></textarea>
+</div>
+</div>
+<!-- Visibility Options -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col gap-sm shadow-sm h-fit">
+<label class="font-headline-sm text-headline-sm text-on-surface mb-sm">پرائیویسی سیٹنگز</label>
+<!-- Option 1: Public -->
+<label class="flex items-start gap-md p-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors border border-transparent hover:border-outline-variant">
+<div class="relative flex items-center pt-2">
+<input checked="" class="w-6 h-6 text-primary border-outline-variant focus:ring-primary focus:ring-offset-surface" name="visibility" type="radio" value="public"/>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 font-headline-sm text-headline-sm">
+<span class="material-symbols-outlined text-primary" data-icon="public">public</span>
+                            عوامی
+                        </div>
+<p class="text-on-surface-variant text-sm mt-1">سب کے لیے قابل دید۔ تلاش کے نتائج میں ظاہر ہوگا۔</p>
+</div>
+</label>
+<!-- Option 2: Hidden from Agents -->
+<label class="flex items-start gap-md p-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors border border-transparent hover:border-outline-variant">
+<div class="relative flex items-center pt-2">
+<input class="w-6 h-6 text-primary border-outline-variant focus:ring-primary focus:ring-offset-surface" name="visibility" type="radio" value="hidden_agents"/>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 font-headline-sm text-headline-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="visibility_off">visibility_off</span>
+                            ایجنٹس سے پوشیدہ
+                        </div>
+<p class="text-on-surface-variant text-sm mt-1">صرف خریداروں کو نظر آئے گا، ایجنٹس کو نہیں۔</p>
+</div>
+</label>
+<!-- Option 3: Private -->
+<label class="flex items-start gap-md p-sm rounded-lg hover:bg-surface-container-low cursor-pointer transition-colors border border-transparent hover:border-outline-variant">
+<div class="relative flex items-center pt-2">
+<input class="w-6 h-6 text-primary border-outline-variant focus:ring-primary focus:ring-offset-surface" name="visibility" type="radio" value="private"/>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 font-headline-sm text-headline-sm">
+<span class="material-symbols-outlined text-error" data-icon="lock">lock</span>
+                            نجی
+                        </div>
+<p class="text-on-surface-variant text-sm mt-1">صرف آپ کو نظر آئے گا۔ ڈرافٹ کے طور پر محفوظ کریں۔</p>
+</div>
+</label>
+</div>
+<!-- Summary Visual (Glassmorphism inspired) -->
+<div class="relative overflow-hidden rounded-xl h-48 mt-auto hidden md:block border border-outline-variant">
+<div class="absolute inset-0 bg-surface-container-high/50 backdrop-blur-sm z-10 p-md flex flex-col justify-end">
+<span class="font-headline-sm text-headline-sm text-on-surface">آخری مرحلہ</span>
+<p class="text-on-surface-variant text-sm">اپنی لسٹنگ کو مکمل کرنے کے لیے شائع کریں۔</p>
+</div>
+<!-- Abstract patterned background -->
+<div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 2px 2px, #006948 1px, transparent 0); background-size: 20px 20px;"></div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="mt-xl flex flex-col sm:flex-row gap-md justify-between items-center w-full pb-xl">
+<button class="w-full sm:w-auto px-lg py-sm h-touch-target rounded-full border border-outline text-secondary font-headline-sm text-headline-sm hover:bg-surface-container-low transition-colors">
+                واپس جائیں
+            </button>
+<button class="w-full sm:w-auto px-xl py-sm h-touch-target rounded-full bg-primary text-on-primary font-headline-sm text-headline-sm shadow-md hover:shadow-lg hover:bg-primary-container hover:text-on-primary-container transition-all flex items-center justify-center gap-2 group">
+<span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform" data-icon="publish">publish</span>
+                شائع کریں
+            </button>
+</div>
+</main>
+<!-- Navigation (Hidden on transactional flow like this wizard, maintaining structural shell rules) -->
+</body></html>

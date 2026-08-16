@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "Ghar",
+    "slug": "ghar",
+    "scheme": "ghar",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#f8f9ff",
+    "splash": {
+      "backgroundColor": "#006948",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "plugins": ["expo-router", "expo-font", "expo-localization"],
+    "extra": {
+      "apiBaseUrl": "http://localhost:3000/api"
+    },
+    "android": {
+      "package": "pk.ghar.app",
+      "adaptiveIcon": { "backgroundColor": "#006948" },
+      "softwareKeyboardLayoutMode": "pan",
+      "blockedPermissions": ["android.permission.ACCESS_BACKGROUND_LOCATION"]
+    },
+    "ios": {
+      "bundleIdentifier": "pk.ghar.app",
+      "supportsTablet": false,
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true,
+        "NSMicrophoneUsageDescription": "Ghar uses the microphone for voice search and for recording a spoken property description.",
+        "NSLocationWhenInUseUsageDescription": "Ghar uses your location to show properties near you."
+      }
+    },
+    "locales": {
+      "ur": "./locales/ur.json",
+      "en": "./locales/en.json"
+    }
+  }
+}

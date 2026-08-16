@@ -1,0 +1,53 @@
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    container_name: ghar-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ghar
+      POSTGRES_PASSWORD: ghar
+      POSTGRES_DB: ghar
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ghar -d ghar']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: ghar-redis
+    restart: unless-stopped
+    command: ['redis-server', '--appendonly', 'yes']
+    ports:
+      - '6379:6379'
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  minio:
+    # Local stand-in for Cloudflare R2 (S3-compatible) during development.
+    image: minio/minio:latest
+    container_name: ghar-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ghar
+      MINIO_ROOT_PASSWORD: ghar12345
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    volumes:
+      - miniodata:/data
+
+volumes:
+  pgdata:
+  redisdata:
+  miniodata:

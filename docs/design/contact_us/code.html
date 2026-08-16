@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ur"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>رابطہ کریں - گھر</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface": "#0b1c30",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-highest": "#d3e4fe",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-secondary-container": "#586377",
+                      "outline": "#6d7a72",
+                      "on-tertiary-fixed": "#2a1700",
+                      "outline-variant": "#bccac0",
+                      "tertiary-fixed": "#ffddb8",
+                      "surface-dim": "#cbdbf5",
+                      "surface-bright": "#f8f9ff",
+                      "inverse-surface": "#213145",
+                      "primary-fixed": "#85f8c4",
+                      "on-primary-fixed-variant": "#005137",
+                      "primary-fixed-dim": "#68dba9",
+                      "secondary-container": "#d5e0f8",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed-dim": "#ffb95f",
+                      "surface-variant": "#d3e4fe",
+                      "secondary": "#545f73",
+                      "on-primary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "surface-tint": "#006c4a",
+                      "error": "#ba1a1a",
+                      "on-tertiary-container": "#fffbff",
+                      "on-primary-container": "#f5fff7",
+                      "surface-container-low": "#eff4ff",
+                      "tertiary-container": "#a36700",
+                      "surface-container-high": "#dce9ff",
+                      "secondary-fixed-dim": "#bcc7de",
+                      "tertiary": "#825100",
+                      "on-background": "#0b1c30",
+                      "secondary-fixed": "#d8e3fb",
+                      "surface-container": "#e5eeff",
+                      "inverse-primary": "#68dba9",
+                      "background": "#f8f9ff",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary": "#ffffff",
+                      "primary-container": "#00855d",
+                      "on-surface-variant": "#3d4a42",
+                      "on-tertiary-fixed-variant": "#653e00",
+                      "on-error": "#ffffff",
+                      "on-secondary-fixed-variant": "#3c475a",
+                      "on-primary-fixed": "#002114",
+                      "on-secondary-fixed": "#111c2d",
+                      "primary": "#006948",
+                      "surface": "#f8f9ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "xl": "32px",
+                      "base": "4px",
+                      "touch-target": "48px",
+                      "xs": "8px",
+                      "lg": "24px",
+                      "md": "16px",
+                      "sm": "12px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Noto Nastaliq Urdu"
+                      ],
+                      "body-md": [
+                              "Noto Nastaliq Urdu"
+                      ],
+                      "headline-lg": [
+                              "Noto Nastaliq Urdu"
+                      ],
+                      "body-lg": [
+                              "Noto Nastaliq Urdu"
+                      ],
+                      "number-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-sm": [
+                              "Noto Nastaliq Urdu"
+                      ],
+                      "number-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "label-sm": [
+                              "Plus Jakarta Sans"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "48px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "64px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "number-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "number-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="bg-surface-container-lowest dark:bg-inverse-surface w-full sticky top-0 z-50 transition-all border-b border-outline-variant shadow-sm hidden md:block">
+<div class="flex flex-row-reverse justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+<a class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed" href="#">گھر</a>
+<div class="flex flex-row-reverse items-center gap-lg hidden md:flex">
+<a class="font-body-lg text-body-lg md:font-headline-sm md:text-headline-sm text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low dark:hover:bg-surface-variant px-md py-xs rounded" href="#">ہوم</a>
+<a class="font-body-lg text-body-lg md:font-headline-sm md:text-headline-sm text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low dark:hover:bg-surface-variant px-md py-xs rounded" href="#">ایجنٹس کے لیے</a>
+<a class="font-body-lg text-body-lg md:font-headline-sm md:text-headline-sm text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low dark:hover:bg-surface-variant px-md py-xs rounded" href="#">خریداروں کے لیے</a>
+<a class="font-body-lg text-body-lg md:font-headline-sm md:text-headline-sm text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low dark:hover:bg-surface-variant px-md py-xs rounded" href="#">قیمتیں</a>
+<a class="font-body-lg text-body-lg md:font-headline-sm md:text-headline-sm text-primary dark:text-primary-fixed font-bold border-b-2 border-primary px-md py-xs" href="#">رابطہ کریں</a>
+</div>
+<button class="bg-primary text-on-primary font-headline-sm text-headline-sm px-lg py-xs rounded-full hover:opacity-90 active:scale-95 transition-all min-h-touch-target">
+                ایپ ڈاؤن لوڈ کریں
+            </button>
+</div>
+</nav>
+<main class="flex-grow w-full max-w-7xl mx-auto px-md md:px-6 py-xl md:py-16 space-y-xl md:space-y-24">
+<!-- Hero Section -->
+<section class="text-center max-w-3xl mx-auto space-y-md">
+<h1 class="font-headline-lg text-headline-lg text-primary">ہم سے رابطہ کریں</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">کسی بھی سوال، رہنمائی یا تاثرات کے لیے ہماری ٹیم سے رابطہ کریں۔ ہم آپ کی مدد کے لیے ہر وقت تیار ہیں۔</p>
+</section>
+<!-- Contact Layout (Form + Info) -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+<!-- Contact Form -->
+<div class="bg-surface-container-lowest rounded-xl p-6 md:p-8 shadow-sm border border-outline-variant">
+<h2 class="font-headline-md text-headline-md mb-6">پیغام بھیجیں</h2>
+<form class="space-y-md">
+<div>
+<label class="block font-body-md text-body-md text-on-surface mb-2" for="name">نام</label>
+<input class="w-full h-touch-target px-4 bg-surface rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-on-surface text-right" id="name" placeholder="آپ کا پورا نام" type="text"/>
+</div>
+<div>
+<label class="block font-body-md text-body-md text-on-surface mb-2" for="email">ای میل</label>
+<input class="w-full h-touch-target px-4 bg-surface rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-number-md text-on-surface text-left" dir="ltr" id="email" placeholder="example@email.com" type="email"/>
+</div>
+<div>
+<label class="block font-body-md text-body-md text-on-surface mb-2" for="phone">فون نمبر</label>
+<input class="w-full h-touch-target px-4 bg-surface rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-number-md text-on-surface text-left" dir="ltr" id="phone" inputmode="numeric" placeholder="0300 1234567" type="tel"/>
+</div>
+<div>
+<label class="block font-body-md text-body-md text-on-surface mb-2" for="message">پیغام</label>
+<textarea class="w-full px-4 py-3 bg-surface rounded-lg border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-body-md text-on-surface text-right resize-none" id="message" placeholder="آپ کا پیغام یہاں لکھیں..." rows="5"></textarea>
+</div>
+<button class="w-full h-touch-target bg-primary text-on-primary rounded-lg font-headline-sm text-headline-sm hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined" data-icon="send" style="font-variation-settings: 'FILL' 1;">send</span>
+                        پیغام بھیجیں
+                    </button>
+</form>
+</div>
+<!-- Contact Info & Map -->
+<div class="space-y-lg flex flex-col">
+<!-- Info Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-md">
+<div class="bg-surface-container-low rounded-lg p-6 flex flex-col items-center text-center gap-3">
+<div class="w-12 h-12 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" data-icon="location_on" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm">ہیڈ آفس</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">بلیو ایریا، اسلام آباد، پاکستان</p>
+</div>
+<div class="bg-surface-container-low rounded-lg p-6 flex flex-col items-center text-center gap-3">
+<div class="w-12 h-12 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" data-icon="call" style="font-variation-settings: 'FILL' 1;">call</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm">فون اور ای میل</h3>
+<p class="font-number-md text-number-md text-on-surface-variant" dir="ltr">+92 51 1234567</p>
+<p class="font-number-md text-number-md text-on-surface-variant" dir="ltr">support@ghar.pk</p>
+</div>
+</div>
+<!-- Map Placeholder -->
+<div class="flex-grow bg-surface-container-highest rounded-lg overflow-hidden border border-outline-variant min-h-[300px] relative flex items-center justify-center">
+<img class="absolute inset-0 w-full h-full object-cover opacity-80 mix-blend-multiply" data-alt="A highly detailed overhead satellite view or high-quality map graphic of Islamabad city center, focusing on the Blue Area district. The map style is modern, bright, and clean, aligning with a light-mode corporate aesthetic. Soft shadows and subtle green highlights emphasize key roads and parks. The mood is professional and geographic." data-location="Islamabad" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDD7TdPefZw6zvSj6-d4zdQzhke0zUeXx5zUH7dF_pId6oTPVPhT-EyUK_wNov3xwsguWxkpSnwMFl0kM0yeE3X8J-s4Qlie61cMUZJormydCZRJlsK-9ScNMgQWQIOgSehIOzierStSyno5Xkupy3QfcjRbYBUDTSuzBj4PGOv0kVuaNxhfQr3GTnulTmzhcR2FYMeiGmngZKoXtmTQam60J8PMVQeqKtjwsrHAgEn0RjXdVQ50Fpq"/>
+<div class="z-10 bg-surface-container-lowest/90 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="map" style="font-variation-settings: 'FILL' 1;">map</span>
+<span class="font-body-md font-bold">گوگل میپ پر دیکھیں</span>
+</div>
+</div>
+</div>
+</section>
+<!-- FAQ Snippet -->
+<section class="bg-surface-container-low rounded-xl p-8 md:p-12">
+<h2 class="font-headline-lg text-headline-lg text-center mb-10">عمومی سوالات</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg max-w-5xl mx-auto">
+<div class="bg-surface-container-lowest p-6 rounded-lg border border-outline-variant hover:border-primary transition-colors cursor-pointer group">
+<h3 class="font-headline-sm text-headline-sm flex justify-between items-center mb-2">
+                        اکاؤنٹ کی تصدیق کیسے کریں؟
+                        <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">اکاؤنٹ کی تصدیق کے لیے اپنی پروفائل سیٹنگز میں جائیں اور اپنا شناختی کارڈ نمبر اور فون نمبر درج کریں۔</p>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-lg border border-outline-variant hover:border-primary transition-colors cursor-pointer group">
+<h3 class="font-headline-sm text-headline-sm flex justify-between items-center mb-2">
+                        اپنی پراپرٹی کیسے لسٹ کریں؟
+                        <span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">ہوم پیج پر 'نئی پراپرٹی شامل کریں' کے بٹن پر کلک کریں اور فارم میں پراپرٹی کی تفصیلات درج کریں۔</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-on-background dark:bg-on-secondary-fixed border-t border-on-secondary-fixed-variant w-full mt-auto">
+<div class="flex flex-col md:flex-row-reverse justify-between items-start gap-lg px-6 py-xl w-full max-w-7xl mx-auto">
+<!-- Brand -->
+<div class="flex flex-col items-end gap-2">
+<span class="text-headline-lg font-headline-lg text-primary-fixed">گھر</span>
+</div>
+<!-- Links -->
+<div class="flex flex-wrap gap-x-8 gap-y-4 justify-end md:justify-center flex-row-reverse">
+<a class="font-body-md text-body-md text-surface-variant hover:text-primary-fixed transition-colors hover:opacity-80 active:opacity-70" href="#">ہمارے بارے میں</a>
+<a class="font-body-md text-body-md text-surface-variant hover:text-primary-fixed transition-colors hover:opacity-80 active:opacity-70" href="#">پرائیویسی پالیسی</a>
+<a class="font-body-md text-body-md text-surface-variant hover:text-primary-fixed transition-colors hover:opacity-80 active:opacity-70" href="#">شرائط و ضوابط</a>
+<a class="font-body-md text-body-md text-surface-variant hover:text-primary-fixed transition-colors hover:opacity-80 active:opacity-70" href="#">مدد مرکز</a>
+<a class="font-body-md text-body-md text-surface-variant hover:text-primary-fixed transition-colors hover:opacity-80 active:opacity-70" href="#">بلاگ</a>
+</div>
+<!-- Copyright -->
+<div class="text-surface-variant font-body-md text-body-md text-right md:text-left mt-4 md:mt-0 w-full md:w-auto">
+                © ۲۰۲۴ گھر پراپرٹی مارکیٹ پلیس۔ جملہ حقوق محفوظ ہیں۔
+            </div>
+</div>
+</footer>
+</body></html>

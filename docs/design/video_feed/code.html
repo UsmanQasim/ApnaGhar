@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ur"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>پراپرٹی فیڈ - ویڈیو</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-secondary-container": "#586377",
+                        "error-container": "#ffdad6",
+                        "on-error": "#ffffff",
+                        "outline": "#6d7a72",
+                        "surface-container-high": "#dce9ff",
+                        "surface-container-highest": "#d3e4fe",
+                        "secondary-fixed": "#d8e3fb",
+                        "on-tertiary-container": "#fffbff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "surface-variant": "#d3e4fe",
+                        "tertiary": "#825100",
+                        "outline-variant": "#bccac0",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "on-surface": "#0b1c30",
+                        "on-background": "#0b1c30",
+                        "tertiary-container": "#a36700",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#cbdbf5",
+                        "secondary-container": "#d5e0f8",
+                        "secondary": "#545f73",
+                        "surface-container": "#e5eeff",
+                        "primary-fixed-dim": "#68dba9",
+                        "on-surface-variant": "#3d4a42",
+                        "inverse-surface": "#213145",
+                        "primary": "#006948",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "on-primary-fixed": "#002114",
+                        "surface-container-low": "#eff4ff",
+                        "on-primary-fixed-variant": "#005137",
+                        "inverse-primary": "#68dba9",
+                        "on-secondary-fixed": "#111c2d",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#2a1700",
+                        "surface": "#f8f9ff",
+                        "surface-bright": "#f8f9ff",
+                        "primary-container": "#00855d",
+                        "on-primary-container": "#f5fff7",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#85f8c4",
+                        "background": "#f8f9ff",
+                        "surface-tint": "#006c4a",
+                        "error": "#ba1a1a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "touch-target": "48px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "base": "4px",
+                        "xs": "8px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Noto Nastaliq Urdu"],
+                        "body-md": ["Noto Nastaliq Urdu"],
+                        "headline-lg": ["Noto Nastaliq Urdu"],
+                        "headline-md": ["Noto Nastaliq Urdu"],
+                        "number-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Noto Nastaliq Urdu"],
+                        "number-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "32px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "64px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "48px", "fontWeight": "600" }],
+                        "number-lg": ["20px", { "lineHeight": "24px", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "36px", "fontWeight": "400" }],
+                        "number-md": ["16px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom styles for vertical scroll snapping */
+        .video-feed {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+            width: 100%;
+        }
+        .video-container {
+            scroll-snap-align: start;
+            height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+        
+        /* Hide scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-hidden antialiased">
+<!-- Top Navigation / Categories -->
+<header class="fixed top-0 left-0 w-full z-40 p-md flex flex-row-reverse justify-between items-center pointer-events-none">
+<!-- Category Chips -->
+<div class="flex gap-sm overflow-x-auto no-scrollbar pointer-events-auto" style="direction: rtl;">
+<button class="bg-primary text-on-primary rounded-full px-lg py-xs flex items-center gap-xs font-body-md whitespace-nowrap h-touch-target shadow-md active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="house">house</span>
+                فروخت
+            </button>
+<button class="bg-surface/80 backdrop-blur-md text-on-surface rounded-full px-lg py-xs flex items-center gap-xs font-body-md whitespace-nowrap h-touch-target shadow-md active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="key">key</span>
+                کرایہ
+            </button>
+<button class="bg-surface/80 backdrop-blur-md text-on-surface rounded-full px-lg py-xs flex items-center gap-xs font-body-md whitespace-nowrap h-touch-target shadow-md active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="home_work">home_work</span>
+                مکانات
+            </button>
+<button class="bg-surface/80 backdrop-blur-md text-on-surface rounded-full px-lg py-xs flex items-center gap-xs font-body-md whitespace-nowrap h-touch-target shadow-md active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="landscape">landscape</span>
+                پلاٹس
+            </button>
+</div>
+<!-- App Top Bar Actions (Optional space on left) -->
+<div class="pointer-events-auto flex items-center gap-sm">
+<button class="w-touch-target h-touch-target bg-surface/80 backdrop-blur-md text-on-surface rounded-full flex items-center justify-center shadow-md active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+</div>
+</header>
+<!-- Main Video Feed -->
+<main class="video-feed pb-20"> <!-- pb-20 to clear bottom nav -->
+<!-- Video Item 1 -->
+<section class="video-container bg-black relative flex items-center justify-center overflow-hidden">
+<!-- Simulated Video Background (Using Image Placeholder for now) -->
+<div class="absolute inset-0 w-full h-full bg-cover bg-center opacity-80" data-alt="A dynamic, vertical, full-screen video still showing the exterior of a beautiful, modern 5 Marla house in Johar Town, Lahore. The house features contemporary architecture with large glass windows, a sleek gate, and warm exterior lighting against a twilight sky. The image is designed to look like a high-quality real estate video tour shot on a smartphone. The aesthetic is premium, inviting, and highly professional, reflecting trust and growth in the Pakistani real estate market. Rich deep tones of the evening are contrasted with warm glowing lights." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBFGHSxRgqrwKXUmiNunDb4CarcjF7IXWx9Q4iA6VTooHXdj9BwPSMO-lmgYIXdadpiwoCSo_egct0jjDHAHCjJkzOhF-6jyRw_e4bU1ePyIzf4rzvorpQpci6NUKA7qpbxUH6eheY6QS_owKJ-wFf5FG_P24CvWlKxsLW5cNEaVSaTSbVBQnpdxXJ97sOv-5RRR8PswYcSGOAuYWYh5pib0K1ldgqKaypNfctiPZotV5MuADvUKPDd')">
+</div>
+<!-- Video Gradient Overlay for text readability -->
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
+<!-- Central Play Button (Appears when paused, ideally controlled via JS) -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity" id="play-button-1">
+<span class="material-symbols-outlined text-white/50 text-[80px]" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+</div>
+<!-- Content Overlay (RTL) -->
+<div class="absolute bottom-24 right-0 w-full p-md flex flex-row items-end justify-between z-10 pointer-events-auto">
+<!-- Left Side: Actions (Agent, Like, Comment, Share) -->
+<div class="flex flex-col items-center gap-lg mb-sm">
+<!-- Agent Profile -->
+<div class="relative w-[50px] h-[50px] rounded-full border-2 border-white mb-2 cursor-pointer shadow-md">
+<img class="w-full h-full object-cover rounded-full" data-alt="A close-up, professional portrait of a Pakistani real estate agent. He is smiling warmly, wearing a neat corporate suit. The lighting is bright and clear, conveying trust and reliability. The photo is cropped into a small circle, typical of a social media profile picture. The background is a soft, blurred office setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8r3P1mLKZKp_JhDjpnSgcVghqDZXB1dNcTa2lpTi8I2SmLE6k_axU10hBnUy9to0nXQ0vmNb4iB7fuQhaYan4wAKoC7kkf-7AvQxoS_9pmCxxVYOHq4kvfy2x8H7skDfD5LHWMo3Dido05wj9_extyELkFUIWYiZPQZIoCuWpDgDcOcKUrRs5GM4IUk_t2VWF-Bv1iPMhsS1IwvbfliJXv--UGFcyBazkNdJ4Qqam1sSSGMf6fniM"/>
+<div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-primary text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow-sm">
+<span class="material-symbols-outlined text-[14px]">add</span>
+</div>
+</div>
+<!-- Like -->
+<button class="flex flex-col items-center text-white gap-1 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[32px] drop-shadow-md" data-icon="favorite">favorite</span>
+<span class="font-number-md text-sm drop-shadow-md">1.2k</span>
+</button>
+<!-- Comment -->
+<button class="flex flex-col items-center text-white gap-1 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[32px] drop-shadow-md" data-icon="comment">comment</span>
+<span class="font-number-md text-sm drop-shadow-md">45</span>
+</button>
+<!-- Share -->
+<button class="flex flex-col items-center text-white gap-1 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[32px] drop-shadow-md" data-icon="share">share</span>
+<span class="font-number-md text-sm drop-shadow-md">12</span>
+</button>
+</div>
+<!-- Right Side: Property Details -->
+<div class="flex-1 pl-md text-white">
+<!-- Price Tag -->
+<div class="bg-tertiary text-on-tertiary-container inline-block px-sm py-1 rounded-full font-headline-md font-bold mb-xs shadow-lg">
+                        1.2 کروڑ
+                    </div>
+<!-- Title/Location -->
+<h2 class="font-headline-sm font-semibold mb-1 drop-shadow-md line-clamp-1">
+                        5 مرلہ خوبصورت گھر
+                    </h2>
+<p class="font-body-md text-white/90 drop-shadow-md flex items-center gap-1 mb-2">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+                         جوہر ٹاؤن، لاہور
+                    </p>
+<!-- Description & Read Aloud -->
+<div class="flex items-start justify-between gap-sm">
+<p class="font-body-md text-white/80 line-clamp-3 text-sm flex-1 leading-relaxed drop-shadow-md">
+                            جدید ڈیزائن، 3 بیڈرومز، اٹیچ باتھ۔ بہترین لوکیشن، کشادہ کار پورچ۔ فیملی کے لیے آئیڈیل گھر۔ آج ہی رابطہ کریں!
+                        </p>
+<!-- TTS Button -->
+<button class="bg-white/20 backdrop-blur-sm p-2 rounded-full text-white hover:bg-white/30 transition-colors h-touch-target w-touch-target flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="volume_up">volume_up</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Video Item 2 (Duplicate structure for scrolling effect) -->
+<section class="video-container bg-black relative flex items-center justify-center overflow-hidden">
+<!-- Simulated Video Background -->
+<div class="absolute inset-0 w-full h-full bg-cover bg-center opacity-80" data-alt="A dynamic, vertical video still showing the luxurious interior living room of a modern 10 Marla house in DHA Lahore. The room features high ceilings, elegant chandeliers, marble flooring, and plush contemporary furniture. The lighting is soft and inviting, highlighting the premium finish of the walls and decor. Shot vertically to look like a high-end social media reel. The atmosphere is aspirational and deeply rooted in the concept of a comfortable, premium lifestyle." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBCtc02E1h8zEpsGlWE58VkXrLQARG7Gx9lVyGapOsWSo7Uo0R_dOgiNaarZOFxMr1dkDviYOplTzd1e8n5ulP22NSItya2yKkJXcY8klQB4pku7kV-a3SkhwpBdoqDIdW4khv8iHuM4kYuxWHx7Zc2aPCh90MpfSp36o1f1U0ZPD1mCNo2Aq6UbvmbaSFJ6w8rEBU7RAAiy89Wf7oyMcYHvWA29Gkrrpvtv2yJ7F7QFo7pzjnGV8CB')">
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
+<div class="absolute bottom-24 right-0 w-full p-md flex flex-row items-end justify-between z-10 pointer-events-auto">
+<div class="flex flex-col items-center gap-lg mb-sm">
+<div class="relative w-[50px] h-[50px] rounded-full border-2 border-white mb-2 cursor-pointer shadow-md">
+<img class="w-full h-full object-cover rounded-full" data-alt="Profile picture of a female Pakistani real estate consultant, professionally dressed, conveying warmth and reliability in a bright office environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7hv-DIU2p99CfN-NtLDZrUPq_LG8Zt7cTjQ7jkHP0guBgxaNtrDzSqlBRZ7bUgqnWMjZ6EYI-pM-n969THPue04Uj0uHYfovDxuK8zDIfS4puhgjmVHqD0XENCO122vjCRtZYfa9C1ntOFNI44I9-0y3Rx0h7FSl6fVxt4X_sRCHBQqCXszv9tQpm0LD_TI9E1DBQg7AwU_EQrGQfvvV0O6KM00sHrDWkWh7cO_rF9L_mZRy2jpG5"/>
+</div>
+<button class="flex flex-col items-center text-white gap-1">
+<span class="material-symbols-outlined text-[32px] drop-shadow-md" data-icon="favorite">favorite</span>
+<span class="font-number-md text-sm drop-shadow-md">3.4k</span>
+</button>
+<button class="flex flex-col items-center text-white gap-1">
+<span class="material-symbols-outlined text-[32px] drop-shadow-md" data-icon="comment">comment</span>
+<span class="font-number-md text-sm drop-shadow-md">120</span>
+</button>
+<button class="flex flex-col items-center text-white gap-1">
+<span class="material-symbols-outlined text-[32px] drop-shadow-md" data-icon="share">share</span>
+<span class="font-number-md text-sm drop-shadow-md">45</span>
+</button>
+</div>
+<div class="flex-1 pl-md text-white">
+<div class="bg-tertiary text-on-tertiary-container inline-block px-sm py-1 rounded-full font-headline-md font-bold mb-xs shadow-lg">
+                        3.5 کروڑ
+                    </div>
+<h2 class="font-headline-sm font-semibold mb-1 drop-shadow-md line-clamp-1">
+                        10 مرلہ لگژری ولّا
+                    </h2>
+<p class="font-body-md text-white/90 drop-shadow-md flex items-center gap-1 mb-2">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+                         ڈی ایچ اے فیز 6، لاہور
+                    </p>
+<div class="flex items-start justify-between gap-sm">
+<p class="font-body-md text-white/80 line-clamp-3 text-sm flex-1 leading-relaxed drop-shadow-md">
+                            شاندار انٹیرئیر، امپورٹڈ فٹنگز، 5 بیڈرومز، ڈبل کچن۔ پرسکون ماحول اور بہترین سیکیورٹی۔ ابھی وزٹ بک کریں۔
+                        </p>
+<button class="bg-white/20 backdrop-blur-sm p-2 rounded-full text-white hover:bg-white/30 transition-colors h-touch-target w-touch-target flex-shrink-0 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="volume_up">volume_up</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Nav Bar (From JSON) -->
+<nav aria-label="Bottom Navigation" class="fixed bottom-0 left-0 w-full z-50 flex flex-row-reverse justify-around items-center px-md pb-safe h-20 bg-surface-container dark:bg-inverse-surface shadow-lg rounded-t-xl">
+<!-- Home (Active) -->
+<button class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl px-sm py-xs hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant active:scale-90 transition-all h-touch-target min-w-[64px]">
+<span class="material-symbols-outlined mb-1" data-icon="home" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-body-md text-body-md">ہوم</span>
+</button>
+<!-- Search -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-sm py-xs hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant active:scale-90 transition-all h-touch-target min-w-[64px]">
+<span class="material-symbols-outlined mb-1" data-icon="search">search</span>
+<span class="font-body-md text-body-md">تلاش</span>
+</button>
+<!-- Voice Search FAB (Central Prominent Action based on guidance) -->
+<button class="relative -top-4 flex items-center justify-center bg-primary text-on-primary rounded-full w-14 h-14 shadow-lg hover:bg-primary-container active:scale-90 transition-all border-4 border-surface-container" style="box-shadow: 0 4px 8px rgba(84, 95, 115, 0.4);">
+<span class="material-symbols-outlined text-[28px]" data-icon="mic">mic</span>
+</button>
+<!-- My Listings -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-sm py-xs hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant active:scale-90 transition-all h-touch-target min-w-[64px]">
+<span class="material-symbols-outlined mb-1" data-icon="format_list_bulleted">format_list_bulleted</span>
+<span class="font-body-md text-body-md">میری لسٹنگز</span>
+</button>
+<!-- Profile -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-sm py-xs hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant active:scale-90 transition-all h-touch-target min-w-[64px]">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-body-md text-body-md">پروفائل</span>
+</button>
+</nav>
+<script>
+        // Simple script to toggle play icon visibility on click for demonstration
+        document.querySelectorAll('.video-container').forEach(container => {
+            container.addEventListener('click', function() {
+                const playBtn = this.querySelector('[id^="play-button"]');
+                if(playBtn) {
+                    if (playBtn.style.opacity === '1') {
+                        playBtn.style.opacity = '0';
+                    } else {
+                        playBtn.style.opacity = '1';
+                        setTimeout(() => { playBtn.style.opacity = '0'; }, 1000);
+                    }
+                }
+            });
+        });
+    </script>
+</body></html>

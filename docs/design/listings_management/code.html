@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ur"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>گھر ایڈمن پینل - لسٹنگز</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#fffbff",
+                        "secondary": "#545f73",
+                        "inverse-surface": "#213145",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#0b1c30",
+                        "on-primary-container": "#f5fff7",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "inverse-primary": "#68dba9",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#a36700",
+                        "surface-bright": "#f8f9ff",
+                        "background": "#f8f9ff",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "on-surface-variant": "#3d4a42",
+                        "on-primary-fixed": "#002114",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-secondary-fixed": "#111c2d",
+                        "outline": "#6d7a72",
+                        "surface-container-high": "#dce9ff",
+                        "primary-container": "#00855d",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#85f8c4",
+                        "surface-dim": "#cbdbf5",
+                        "surface-tint": "#006c4a",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary": "#825100",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-secondary-container": "#586377",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#e5eeff",
+                        "outline-variant": "#bccac0",
+                        "primary": "#006948",
+                        "surface-variant": "#d3e4fe",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "secondary-fixed": "#d8e3fb",
+                        "primary-fixed-dim": "#68dba9",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#d5e0f8",
+                        "on-background": "#0b1c30",
+                        "on-primary-fixed-variant": "#005137",
+                        "surface": "#f8f9ff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-tertiary-fixed": "#2a1700"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "touch-target": "48px",
+                        "sm": "12px",
+                        "xs": "8px",
+                        "base": "4px",
+                        "md": "16px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "number-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Noto Nastaliq Urdu"],
+                        "number-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Noto Nastaliq Urdu"],
+                        "headline-md": ["Noto Nastaliq Urdu"],
+                        "body-md": ["Noto Nastaliq Urdu"],
+                        "headline-sm": ["Noto Nastaliq Urdu"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "number-md": ["16px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "36px", "fontWeight": "400" }],
+                        "number-lg": ["20px", { "lineHeight": "24px", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "64px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "48px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "32px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "40px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Noto Nastaliq Urdu', serif; }
+        .number-font { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex selection:bg-primary-container selection:text-on-primary-container">
+<!-- SideNavBar -->
+<aside class="fixed right-0 top-0 h-full w-64 flex flex-col z-40 pt-20 bg-surface-container dark:bg-inverse-surface border-l border-outline-variant transition-all duration-200">
+<div class="px-lg pb-md mb-md border-b border-outline-variant/30 flex flex-col items-center">
+<div class="w-16 h-16 rounded-full overflow-hidden mb-sm border-2 border-primary-container">
+<img alt="گھر لوگو" class="w-full h-full object-cover" data-alt="A modern, abstract real estate logo featuring clean architectural lines intertwined with subtle foliage, using a fresh green and deep slate color palette, set against a pristine white background. High-quality corporate branding design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdCOutmbUgejg1Fa-h5jF3XEICnWZRR6CJwxm5VAdc8TeYizBX-zxHvnSxwR7PoSVHTUa7hcu-OVa4KMzNsfp4hGpao6LW_neUPRGc9JdIWHPb7i795NF9d8YkY58J5ZTvEuGIO7fcae0QM7YSMmkUNYdsPxM7xyuekT59OvsMANtoLKL9Jlm4L3MI6yeQsj9GMqDDT3qpWYKYETIW4v5ZkKwrFOch2GqhtxoeR6ShFLWYUzx2iW1V"/>
+</div>
+<h2 class="text-headline-sm font-headline-sm text-primary text-center">ایڈمن پینل</h2>
+<p class="text-body-md text-on-surface-variant text-center opacity-80">گھر مارکیٹ پلیس</p>
+</div>
+<nav class="flex-1 px-md flex flex-col gap-xs overflow-y-auto">
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest dark:hover:bg-secondary-fixed-dim flex flex-row-reverse items-center gap-md px-md py-sm rounded-l-full transition-colors duration-200 h-touch-target" href="#">
+<span class="material-symbols-outlined text-[24px]">dashboard</span>
+<span class="text-body-md font-body-md w-full text-right mt-1">جائزہ</span>
+</a>
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest dark:hover:bg-secondary-fixed-dim flex flex-row-reverse items-center gap-md px-md py-sm rounded-l-full transition-colors duration-200 h-touch-target" href="#">
+<span class="material-symbols-outlined text-[24px]">payments</span>
+<span class="text-body-md font-body-md w-full text-right mt-1">ادائیگی کی تصدیق</span>
+</a>
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest dark:hover:bg-secondary-fixed-dim flex flex-row-reverse items-center gap-md px-md py-sm rounded-l-full transition-colors duration-200 h-touch-target" href="#">
+<span class="material-symbols-outlined text-[24px]">groups</span>
+<span class="text-body-md font-body-md w-full text-right mt-1">ایجنٹس</span>
+</a>
+<a class="bg-primary-container text-on-primary-container font-bold rounded-l-full flex flex-row-reverse items-center gap-md px-md py-sm transition-colors duration-200 h-touch-target relative" href="#">
+<div class="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-8 bg-primary rounded-l-full"></div>
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">apartment</span>
+<span class="text-body-md font-body-md w-full text-right mt-1">لسٹنگز</span>
+</a>
+<a class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest dark:hover:bg-secondary-fixed-dim flex flex-row-reverse items-center gap-md px-md py-sm rounded-l-full transition-colors duration-200 h-touch-target" href="#">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+<span class="text-body-md font-body-md w-full text-right mt-1">ترتیبات</span>
+</a>
+</nav>
+<div class="p-md border-t border-outline-variant/30 mt-auto">
+<button class="w-full h-touch-target flex items-center justify-center gap-xs bg-primary text-on-primary rounded-full hover:bg-surface-tint hover:shadow-lg transition-all duration-200 font-body-md text-body-md active:scale-95">
+<span class="material-symbols-outlined">download</span>
+<span class="mt-1">رپورٹ ڈاؤن لوڈ کریں</span>
+</button>
+<a class="text-error hover:bg-error-container/20 flex flex-row-reverse items-center gap-md px-md py-sm mt-sm rounded-l-full transition-colors duration-200 h-touch-target" href="#">
+<span class="material-symbols-outlined text-[24px]">logout</span>
+<span class="text-body-md font-body-md w-full text-right mt-1">لاگ آؤٹ</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 mr-64 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="flex flex-row-reverse justify-between items-center w-full px-lg h-20 z-50 sticky top-0 bg-surface dark:bg-inverse-surface border-b border-surface-container-high dark:border-inverse-surface shadow-sm transition-all duration-200">
+<div class="flex items-center gap-md h-full">
+<h1 class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed mt-2">گھر ایڈمن</h1>
+</div>
+<!-- Search Bar (on_right based on RTL, so it's visually on the left side of the right-aligned cluster) -->
+<div class="flex-1 max-w-md mx-lg hidden md:block">
+<div class="relative h-12 flex items-center">
+<input class="w-full h-full pl-4 pr-12 rounded-full border border-outline-variant bg-surface-container-lowest focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md text-on-surface placeholder-on-surface-variant transition-all duration-200" placeholder="لسٹنگ تلاش کریں..." type="text"/>
+<span class="material-symbols-outlined absolute right-4 text-on-surface-variant">search</span>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="w-touch-target h-touch-target flex items-center justify-center rounded-full text-on-surface-variant hover:bg-secondary-container dark:hover:bg-secondary hover:text-on-secondary-container transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined">translate</span>
+</button>
+<button class="w-touch-target h-touch-target flex items-center justify-center rounded-full text-on-surface-variant hover:bg-secondary-container dark:hover:bg-secondary hover:text-on-secondary-container transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="w-touch-target h-touch-target flex items-center justify-center rounded-full text-on-surface-variant hover:bg-secondary-container dark:hover:bg-secondary hover:text-on-secondary-container transition-all duration-200 active:scale-95 relative">
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-10 h-10 rounded-full border-2 border-outline-variant overflow-hidden ml-sm cursor-pointer hover:border-primary transition-colors">
+<img alt="ایڈمن پروفائل" class="w-full h-full object-cover" data-alt="Professional headshot of a South Asian male admin user, mid-30s, wearing a smart casual blazer, smiling confidently against a soft blurred office background, warm lighting, high-quality portrait." src="https://lh3.googleusercontent.com/aida-public/AB6AXuClOwISPBTGOTqkemrrzyUh59hnnun8E1_0op_NSQm3lnBU2PvwDr1xOp9j5GnYg5LuMJCxktMdGBObrdoS5dnvNQnK-nwr1N2GXlr9nuTkoRjZ0c5ITEUdZDRG21ryEiJmZsOYQWLubQAKrjRMB381sc8CAtOv5VSJ8ATYawh4ODx6l5pzKXlZKibkoT4bISMeL88qUZSZZsCs76BD75XjMD21gXcjpebYWJ6I4wJdPP5-ISUjlOD1"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="p-lg flex-1 overflow-y-auto">
+<!-- Page Header & Filters -->
+<div class="mb-lg flex flex-col md:flex-row justify-between items-end gap-md">
+<div>
+<h2 class="text-headline-lg font-headline-lg text-on-surface mb-xs">لسٹنگز کی نگرانی</h2>
+<p class="text-body-md font-body-md text-on-surface-variant">تمام پراپرٹی لسٹنگز کا نظم کریں، فلٹر کریں اور کارروائی کریں۔</p>
+</div>
+<div class="flex flex-wrap gap-sm items-center bg-surface-container p-sm rounded-lg border border-outline-variant/50 w-full md:w-auto">
+<span class="material-symbols-outlined text-on-surface-variant mr-2">filter_list</span>
+<select class="h-10 px-md rounded-md border border-outline-variant bg-surface-container-lowest text-body-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary min-w-[120px]">
+<option>تمام شہر</option>
+<option>لاہور</option>
+<option>کراچی</option>
+<option>اسلام آباد</option>
+</select>
+<select class="h-10 px-md rounded-md border border-outline-variant bg-surface-container-lowest text-body-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary min-w-[120px]">
+<option>قسم (سب)</option>
+<option>فروخت</option>
+<option>کرایہ</option>
+</select>
+<select class="h-10 px-md rounded-md border border-outline-variant bg-surface-container-lowest text-body-md font-body-md focus:border-primary focus:ring-1 focus:ring-primary min-w-[120px]">
+<option>کیٹیگری (سب)</option>
+<option>گھر</option>
+<option>پلاٹ</option>
+<option>کمرشل</option>
+</select>
+</div>
+</div>
+<!-- Bento Grid Gallery View -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+<!-- Card 1: Active, Premium -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/60 overflow-hidden flex flex-col group hover:shadow-md transition-shadow duration-300 relative">
+<div class="absolute top-2 left-2 z-10 flex gap-xs">
+<span class="bg-tertiary text-on-tertiary text-label-sm font-label-sm px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[14px]">star</span>
+                            پریمیم
+                        </span>
+</div>
+<div class="relative h-48 w-full bg-surface-variant overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A luxurious, modern multi-story house in DHA Lahore, featuring contemporary architecture with large glass windows, a beautifully manicured lawn, shot during golden hour with warm, inviting lighting. Cinematic wide-angle real estate photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAS7mgdgFiuGdORlAUzpKtVCPPl3NSt9qNNmoGwMVCkp2rB0OCqPHvmWY4XLoJv2iywhr4teXkWSxGofs0xyxQkVg_ovMBLtO6kodr5zl79lQrVRm4olx_9lgrn2p97QSSIdHhpwycMpDzsXHTMvT4VutibWWhu9WGGBDbvvuKh1Ot5ha1eBeni7ZESYyZUidDLtvkOGScCKnA4QVg1Olx60pPFgdQlBGi18piaNuwN0Y7W5H-ijIuO"/>
+<div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+<button class="w-12 h-12 bg-surface/80 backdrop-blur-sm rounded-full flex items-center justify-center text-on-surface hover:bg-surface hover:scale-110 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+<div class="absolute bottom-2 right-2 bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-md shadow-sm">
+<span class="text-number-md font-number-md">2.5 کروڑ</span>
+</div>
+</div>
+<div class="p-md flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-body-lg font-headline-sm text-on-surface leading-tight mt-1">10 مرلہ برانڈ نیو ہاؤس</h3>
+<button class="text-on-surface-variant hover:text-primary transition-colors h-touch-target w-touch-target flex items-center justify-center -mr-2 -mt-2">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant flex items-center gap-1 mb-4">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+                            ڈی ایچ اے فیز 6، لاہور
+                        </p>
+<div class="mt-auto grid grid-cols-3 gap-sm border-t border-outline-variant/30 pt-sm">
+<button class="h-10 bg-surface-container hover:bg-surface-container-high text-on-surface text-label-sm font-label-sm rounded-md flex items-center justify-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+                                میڈیا
+                            </button>
+<button class="h-10 bg-surface-container hover:bg-surface-container-high text-on-surface text-label-sm font-label-sm rounded-md flex items-center justify-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                                نمایاں
+                            </button>
+<button class="h-10 border border-error text-error hover:bg-error-container/20 text-label-sm font-label-sm rounded-md flex items-center justify-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[16px]">block</span>
+                                غیر فعال
+                            </button>
+</div>
+</div>
+</div>
+<!-- Card 2: Reported Listing -->
+<div class="bg-error-container/10 rounded-xl border border-error/30 overflow-hidden flex flex-col group hover:shadow-md transition-shadow duration-300 relative">
+<div class="absolute top-2 left-2 z-10">
+<span class="bg-error text-on-error text-label-sm font-label-sm px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[14px]">warning</span>
+                            رپورٹ شدہ (3)
+                        </span>
+</div>
+<div class="relative h-48 w-full bg-surface-variant overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A standard 5 marla residential plot in Bahria Town Karachi, surrounded by boundary walls of neighboring houses, clear blue sky, bright daylight lighting, typical straightforward real estate listing photo." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP2-nheOeHDXwA4mQs7JrCb61atynRmwzvYZMknx2-sbNopAkr3zOpgGDkD3QDyH-BcUA_EtkMQBz69KaPCbE61Yp0z262AF2mSqvbdU40PGlUm8iV99nH-1X9O5M9WlaljBXLDgqPsuzhIfBJdXbLqzQLTDnffx8PbNvx4QR8rKT0a7X-laf5ItdaMng7POTW3uUT4nyeB9ryGhTQl3OVj4ckIgnJsgvxdQYq4xDjO95ntsze6vFu"/>
+<div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+<!-- No video icon here to show variety -->
+</div>
+<div class="absolute bottom-2 right-2 bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-md shadow-sm">
+<span class="text-number-md font-number-md">85 لاکھ</span>
+</div>
+</div>
+<div class="p-md flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-body-lg font-headline-sm text-on-surface leading-tight mt-1">5 مرلہ کارنر پلاٹ</h3>
+<button class="text-on-surface-variant hover:text-primary transition-colors h-touch-target w-touch-target flex items-center justify-center -mr-2 -mt-2">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant flex items-center gap-1 mb-2">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+                            بحریہ ٹاؤن، کراچی
+                        </p>
+<div class="bg-error-container/30 border border-error/20 p-2 rounded text-body-md font-body-md text-error mb-4 flex gap-2">
+<span class="material-symbols-outlined text-[18px] mt-1">flag</span>
+<span class="text-sm">غلط قیمت کی اطلاع دی گئی ہے۔</span>
+</div>
+<div class="mt-auto grid grid-cols-2 gap-sm border-t border-outline-variant/30 pt-sm">
+<button class="h-10 bg-primary text-on-primary hover:bg-surface-tint text-label-sm font-label-sm rounded-md flex items-center justify-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[16px]">gavel</span>
+                                جائزہ لیں
+                            </button>
+<button class="h-10 border border-error bg-error text-on-error hover:bg-error/90 text-label-sm font-label-sm rounded-md flex items-center justify-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[16px]">delete</span>
+                                حذف کریں
+                            </button>
+</div>
+</div>
+</div>
+<!-- Card 3: Standard Commercial -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/60 overflow-hidden flex flex-col group hover:shadow-md transition-shadow duration-300 relative">
+<div class="absolute top-2 left-2 z-10 flex gap-xs">
+<span class="bg-secondary-container text-on-secondary-container text-label-sm font-label-sm px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[14px]">storefront</span>
+                            کمرشل
+                        </span>
+</div>
+<div class="relative h-48 w-full bg-surface-variant overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A modern commercial shop front in Blue Area Islamabad, large glass display windows, busy street reflection, bright sunny day, professional real estate commercial photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAozfjN5sBihi7K1ePkWq_42ZyyQQCa9QJsbzd8eYXpeAiRuVlsSmvIi9O6uhF_lKULpcE_ekiv82kWJOQd5EAdkw9rFiLfd_GTb3_UZxJ1u6wUbCRhoWBgv_hmdZzrmW5dU7C98hBxL5Kxz6mWlRz_afoIJDh-wM9JDSQVCnKA2tx2ilqbUY_sH3hSjyhN04rDyRR_biv_cfZPOdSlK5XmsbwP-48zvWbUBzFLT8It4Tw6HWm5c12n"/>
+<div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+<button class="w-12 h-12 bg-surface/80 backdrop-blur-sm rounded-full flex items-center justify-center text-on-surface hover:bg-surface hover:scale-110 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+<div class="absolute bottom-2 right-2 bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-md shadow-sm">
+<span class="text-number-md font-number-md">1.2 لاکھ / ماہ</span>
+</div>
+</div>
+<div class="p-md flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-body-lg font-headline-sm text-on-surface leading-tight mt-1">پرائم لوکیشن شاپ</h3>
+<button class="text-on-surface-variant hover:text-primary transition-colors h-touch-target w-touch-target flex items-center justify-center -mr-2 -mt-2">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant flex items-center gap-1 mb-4">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+                            بلیو ایریا، اسلام آباد
+                        </p>
+<div class="mt-auto grid grid-cols-3 gap-sm border-t border-outline-variant/30 pt-sm">
+<button class="h-10 bg-surface-container hover:bg-surface-container-high text-on-surface text-label-sm font-label-sm rounded-md flex items-center justify-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+                                میڈیا
+                            </button>
+<button class="h-10 bg-surface-container hover:bg-surface-container-high text-on-surface text-label-sm font-label-sm rounded-md flex items-center justify-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[16px]">star_border</span>
+                                نمایاں
+                            </button>
+<button class="h-10 border border-error text-error hover:bg-error-container/20 text-label-sm font-label-sm rounded-md flex items-center justify-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[16px]">block</span>
+                                غیر فعال
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination (Placeholder) -->
+<div class="mt-xl flex justify-center pb-xl">
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+<button class="w-10 h-10 rounded bg-primary text-on-primary flex items-center justify-center number-font font-bold">1</button>
+<button class="w-10 h-10 rounded border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors number-font">2</button>
+<button class="w-10 h-10 rounded border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors number-font">3</button>
+<button class="w-10 h-10 rounded border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Voice Search FAB (Contextual for Listings Oversight, though less common in pure admin, included per instructions to have a FAB if it fits search context) -->
+<button aria-label="وائس سرچ" class="fixed bottom-lg left-lg z-50 w-14 h-14 bg-secondary text-on-secondary rounded-full shadow-[0_8px_16px_rgba(84,95,115,0.25)] flex items-center justify-center hover:bg-secondary-fixed-dim hover:text-on-secondary-fixed transition-all duration-300 hover:scale-105 active:scale-95 group hidden md:flex">
+<span class="material-symbols-outlined text-[28px] group-hover:animate-pulse">mic</span>
+</button>
+</body></html>

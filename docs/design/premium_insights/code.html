@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ur"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>پریمیئم بصیرت - Ghar Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "tertiary": "#825100",
+                        "inverse-on-surface": "#eaf1ff",
+                        "surface-variant": "#d3e4fe",
+                        "inverse-primary": "#68dba9",
+                        "background": "#f8f9ff",
+                        "surface": "#f8f9ff",
+                        "inverse-surface": "#213145",
+                        "primary-container": "#00855d",
+                        "primary-fixed-dim": "#68dba9",
+                        "on-error": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#eff4ff",
+                        "surface-dim": "#cbdbf5",
+                        "tertiary-fixed": "#ffddb8",
+                        "surface-container": "#e5eeff",
+                        "secondary": "#545f73",
+                        "surface-tint": "#006c4a",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "tertiary-container": "#a36700",
+                        "outline": "#6d7a72",
+                        "on-secondary-container": "#586377",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#2a1700",
+                        "on-tertiary-container": "#fffbff",
+                        "on-background": "#0b1c30",
+                        "secondary-container": "#d5e0f8",
+                        "primary": "#006948",
+                        "on-secondary-fixed": "#111c2d",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#0b1c30",
+                        "on-primary-container": "#f5fff7",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "primary-fixed": "#85f8c4",
+                        "surface-container-high": "#dce9ff",
+                        "on-primary-fixed-variant": "#005137",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary-fixed": "#002114",
+                        "secondary-fixed": "#d8e3fb",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#3d4a42",
+                        "outline-variant": "#bccac0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "touch-target": "48px",
+                        "md": "16px",
+                        "base": "4px",
+                        "lg": "24px",
+                        "sm": "12px",
+                        "xs": "8px"
+                    },
+                    "fontFamily": {
+                        "number-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Noto Nastaliq Urdu"],
+                        "body-md": ["Noto Nastaliq Urdu"],
+                        "number-md": ["Plus Jakarta Sans"],
+                        "headline-sm": ["Noto Nastaliq Urdu"],
+                        "headline-lg": ["Noto Nastaliq Urdu"],
+                        "headline-md": ["Noto Nastaliq Urdu"],
+                        "label-sm": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "number-lg": ["20px", { "lineHeight": "24px", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "36px", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "32px", "fontWeight": "400" }],
+                        "number-md": ["16px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "headline-sm": ["20px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "64px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "48px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        body { font-family: 'Noto Nastaliq Urdu', serif; }
+        .english-num { font-family: 'Plus Jakarta Sans', sans-serif; direction: ltr; display: inline-block; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col pb-safe md:pb-0">
+<!-- TopAppBar -->
+<header class="bg-surface text-primary font-headline-md text-headline-md docked full-width top-0 flat no shadows text-primary hover:bg-surface-container scale-95 transition-transform duration-200 flex flex-row-reverse justify-between items-center w-full px-md h-touch-target sticky z-40">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined filled text-primary" data-icon="verified">verified</span>
+<span class="font-headline-md text-headline-md">پریمیئم بصیرت</span>
+</div>
+<button class="h-touch-target w-touch-target flex items-center justify-center text-on-surface-variant hover:bg-surface-container rounded-full">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 p-md md:p-lg max-w-7xl mx-auto w-full flex flex-col gap-lg">
+<!-- Welcome & Market Demand Summary -->
+<section class="bg-white rounded-xl shadow-sm border border-outline-variant/30 p-lg">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-md">مارکیٹ کی مانگ کا خلاصہ</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="bg-surface-container-low rounded-lg p-md flex items-center gap-md">
+<div class="bg-primary-container text-on-primary-container p-sm rounded-full flex-shrink-0">
+<span class="material-symbols-outlined filled" data-icon="trending_up">trending_up</span>
+</div>
+<div>
+<p class="font-body-md text-body-md text-on-surface">جوہر ٹاؤن کی مانگ میں <span class="english-num font-number-md text-number-md text-primary mr-1">40%</span> اضافہ</p>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-md flex items-center gap-md">
+<div class="bg-secondary-container text-on-secondary-container p-sm rounded-full flex-shrink-0">
+<span class="material-symbols-outlined filled" data-icon="group_add">group_add</span>
+</div>
+<div>
+<p class="font-body-md text-body-md text-on-surface"><span class="english-num font-number-md text-number-md mr-1">3</span> نئے خریداروں نے ملتی جلتی پراپرٹیز محفوظ کیں</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Visual Charts: Views & Leads -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Views Chart -->
+<div class="bg-white rounded-xl shadow-sm border border-outline-variant/30 p-lg flex flex-col">
+<div class="flex justify-between items-center mb-md">
+<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="visibility">visibility</span>
+                        پچھلے 30 دن کے مناظر
+                    </h3>
+<span class="font-number-lg text-number-lg text-primary english-num">1,245</span>
+</div>
+<!-- CSS Bar Chart Representation -->
+<div class="flex-1 flex items-end justify-between gap-xs h-40 mt-sm pt-sm border-t border-surface-container">
+<div class="w-full bg-primary-container/20 rounded-t-sm h-[30%]"></div>
+<div class="w-full bg-primary-container/40 rounded-t-sm h-[50%]"></div>
+<div class="w-full bg-primary-container/30 rounded-t-sm h-[40%]"></div>
+<div class="w-full bg-primary-container/60 rounded-t-sm h-[70%]"></div>
+<div class="w-full bg-primary-container/50 rounded-t-sm h-[60%]"></div>
+<div class="w-full bg-primary rounded-t-sm h-[90%]"></div>
+<div class="w-full bg-primary/80 rounded-t-sm h-[85%]"></div>
+</div>
+</div>
+<!-- Leads Chart -->
+<div class="bg-white rounded-xl shadow-sm border border-outline-variant/30 p-lg flex flex-col">
+<div class="flex justify-between items-center mb-md">
+<h3 class="font-headline-sm text-headline-sm text-on-surface flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="phone_in_talk">phone_in_talk</span>
+                        لیڈز تیار کی گئیں
+                    </h3>
+<span class="font-number-lg text-number-lg text-primary english-num">48</span>
+</div>
+<!-- CSS Area Graph Representation (Simplified) -->
+<div class="flex-1 relative h-40 mt-sm pt-sm border-t border-surface-container overflow-hidden">
+<div class="absolute bottom-0 w-full h-[60%] bg-gradient-to-t from-secondary-container to-transparent rounded-b-sm"></div>
+<svg class="absolute bottom-0 w-full h-[60%] stroke-secondary" fill="none" preserveaspectratio="none" viewbox="0 0 100 100">
+<path class="text-secondary-container/50" d="M0,100 L0,80 Q25,90 50,40 T100,10 L100,100 Z" fill="currentColor"></path>
+<path d="M0,80 Q25,90 50,40 T100,10" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+</div>
+</section>
+</main>
+</body></html>

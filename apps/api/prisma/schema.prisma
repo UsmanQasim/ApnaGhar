@@ -1,0 +1,709 @@
+// Ghar — Pakistan property marketplace
+//
+// Conventions:
+//  • All money is BigInt PAISA. Rs 100 = 10000. Never Float, never Decimal-as-rupees.
+//  • All timestamps are timestamptz (@db.Timestamptz).
+//  • `location` is PostGIS geography(Point,4326) — declared via Unsupported()
+//    and indexed with a raw GIST index in the migration.
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions", "fullTextSearch"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [postgis, pg_trgm, uuidOssp(map: "uuid-ossp")]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum Locale {
+  ur
+  en
+}
+
+enum UserRole {
+  customer
+  agent
+  admin
+}
+
+enum UserStatus {
+  active
+  suspended
+}
+
+enum PlanCode {
+  basic
+  premium
+}
+
+enum SubscriptionStatus {
+  trialing
+  active
+  past_due
+  restricted
+  dormant
+  cancelled
+}
+
+enum PropertyPurpose {
+  sale
+  rent
+}
+
+enum PropertyType {
+  house
+  flat
+  plot
+  shop
+  office
+  warehouse
+}
+
+enum AreaUnit {
+  marla
+  kanal
+  sqft
+  sqyd
+}
+
+enum RentPeriod {
+  month
+  year
+}
+
+enum PriceVisibility {
+  public
+  on_request
+}
+
+enum PropertyVisibility {
+  public
+  hidden_from_agents
+  private
+}
+
+enum PropertyStatus {
+  draft
+  pending_payment
+  active
+  sold
+  rented
+  expired
+  archived
+}
+
+enum MediaKind {
+  image
+  video
+}
+
+enum MediaProcessingStatus {
+  uploading
+  processing
+  ready
+  failed
+}
+
+enum InvoiceStatus {
+  open
+  due
+  partially_paid
+  paid
+  overdue
+  void
+}
+
+enum InvoiceItemType {
+  subscription
+  listing_fee
+  premium
+  boost
+  credit
+  adjustment
+}
+
+enum PaymentProviderCode {
+  manual_easypaisa
+  manual_jazzcash
+  jazzcash_api
+  easypaisa_api
+  card
+}
+
+enum PaymentStatus {
+  pending
+  verified
+  failed
+  refunded
+}
+
+enum LedgerDirection {
+  debit
+  credit
+}
+
+enum LedgerSource {
+  invoice_item
+  payment
+  refund
+  credit
+}
+
+enum LeadChannel {
+  call
+  whatsapp
+  in_app
+  share_link
+}
+
+enum ViewSource {
+  feed
+  search
+  share
+  profile
+}
+
+enum BoostType {
+  top_search
+  featured_home
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Identity
+// ─────────────────────────────────────────────────────────────────────────────
+
+model User {
+  id        String     @id @default(uuid()) @db.Uuid
+  /// E.164, always +923XXXXXXXXX
+  phone     String     @unique @db.VarChar(20)
+  name      String?    @db.VarChar(120)
+  role      UserRole   @default(customer)
+  locale    Locale     @default(ur)
+  /// User preference: Urdu-Indic (۱۲۳) vs Latin (123) digits.
+  urduNumerals Boolean @default(true)
+  status    UserStatus @default(active)
+  avatarUrl String?    @db.VarChar(500)
+  lastSeenAt DateTime? @db.Timestamptz
+  createdAt DateTime   @default(now()) @db.Timestamptz
+  updatedAt DateTime   @updatedAt @db.Timestamptz
+
+  agent          Agent?
+  sessions       Session[]
+  likes          Like[]
+  favorites      Favorite[]
+  comments       Comment[]
+  leads          Lead[]
+  savedSearches  SavedSearch[]
+  notifications  Notification[]
+  propertyViews  PropertyView[]
+  shareLinks     ShareLink[]       @relation("ShareLinkCreator")
+  verifiedPayments Payment[]       @relation("PaymentVerifier")
+  auditLogs      AdminAuditLog[]
+
+  @@index([role, status])
+  @@map("users")
+}
+
+model Session {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @db.Uuid
+  /// SHA-256 of the refresh token. Never store the token itself.
+  refreshTokenHash String @db.VarChar(64)
+  deviceId     String?  @db.VarChar(128)
+  userAgent    String?  @db.VarChar(300)
+  expiresAt    DateTime @db.Timestamptz
+  revokedAt    DateTime? @db.Timestamptz
+  createdAt    DateTime @default(now()) @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+  @@index([refreshTokenHash])
+  @@map("sessions")
+}
+
+model Agent {
+  userId        String    @id @db.Uuid
+  agencyName    String?   @db.VarChar(160)
+  /// SHA-256 of the CNIC. The raw CNIC is never stored.
+  cnicHash      String?   @unique @db.VarChar(64)
+  cnicVerifiedAt DateTime? @db.Timestamptz
+  isVerified    Boolean   @default(false)
+  city          String?   @db.VarChar(80)
+  /// Localities the agent works in — drives premium demand insights.
+  serviceAreas  Json      @default("[]")
+  bioUr         String?   @db.VarChar(1000)
+  bioEn         String?   @db.VarChar(1000)
+  whatsappPhone String?   @db.VarChar(20)
+  ratingAvg     Float?
+  ratingCount   Int       @default(0)
+  createdAt     DateTime  @default(now()) @db.Timestamptz
+  updatedAt     DateTime  @updatedAt @db.Timestamptz
+
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscription  Subscription?
+  properties    Property[]
+  invoices      Invoice[]
+  payments      Payment[]
+  ledgerEntries LedgerEntry[]
+  leads         Lead[]
+
+  @@index([city, isVerified])
+  @@map("agents")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Billing
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Plan {
+  code             PlanCode @id
+  pricePaisa       BigInt
+  /// NULL = unlimited listings (premium). See packages/shared/src/pricing.ts
+  /// for why premium is uncapped rather than "20 included".
+  includedListings Int?
+  features         Json     @default("{}")
+  isActive         Boolean  @default(true)
+
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
+model Subscription {
+  id                 String             @id @default(uuid()) @db.Uuid
+  agentId            String             @unique @db.Uuid
+  planCode           PlanCode
+  status             SubscriptionStatus @default(trialing)
+  currentPeriodStart DateTime           @db.Timestamptz
+  currentPeriodEnd   DateTime           @db.Timestamptz
+  /// End of the 7-day grace window before the account is restricted.
+  graceEndsAt        DateTime?          @db.Timestamptz
+  restrictedAt       DateTime?          @db.Timestamptz
+  cancelAtPeriodEnd  Boolean            @default(false)
+  /// Set when the agent prepays 3 or 12 months.
+  prepaidUntil       DateTime?          @db.Timestamptz
+  createdAt          DateTime           @default(now()) @db.Timestamptz
+  updatedAt          DateTime           @updatedAt @db.Timestamptz
+
+  agent Agent @relation(fields: [agentId], references: [userId], onDelete: Cascade)
+  plan  Plan  @relation(fields: [planCode], references: [code])
+
+  @@index([status, currentPeriodEnd])
+  @@index([status, graceEndsAt])
+  @@map("subscriptions")
+}
+
+model Invoice {
+  id              String        @id @default(uuid()) @db.Uuid
+  agentId         String        @db.Uuid
+  /// Human-readable, e.g. GHR-2026-000123. Agents quote this on the wallet transfer.
+  number          String        @unique @db.VarChar(24)
+  periodStart     DateTime      @db.Timestamptz
+  periodEnd       DateTime      @db.Timestamptz
+  subtotalPaisa   BigInt        @default(0)
+  totalPaisa      BigInt        @default(0)
+  amountPaidPaisa BigInt        @default(0)
+  status          InvoiceStatus @default(open)
+  dueAt           DateTime?     @db.Timestamptz
+  paidAt          DateTime?     @db.Timestamptz
+  createdAt       DateTime      @default(now()) @db.Timestamptz
+  updatedAt       DateTime      @updatedAt @db.Timestamptz
+
+  agent    Agent         @relation(fields: [agentId], references: [userId], onDelete: Cascade)
+  items    InvoiceItem[]
+  payments Payment[]
+
+  @@index([agentId, status])
+  @@index([status, dueAt])
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id            String          @id @default(uuid()) @db.Uuid
+  invoiceId     String          @db.Uuid
+  type          InvoiceItemType
+  /// Property id for listing_fee, boost id for boost, etc.
+  referenceId   String?         @db.Uuid
+  descriptionUr String          @db.VarChar(300)
+  descriptionEn String          @db.VarChar(300)
+  /// Negative for credits.
+  amountPaisa   BigInt
+  createdAt     DateTime        @default(now()) @db.Timestamptz
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+  /// A property is charged the Rs 50 listing fee at most once, ever.
+  @@unique([type, referenceId], name: "one_charge_per_reference")
+  @@map("invoice_items")
+}
+
+model Payment {
+  id             String              @id @default(uuid()) @db.Uuid
+  agentId        String              @db.Uuid
+  invoiceId      String?             @db.Uuid
+  amountPaisa    BigInt
+  provider       PaymentProviderCode
+  /// Provider transaction id. Unique per provider — the idempotency key.
+  providerTxnId  String?             @db.VarChar(120)
+  payerMsisdn    String?             @db.VarChar(20)
+  status         PaymentStatus       @default(pending)
+  /// Manual rail: storage key of the uploaded receipt screenshot.
+  proofKey       String?             @db.VarChar(300)
+  /// Manual rail: access is optimistically unblocked until this moment.
+  provisionalUntil DateTime?         @db.Timestamptz
+  verifiedById   String?             @db.Uuid
+  verifiedAt     DateTime?           @db.Timestamptz
+  rejectionReason String?            @db.VarChar(500)
+  rawPayload     Json?
+  createdAt      DateTime            @default(now()) @db.Timestamptz
+  updatedAt      DateTime            @updatedAt @db.Timestamptz
+
+  agent      Agent    @relation(fields: [agentId], references: [userId], onDelete: Cascade)
+  invoice    Invoice? @relation(fields: [invoiceId], references: [id])
+  verifiedBy User?    @relation("PaymentVerifier", fields: [verifiedById], references: [id])
+
+  @@unique([provider, providerTxnId])
+  @@index([status, createdAt])
+  @@index([agentId, status])
+  @@map("payments")
+}
+
+/// Append-only. Never UPDATE or DELETE a row here — correct mistakes by
+/// appending a compensating entry. This is the audit trail for every rupee.
+model LedgerEntry {
+  id               String          @id @default(uuid()) @db.Uuid
+  agentId          String          @db.Uuid
+  direction        LedgerDirection
+  amountPaisa      BigInt
+  source           LedgerSource
+  sourceId         String          @db.Uuid
+  /// Running balance after this entry. Positive = agent owes money.
+  balanceAfterPaisa BigInt
+  memo             String?         @db.VarChar(300)
+  createdAt        DateTime        @default(now()) @db.Timestamptz
+
+  agent Agent @relation(fields: [agentId], references: [userId], onDelete: Cascade)
+
+  @@index([agentId, createdAt])
+  @@unique([source, sourceId, direction])
+  @@map("ledger_entries")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Listings
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Property {
+  id              String             @id @default(uuid()) @db.Uuid
+  agentId         String             @db.Uuid
+
+  purpose         PropertyPurpose
+  type            PropertyType
+
+  titleUr         String             @db.VarChar(160)
+  titleEn         String?            @db.VarChar(160)
+  descriptionUr   String?            @db.VarChar(4000)
+  descriptionEn   String?            @db.VarChar(4000)
+  /// Storage key of the agent's spoken description, if he recorded one.
+  voiceNoteKey    String?            @db.VarChar(300)
+
+  pricePaisa      BigInt?
+  priceVisibility PriceVisibility    @default(public)
+  rentPeriod      RentPeriod?
+
+  areaValue       Float
+  areaUnit        AreaUnit
+  /// Canonical area for range filters. Marla differs by region, so this is
+  /// computed on write using the city's marla standard.
+  areaSqft        Float
+  bedrooms        Int?
+  bathrooms       Int?
+  floors          Int?
+  furnished       Boolean            @default(false)
+
+  addressText     String?            @db.VarChar(300)
+  city            String             @db.VarChar(80)
+  locality        String?            @db.VarChar(120)
+  /// PostGIS geography(Point,4326). GIST index added in the migration.
+  location        Unsupported("geography(Point, 4326)")?
+
+  visibility      PropertyVisibility @default(public)
+  status          PropertyStatus     @default(draft)
+
+  /// True once the Rs 50 has been charged for THIS property. Never charged twice.
+  listingFeeCharged Boolean          @default(false)
+  listingFeeInvoiceItemId String?    @db.Uuid
+
+  viewCount       Int                @default(0)
+  likeCount       Int                @default(0)
+  commentCount    Int                @default(0)
+  shareCount      Int                @default(0)
+
+  /// Agent-reported, private, optional. Powers the dashboard revenue chart only.
+  salePricePaisa    BigInt?
+  commissionPercent Float?
+
+  publishedAt     DateTime?          @db.Timestamptz
+  soldAt          DateTime?          @db.Timestamptz
+  createdAt       DateTime           @default(now()) @db.Timestamptz
+  updatedAt       DateTime           @updatedAt @db.Timestamptz
+
+  /// References Agent, not User — only agents can own listings, and the FK
+  /// enforces it rather than leaving it to application code.
+  agent      Agent           @relation(fields: [agentId], references: [userId], onDelete: Cascade)
+  media      PropertyMedia[]
+  shareLinks ShareLink[]
+  likes      Like[]
+  favorites  Favorite[]
+  comments   Comment[]
+  leads      Lead[]
+  views      PropertyView[]
+  boosts     Boost[]
+
+  @@index([agentId, status])
+  @@index([city, purpose, status, pricePaisa])
+  @@index([status, visibility, publishedAt])
+  @@index([city, locality, status])
+  @@map("properties")
+}
+
+model PropertyMedia {
+  id               String                @id @default(uuid()) @db.Uuid
+  propertyId       String                @db.Uuid
+  kind             MediaKind
+  position         Int                   @default(0)
+  /// R2 object key. For private listings, only ever served as a signed URL.
+  storageKey       String                @db.VarChar(300)
+  /// Cloudflare Stream uid, video only.
+  streamUid        String?               @db.VarChar(120)
+  playbackUrl      String?               @db.VarChar(500)
+  thumbnailUrl     String?               @db.VarChar(500)
+  width            Int?
+  height           Int?
+  durationSeconds  Float?
+  byteSize         BigInt?
+  processingStatus MediaProcessingStatus @default(uploading)
+  createdAt        DateTime              @default(now()) @db.Timestamptz
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId, position])
+  @@index([streamUid])
+  @@map("property_media")
+}
+
+model ShareLink {
+  id             String    @id @default(uuid()) @db.Uuid
+  propertyId     String    @db.Uuid
+  createdById    String    @db.Uuid
+  /// 32 random bytes, base64url. The only credential for a private listing.
+  token          String    @unique @db.VarChar(64)
+  recipientName  String?   @db.VarChar(80)
+  recipientPhone String?   @db.VarChar(20)
+  /// Gate the link behind an OTP to recipientPhone.
+  requireOtp     Boolean   @default(false)
+  /// NULL = never expires.
+  expiresAt      DateTime? @db.Timestamptz
+  /// NULL = unlimited views.
+  maxViews       Int?
+  viewCount      Int       @default(0)
+  revokedAt      DateTime? @db.Timestamptz
+  createdAt      DateTime  @default(now()) @db.Timestamptz
+
+  property  Property        @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdBy User            @relation("ShareLinkCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  views     ShareLinkView[]
+
+  @@index([propertyId, createdAt])
+  @@index([expiresAt])
+  @@map("share_links")
+}
+
+model ShareLinkView {
+  id          String   @id @default(uuid()) @db.Uuid
+  shareLinkId String   @db.Uuid
+  /// SHA-256(ip + daily salt). We count distinct viewers without storing IPs.
+  ipHash      String   @db.VarChar(64)
+  userAgent   String?  @db.VarChar(300)
+  viewedAt    DateTime @default(now()) @db.Timestamptz
+
+  shareLink ShareLink @relation(fields: [shareLinkId], references: [id], onDelete: Cascade)
+
+  @@index([shareLinkId, viewedAt])
+  @@map("share_link_views")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Social
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Like {
+  userId     String   @db.Uuid
+  propertyId String   @db.Uuid
+  createdAt  DateTime @default(now()) @db.Timestamptz
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@id([userId, propertyId])
+  @@index([propertyId])
+  @@map("likes")
+}
+
+model Favorite {
+  userId     String   @db.Uuid
+  propertyId String   @db.Uuid
+  createdAt  DateTime @default(now()) @db.Timestamptz
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@id([userId, propertyId])
+  @@index([propertyId])
+  @@map("favorites")
+}
+
+model Comment {
+  id           String    @id @default(uuid()) @db.Uuid
+  propertyId   String    @db.Uuid
+  userId       String    @db.Uuid
+  parentId     String?   @db.Uuid
+  body         String    @db.VarChar(1000)
+  isHidden     Boolean   @default(false)
+  flaggedCount Int       @default(0)
+  createdAt    DateTime  @default(now()) @db.Timestamptz
+  updatedAt    DateTime  @updatedAt @db.Timestamptz
+
+  property Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies  Comment[] @relation("CommentReplies")
+
+  @@index([propertyId, createdAt])
+  @@index([parentId])
+  @@map("comments")
+}
+
+model Lead {
+  id         String      @id @default(uuid()) @db.Uuid
+  propertyId String      @db.Uuid
+  agentId    String      @db.Uuid
+  /// NULL for anonymous enquiries via a share link.
+  customerId String?     @db.Uuid
+  channel    LeadChannel
+  createdAt  DateTime    @default(now()) @db.Timestamptz
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  agent    Agent    @relation(fields: [agentId], references: [userId], onDelete: Cascade)
+  customer User?    @relation(fields: [customerId], references: [id])
+
+  @@index([agentId, createdAt])
+  @@index([propertyId, createdAt])
+  @@map("leads")
+}
+
+/// High-volume. Partition monthly in production (see migration notes).
+model PropertyView {
+  id             String     @id @default(uuid()) @db.Uuid
+  propertyId     String     @db.Uuid
+  viewerId       String?    @db.Uuid
+  source         ViewSource
+  /// Coarse location only — city/locality, never a precise pin or an IP.
+  viewerCity     String?    @db.VarChar(80)
+  viewerLocality String?    @db.VarChar(120)
+  /// 0..1 fraction of the video watched. Powers premium watch-through stats.
+  watchRatio     Float?
+  createdAt      DateTime   @default(now()) @db.Timestamptz
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  viewer   User?    @relation(fields: [viewerId], references: [id])
+
+  @@index([propertyId, createdAt])
+  @@index([createdAt])
+  @@map("property_views")
+}
+
+model SavedSearch {
+  id             String    @id @default(uuid()) @db.Uuid
+  userId         String    @db.Uuid
+  name           String    @db.VarChar(120)
+  filters        Json
+  notify         Boolean   @default(true)
+  lastNotifiedAt DateTime? @db.Timestamptz
+  createdAt      DateTime  @default(now()) @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([notify, lastNotifiedAt])
+  @@map("saved_searches")
+}
+
+model Boost {
+  id            String    @id @default(uuid()) @db.Uuid
+  propertyId    String    @db.Uuid
+  type          BoostType
+  startsAt      DateTime  @db.Timestamptz
+  endsAt        DateTime  @db.Timestamptz
+  pricePaisa    BigInt    @default(0)
+  invoiceItemId String?   @db.Uuid
+  createdAt     DateTime  @default(now()) @db.Timestamptz
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([type, startsAt, endsAt])
+  @@index([propertyId])
+  @@map("boosts")
+}
+
+model Notification {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @db.Uuid
+  type      String    @db.VarChar(60)
+  payload   Json
+  readAt    DateTime? @db.Timestamptz
+  createdAt DateTime  @default(now()) @db.Timestamptz
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt, createdAt])
+  @@map("notifications")
+}
+
+model AdminAuditLog {
+  id        String   @id @default(uuid()) @db.Uuid
+  adminId   String   @db.Uuid
+  action    String   @db.VarChar(80)
+  entity    String   @db.VarChar(60)
+  entityId  String?  @db.VarChar(64)
+  before    Json?
+  after     Json?
+  createdAt DateTime @default(now()) @db.Timestamptz
+
+  admin User @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId, createdAt])
+  @@index([entity, entityId])
+  @@map("admin_audit_log")
+}
+
+/// Reference data for the city → locality picker and demand insights.
+model Locality {
+  id       String  @id @default(uuid()) @db.Uuid
+  city     String  @db.VarChar(80)
+  nameUr   String  @db.VarChar(120)
+  nameEn   String  @db.VarChar(120)
+  location Unsupported("geography(Point, 4326)")?
+
+  @@unique([city, nameEn])
+  @@index([city])
+  @@map("localities")
+}

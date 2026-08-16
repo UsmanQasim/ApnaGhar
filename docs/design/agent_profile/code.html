@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html class="dark" dir="rtl" lang="ur"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Agent Profile - Ghar</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "surface": "#f8f9ff",
+                  "surface-dim": "#cbdbf5",
+                  "primary-container": "#00855d",
+                  "primary": "#006948",
+                  "surface-container-lowest": "#ffffff",
+                  "tertiary-fixed": "#ffddb8",
+                  "secondary-container": "#d5e0f8",
+                  "background": "#f8f9ff",
+                  "on-tertiary-fixed-variant": "#653e00",
+                  "tertiary-fixed-dim": "#ffb95f",
+                  "inverse-on-surface": "#eaf1ff",
+                  "on-primary-fixed": "#002114",
+                  "surface-container-low": "#eff4ff",
+                  "on-surface": "#0b1c30",
+                  "on-tertiary-fixed": "#2a1700",
+                  "inverse-surface": "#213145",
+                  "on-tertiary": "#ffffff",
+                  "on-error-container": "#93000a",
+                  "on-primary": "#ffffff",
+                  "surface-container": "#e5eeff",
+                  "inverse-primary": "#68dba9",
+                  "primary-fixed-dim": "#68dba9",
+                  "on-tertiary-container": "#fffbff",
+                  "surface-bright": "#f8f9ff",
+                  "on-surface-variant": "#3d4a42",
+                  "secondary-fixed": "#d8e3fb",
+                  "tertiary": "#825100",
+                  "outline": "#6d7a72",
+                  "outline-variant": "#bccac0",
+                  "surface-container-highest": "#d3e4fe",
+                  "surface-variant": "#d3e4fe",
+                  "tertiary-container": "#a36700",
+                  "on-background": "#0b1c30",
+                  "surface-tint": "#006c4a",
+                  "secondary-fixed-dim": "#bcc7de",
+                  "on-secondary-fixed": "#111c2d",
+                  "error": "#ba1a1a",
+                  "on-secondary-fixed-variant": "#3c475a",
+                  "primary-fixed": "#85f8c4",
+                  "on-secondary": "#ffffff",
+                  "on-error": "#ffffff",
+                  "on-secondary-container": "#586377",
+                  "error-container": "#ffdad6",
+                  "secondary": "#545f73",
+                  "surface-container-high": "#dce9ff",
+                  "on-primary-container": "#f5fff7",
+                  "on-primary-fixed-variant": "#005137"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "xl": "32px",
+                  "sm": "12px",
+                  "xs": "8px",
+                  "md": "16px",
+                  "touch-target": "48px",
+                  "base": "4px",
+                  "lg": "24px"
+          },
+          "fontFamily": {
+                  "number-md": [
+                          "Plus Jakarta Sans"
+                  ],
+                  "label-sm": [
+                          "Plus Jakarta Sans"
+                  ],
+                  "headline-lg": [
+                          "Noto Nastaliq Urdu"
+                  ],
+                  "headline-md": [
+                          "Noto Nastaliq Urdu"
+                  ],
+                  "headline-sm": [
+                          "Noto Nastaliq Urdu"
+                  ],
+                  "body-md": [
+                          "Noto Nastaliq Urdu"
+                  ],
+                  "number-lg": [
+                          "Plus Jakarta Sans"
+                  ],
+                  "body-lg": [
+                          "Noto Nastaliq Urdu"
+                  ]
+          },
+          "fontSize": {
+                  "number-md": [
+                          "16px",
+                          {
+                                  "lineHeight": "20px",
+                                  "fontWeight": "600"
+                          }
+                  ],
+                  "label-sm": [
+                          "12px",
+                          {
+                                  "lineHeight": "16px",
+                                  "letterSpacing": "0.02em",
+                                  "fontWeight": "500"
+                          }
+                  ],
+                  "headline-lg": [
+                          "32px",
+                          {
+                                  "lineHeight": "64px",
+                                  "fontWeight": "700"
+                          }
+                  ],
+                  "headline-md": [
+                          "24px",
+                          {
+                                  "lineHeight": "48px",
+                                  "fontWeight": "600"
+                          }
+                  ],
+                  "headline-sm": [
+                          "20px",
+                          {
+                                  "lineHeight": "40px",
+                                  "fontWeight": "600"
+                          }
+                  ],
+                  "body-md": [
+                          "16px",
+                          {
+                                  "lineHeight": "32px",
+                                  "fontWeight": "400"
+                          }
+                  ],
+                  "number-lg": [
+                          "20px",
+                          {
+                                  "lineHeight": "24px",
+                                  "fontWeight": "700"
+                          }
+                  ],
+                  "body-lg": [
+                          "18px",
+                          {
+                                  "lineHeight": "36px",
+                                  "fontWeight": "400"
+                          }
+                  ]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col pb-24 md:pb-0">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-on-background flex flex-row-reverse justify-between items-center w-full px-md h-touch-target docked full-width top-0 sticky z-40 hidden md:flex">
+<div class="flex items-center gap-4">
+<button class="text-primary dark:text-primary-fixed scale-95 transition-transform duration-200 w-touch-target h-touch-target flex items-center justify-center rounded-full hover:bg-surface-container dark:hover:bg-inverse-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed">گھر</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant dark:text-surface-variant scale-95 transition-transform duration-200 w-touch-target h-touch-target flex items-center justify-center rounded-full hover:bg-surface-container dark:hover:bg-inverse-surface">
+<span class="material-symbols-outlined">mic</span>
+</button>
+</div>
+</header>
+<!-- Mobile Header (Back Button) -->
+<header class="md:hidden flex items-center justify-between px-md py-4 bg-surface sticky top-0 z-40">
+<button class="w-touch-target h-touch-target flex items-center justify-center rounded-full bg-surface-container-low text-on-surface">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<div class="flex items-center gap-2">
+<button class="w-touch-target h-touch-target flex items-center justify-center rounded-full bg-surface-container-low text-on-surface">
+<span class="material-symbols-outlined">share</span>
+</button>
+<button class="w-touch-target h-touch-target flex items-center justify-center rounded-full bg-surface-container-low text-on-surface">
+<span class="material-symbols-outlined">favorite_border</span>
+</button>
+</div>
+</header>
+<main class="flex-1 w-full max-w-4xl mx-auto px-md md:px-lg py-6 md:py-10 space-y-8">
+<!-- Profile Header -->
+<section class="flex flex-col md:flex-row items-center md:items-start gap-6 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary-container opacity-10 rounded-bl-full -z-10"></div>
+<div class="relative">
+<div class="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-surface shadow-md">
+<img alt="Agent Profile Picture" class="w-full h-full object-cover" data-alt="Professional headshot of a friendly real estate agent of Pakistani descent in a crisp business suit, set against a bright modern corporate office background. The lighting is soft, high-key, and creates a trustworthy and optimistic mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMnXeE-qgej3BiJ9TGvRqi0ouHWcTAOeDAu20PqLtmdpXdnkhQS1S6a9lXFBzVPvZRoThPctb3BBdZ2kY57al_9PLFGyFeTuE-az5pnmjH9laLwGqviX0HAhAj9kkR7Aq784LyxlSDpSZ10qPb2Vc3Jx7Gcz1mIZN1OrFlesiXCr-g2xpumCkjurcKAeunFjFYF80gPHlyqEj9N7yjPxAfGu-Ota34ndfAbSZvACCZ63fIoB_Otguj"/>
+</div>
+<div class="absolute bottom-0 right-0 bg-primary text-on-primary rounded-full w-8 h-8 flex items-center justify-center border-2 border-surface shadow-sm" title="Verified Agent">
+<span class="material-symbols-outlined text-sm">verified</span>
+</div>
+</div>
+<div class="flex-1 text-center md:text-right space-y-2">
+<h2 class="font-headline-md text-headline-md text-on-surface">محمد علی قریشی</h2>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center justify-center md:justify-start gap-2">
+<span class="material-symbols-outlined text-primary text-sm">business</span>
+          الامین پراپرٹیز
+        </p>
+<div class="inline-flex items-center gap-1 bg-surface-container text-on-surface px-3 py-1 rounded-full mt-2">
+<span class="material-symbols-outlined text-primary text-sm">star</span>
+<span class="font-number-md text-number-md pt-1">4.8</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-sm mr-1">(124 جائزے)</span>
+</div>
+</div>
+</section>
+<!-- Stats Row -->
+<section class="grid grid-cols-3 gap-sm md:gap-md">
+<div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant flex flex-col items-center justify-center text-center shadow-sm">
+<span class="font-number-lg text-number-lg text-primary">85</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">کل لسٹنگز</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant flex flex-col items-center justify-center text-center shadow-sm">
+<span class="font-number-lg text-number-lg text-primary">42</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">کامیاب فروخت</span>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant flex flex-col items-center justify-center text-center shadow-sm">
+<span class="font-number-lg text-number-lg text-primary" dir="ltr">2021</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">ممبر سے</span>
+</div>
+</section>
+<!-- Bio Section -->
+<section class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant shadow-sm space-y-4">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-primary">info</span>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">میرے بارے میں</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+        میں پچھلے 5 سالوں سے لاہور کے مختلف علاقوں میں رئیل اسٹیٹ کے شعبے میں خدمات انجام دے رہا ہوں۔ میری مہارت ڈیفنس اور گلبرگ کے علاقوں میں رہائشی اور تجارتی جائیدادوں کی خرید و فروخت میں ہے۔ میں اپنے کلائنٹس کو شفاف اور قابل اعتماد ڈیل فراہم کرنے پر یقین رکھتا ہوں۔
+      </p>
+</section>
+<!-- Listings Feed (Tabs) -->
+<section class="space-y-6">
+<div class="flex border-b border-outline-variant">
+<button class="flex-1 pb-3 text-center border-b-2 border-primary text-primary font-headline-sm text-headline-sm">فعال لسٹنگز</button>
+<button class="flex-1 pb-3 text-center border-b-2 border-transparent text-on-surface-variant hover:text-on-surface font-headline-sm text-headline-sm">فروخت شدہ</button>
+</div>
+<!-- Video-Centric Property Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Card 1 -->
+<article class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-outline-variant group">
+<div class="relative aspect-video">
+<div class="bg-cover bg-center w-full h-full" data-alt="A modern, luxurious house exterior in Lahore, Pakistan. The house features contemporary architecture with large glass windows and clean lines. The lighting is sunny and optimistic, showcasing the property as a highly desirable home. Bright green accents." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC_ngnOTt_D2MDPaK2uH7VrNdg1P-_S1bIcTfnkvEgAzdvY4xJI1E-yT5r0I7MXfgiGi4KCipMjmaNyeVDCMgthc4vaoimj0lMs8RINYH3VU_xgkBFyiJqKqn0f3kKouVRVYQMJuOQ1VNI9Fj4-BXyUxrULMgsC-3ilG5KtZLg3sN1asBibTXJu-UCPNkn32819cLITm17uGDufNtxw6JtcEm2haQrgPTfeY9Gwp8GDDl6579F4NXLk')"></div>
+<div class="absolute inset-0 bg-black/20 flex items-center justify-center group-hover:bg-black/30 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-white text-5xl opacity-80 group-hover:opacity-100 drop-shadow-md" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+</div>
+<div class="absolute top-3 right-3 bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 rounded-full font-headline-sm text-headline-sm flex items-center gap-1 shadow-md">
+<span>2.5</span>
+<span>کروڑ</span>
+</div>
+<div class="absolute bottom-3 left-3 bg-surface/90 text-on-surface px-2 py-1 rounded flex items-center gap-1 backdrop-blur-sm">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="font-body-md text-sm">ڈی ایچ اے، لاہور</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<h4 class="font-headline-sm text-headline-sm text-on-surface line-clamp-1">10 مرلہ جدید ڈیزائن گھر</h4>
+<button class="text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined text-xl">record_voice_over</span>
+</button>
+</div>
+<div class="flex gap-4 text-on-surface-variant font-number-md text-number-md text-sm">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">bed</span> 4</div>
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">shower</span> 5</div>
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">square_foot</span> 10 مرلہ</div>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-outline-variant group">
+<div class="relative aspect-video">
+<div class="bg-cover bg-center w-full h-full" data-alt="A spacious, well-lit modern apartment interior in Pakistan. The living room has contemporary furniture, large windows overlooking the city, and a clean, high-contrast corporate style. The atmosphere is inviting and premium." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBqbxP_2kFX3sPNfI9tG32dfnvzp0G7FQXLqzwKWZpcLYKMkziGHuAqCQRXpOc-11HdlhArnzavloe2ai-xw0NeHAlYHIvtS_Oxm3g_lY8XiZyZ0rP4k9tbN2a8kprCV1YQHNZ2oIQSUlNxzwWCJ4nyt-OXDTzuuPvGimxyhsVI-q4Q9T4AhnotkoNv-6uX5L24OdCi3-nx8OjEvzENO1FTnEfKHnylgG9GlXvnQ4c26FGehCFt_lWY')"></div>
+<div class="absolute inset-0 bg-black/20 flex items-center justify-center group-hover:bg-black/30 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-white text-5xl opacity-80 group-hover:opacity-100 drop-shadow-md" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+</div>
+<div class="absolute top-3 right-3 bg-tertiary-fixed text-on-tertiary-fixed px-3 py-1 rounded-full font-headline-sm text-headline-sm flex items-center gap-1 shadow-md">
+<span>85</span>
+<span>لاکھ</span>
+</div>
+<div class="absolute bottom-3 left-3 bg-surface/90 text-on-surface px-2 py-1 rounded flex items-center gap-1 backdrop-blur-sm">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="font-body-md text-sm">گلبرگ، لاہور</span>
+</div>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<h4 class="font-headline-sm text-headline-sm text-on-surface line-clamp-1">2 بیڈ روم لگژری اپارٹمنٹ</h4>
+<button class="text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined text-xl">record_voice_over</span>
+</button>
+</div>
+<div class="flex gap-4 text-on-surface-variant font-number-md text-number-md text-sm">
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">bed</span> 2</div>
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">shower</span> 2</div>
+<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">square_foot</span> 1200 sqft</div>
+</div>
+</div>
+</article>
+</div>
+</section>
+</main>
+<!-- Sticky Contact Actions -->
+<div class="fixed bottom-24 md:bottom-6 left-0 w-full px-md md:px-lg z-30 pointer-events-none">
+<div class="max-w-4xl mx-auto flex gap-4 pointer-events-auto">
+<button class="flex-1 h-touch-target bg-primary text-on-primary rounded-lg font-headline-sm text-headline-sm shadow-md hover:bg-primary/90 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">chat</span>
+        واٹس ایپ
+      </button>
+<button class="flex-1 h-touch-target border-2 border-secondary text-secondary rounded-lg font-headline-sm text-headline-sm shadow-sm hover:bg-surface-container flex items-center justify-center gap-2 bg-surface">
+<span class="material-symbols-outlined">call</span>
+        کال کریں
+      </button>
+</div>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden bg-surface-container dark:bg-inverse-surface docked full-width bottom-0 rounded-t-xl shadow-lg fixed bottom-0 left-0 w-full z-50 flex flex-row-reverse justify-around items-center px-md pb-safe h-20">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-sm py-xs hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="home">home</span>
+<span class="font-body-md text-body-md mt-1">ہوم</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-sm py-xs hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="search">search</span>
+<span class="font-body-md text-body-md mt-1">تلاش</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-sm py-xs hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="add_circle">add_circle</span>
+<span class="font-body-md text-body-md mt-1">اپ لوڈ</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-sm py-xs hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="format_list_bulleted">format_list_bulleted</span>
+<span class="font-body-md text-body-md mt-1">میری لسٹنگز</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl px-sm py-xs hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant active:scale-90 transition-all" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-body-md text-body-md mt-1">پروفائل</span>
+</a>
+</nav>
+</body></html>

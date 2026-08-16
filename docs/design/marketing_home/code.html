@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ur"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ghar (گھر) - Property Marketplace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed": "#85f8c4",
+                      "surface-dim": "#cbdbf5",
+                      "on-tertiary-fixed-variant": "#653e00",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-fixed": "#111c2d",
+                      "primary-container": "#00855d",
+                      "secondary-fixed": "#d8e3fb",
+                      "surface": "#f8f9ff",
+                      "inverse-primary": "#68dba9",
+                      "on-primary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface-tint": "#006c4a",
+                      "on-tertiary": "#ffffff",
+                      "background": "#f8f9ff",
+                      "tertiary-container": "#a36700",
+                      "on-secondary-container": "#586377",
+                      "on-surface-variant": "#3d4a42",
+                      "surface-bright": "#f8f9ff",
+                      "inverse-on-surface": "#eaf1ff",
+                      "on-tertiary-fixed": "#2a1700",
+                      "on-background": "#0b1c30",
+                      "on-primary-container": "#f5fff7",
+                      "surface-container-highest": "#d3e4fe",
+                      "on-primary-fixed": "#002114",
+                      "tertiary": "#825100",
+                      "on-surface": "#0b1c30",
+                      "inverse-surface": "#213145",
+                      "on-error-container": "#93000a",
+                      "primary": "#006948",
+                      "surface-container-high": "#dce9ff",
+                      "surface-variant": "#d3e4fe",
+                      "surface-container-low": "#eff4ff",
+                      "surface-container": "#e5eeff",
+                      "tertiary-fixed": "#ffddb8",
+                      "secondary": "#545f73",
+                      "secondary-fixed-dim": "#bcc7de",
+                      "primary-fixed-dim": "#68dba9",
+                      "outline": "#6d7a72",
+                      "secondary-container": "#d5e0f8",
+                      "tertiary-fixed-dim": "#ffb95f",
+                      "on-secondary": "#ffffff",
+                      "outline-variant": "#bccac0",
+                      "on-secondary-fixed-variant": "#3c475a",
+                      "on-error": "#ffffff",
+                      "on-tertiary-container": "#fffbff",
+                      "error-container": "#ffdad6",
+                      "on-primary-fixed-variant": "#005137"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "touch-target": "48px",
+                      "lg": "24px",
+                      "xl": "32px",
+                      "sm": "12px",
+                      "base": "4px",
+                      "md": "16px",
+                      "xs": "8px"
+              },
+              "fontFamily": {
+                      "headline-sm": [
+                              "Noto Nastaliq Urdu"
+                      ],
+                      "headline-lg": [
+                              "Noto Nastaliq Urdu"
+                      ],
+                      "number-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-md": [
+                              "Noto Nastaliq Urdu"
+                      ],
+                      "body-lg": [
+                              "Noto Nastaliq Urdu"
+                      ],
+                      "label-sm": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-md": [
+                              "Noto Nastaliq Urdu"
+                      ],
+                      "number-md": [
+                              "Plus Jakarta Sans"
+                      ]
+              },
+              "fontSize": {
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "64px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "number-lg": [
+                              "20px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "48px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "number-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background antialiased font-body-md overflow-x-hidden">
+<!-- Header -->
+<header class="bg-surface-container-lowest dark:bg-inverse-surface w-full top-0 sticky z-50 border-b border-outline-variant shadow-sm transition-all duration-300">
+<div class="flex flex-row-reverse justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<span class="text-headline-md font-headline-md font-bold text-primary dark:text-primary-fixed">گھر</span>
+</div>
+<nav class="hidden md:flex gap-8 items-center font-body-lg text-body-lg md:font-headline-sm md:text-headline-sm">
+<a class="text-primary dark:text-primary-fixed font-bold border-b-2 border-primary pb-1 active-scale hover:bg-surface-container-low dark:hover:bg-surface-variant px-2 rounded-t transition-colors" href="#">ہوم</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors pb-1 hover:bg-surface-container-low dark:hover:bg-surface-variant px-2 rounded-t active-scale" href="#">ایجنٹس کے لیے</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors pb-1 hover:bg-surface-container-low dark:hover:bg-surface-variant px-2 rounded-t active-scale" href="#">خریداروں کے لیے</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors pb-1 hover:bg-surface-container-low dark:hover:bg-surface-variant px-2 rounded-t active-scale" href="#">قیمتیں</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors pb-1 hover:bg-surface-container-low dark:hover:bg-surface-variant px-2 rounded-t active-scale" href="#">رابطہ کریں</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="bg-primary text-on-primary px-6 h-touch-target rounded-full font-headline-sm text-headline-sm hover:opacity-90 transition-opacity flex items-center justify-center min-w-[120px]">
+                    ایپ ڈاؤن لوڈ کریں
+                </button>
+<button class="md:hidden text-on-surface p-2 rounded-full hover:bg-surface-container-low transition-colors h-touch-target w-touch-target flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Hero Section -->
+<section class="relative w-full h-[819px] min-h-[600px] flex items-center overflow-hidden">
+<div class="absolute inset-0 z-0">
+<div class="bg-cover bg-center w-full h-full absolute inset-0 transform scale-105 transition-transform duration-[20s] hover:scale-100" data-alt="A luxurious modern villa in Pakistan at sunset. The architectural style is contemporary, featuring large glass windows, clean geometric lines, and warm interior lighting glowing against the twilight sky. The setting includes a manicured lawn and subtle landscaping. The mood is aspirational, premium, and welcoming, perfectly fitting a high-end real estate marketplace. The color palette incorporates deep shadows with warm golden and vibrant emerald green accents." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDQEh2ZLc0t4gJmnHNFWsKCvA5tqneFb5nwNImjnqr6ceg4VXcw3o8OwLS9HK_hcjBlKwS3DotBkqXz85NltibAm09-T6fk6Y23HaZDonrhy_NUys0AvnQEpGUCEdA0uqgAYlc69I-rdOz8g28IHWvK4uwCvjF7pDm4ueSiKJ7B-5vlGGLsYGEZGIXQBemGdZHY2PhZDsALu-zNXOwU2F_LN4e7FSgaa5Zxgu8xnEkbwb-SdEikc-Cn')"></div>
+<div class="absolute inset-0 bg-gradient-to-l from-on-background/80 via-on-background/50 to-transparent"></div>
+</div>
+<div class="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-lg flex flex-col md:w-2/3 lg:w-1/2">
+<h1 class="text-headline-lg font-headline-lg text-on-primary mb-sm leading-tight drop-shadow-lg">
+                پاکستان کا پہلا <span class="text-primary-fixed">ویڈیو پر مبنی</span> پراپرٹی مارکیٹ پلیس
+            </h1>
+<p class="text-body-lg font-body-lg text-surface-container-lowest mb-xl opacity-90 drop-shadow-md">
+                گھر کے ساتھ پراپرٹی کی خرید و فروخت اب اور بھی آسان اور شفاف
+            </p>
+<div class="flex flex-col sm:flex-row gap-md">
+<button class="bg-primary text-on-primary h-touch-target px-8 rounded-full font-headline-sm text-headline-sm hover:bg-primary-container transition-colors shadow-md flex items-center justify-center gap-2">
+                    ایپ ڈاؤن لوڈ کریں
+                </button>
+<button class="bg-surface-container-lowest/10 backdrop-blur-md border border-surface-container-lowest/30 text-on-primary h-touch-target px-8 rounded-full font-headline-sm text-headline-sm hover:bg-surface-container-lowest/20 transition-colors flex items-center justify-center gap-2">
+                    لسٹنگز دیکھیں
+                </button>
+</div>
+</div>
+</section>
+<!-- Why Ghar? (For Buyers) -->
+<section class="py-xl bg-surface-container-lowest relative z-20">
+<div class="max-w-7xl mx-auto px-6">
+<div class="text-center mb-xl">
+<h2 class="text-headline-lg font-headline-lg text-on-background mb-sm">خریداروں کے لیے گھر کیوں؟</h2>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-2xl mx-auto">جدید ٹیکنالوجی اور شفافیت کے ساتھ اپنے خوابوں کا گھر تلاش کریں</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Feature Card 1 -->
+<div class="bg-surface rounded-xl p-lg border border-outline-variant hover:shadow-lg transition-shadow duration-300 flex flex-col items-center text-center group cursor-pointer">
+<div class="w-16 h-16 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="videocam">videocam</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-xs">ویڈیو ٹورز</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">ہر پراپرٹی کا تفصیلی ویڈیو ٹور، گھر بیٹھے مکمل جائزہ لیں تاکہ آپ بہتر فیصلہ کر سکیں</p>
+</div>
+<!-- Feature Card 2 -->
+<div class="bg-surface rounded-xl p-lg border border-outline-variant hover:shadow-lg transition-shadow duration-300 flex flex-col items-center text-center group cursor-pointer">
+<div class="w-16 h-16 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="verified_user">verified_user</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-xs">تصدیق شدہ ایجنٹس</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">صرف مستند اور تصدیق شدہ پراپرٹی ایجنٹس، دھوکہ دہی سے پاک محفوظ لین دین</p>
+</div>
+<!-- Feature Card 3 -->
+<div class="bg-surface rounded-xl p-lg border border-outline-variant hover:shadow-lg transition-shadow duration-300 flex flex-col items-center text-center group cursor-pointer">
+<div class="w-16 h-16 bg-tertiary-container text-on-tertiary-container rounded-full flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl" data-icon="forum">forum</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-xs">براہِ راست رابطہ</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">ایجنٹ یا مالک سے براہ راست واٹس ایپ یا کال کے ذریعے فوری رابطہ کریں</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Grow your Business (For Agents) -->
+<section class="py-xl bg-surface relative overflow-hidden">
+<div class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-xl items-center">
+<div class="order-2 lg:order-1 relative rounded-xl overflow-hidden border border-outline-variant shadow-xl">
+<div class="bg-cover bg-center w-full aspect-video" data-alt="A modern, high-tech dashboard interface displayed on a sleek tablet screen, held by a professional real estate agent. The dashboard shows analytics, property listings, and premium lead notifications with vibrant emerald green charts and graphs. The lighting is crisp and modern, emphasizing the sophisticated, data-driven tools available for agents. The background is a slightly blurred contemporary office setting." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC0uK5foAhGttQnSowxOvTRIAmjxonuQJaI_UnK9H2Ql8CO4GqhFSKSKNfoPGK19VwKbKJRIiAZzrx3WPTKKmvXoY8a8UMG2guzjW8RnuMs0gDre7CdD4MHMpjAeY0asD13YPNl4ZdcOgN6nLFAf85JVCu3o3aMcspmARIZ6mbeSpovJjkifUY7YCUqZpNkQP_uFmjS-WL7Cp19vaAS8S-8EXaeGy-JaiV_twBtN3CMlCk8Siixg8qw')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-md">
+<span class="bg-primary/90 text-on-primary px-4 py-1 rounded-full text-label-sm font-label-sm flex items-center gap-1 backdrop-blur-sm">
+<span class="material-symbols-outlined text-[16px]" data-icon="trending_up">trending_up</span>
+                         لائیو ڈیش بورڈ
+                     </span>
+</div>
+</div>
+<div class="order-1 lg:order-2 flex flex-col items-start space-y-md">
+<span class="text-primary font-body-lg text-body-lg font-semibold tracking-wide">ایجنٹس کے لیے</span>
+<h2 class="text-headline-lg font-headline-lg text-on-background leading-tight">ایجنٹس کے لیے بہترین پلیٹ فارم</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mb-md">اپنے رئیل اسٹیٹ بزنس کو ڈیجیٹل بنائیں اور گھر کے جدید ڈیش بورڈ کے ساتھ اپنی سیلز کو کئی گنا بڑھائیں۔</p>
+<ul class="space-y-sm w-full">
+<li class="flex items-center gap-3 bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/30">
+<div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined" data-icon="star">star</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-[16px] text-on-surface">پریمیم لیڈز</h4>
+<p class="text-body-md text-[14px] text-on-surface-variant">تصدیق شدہ اور سنجیدہ خریداروں تک رسائی</p>
+</div>
+</li>
+<li class="flex items-center gap-3 bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/30">
+<div class="w-10 h-10 rounded-full bg-secondary/10 text-secondary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined" data-icon="bar_chart">bar_chart</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-[16px] text-on-surface">اینالیٹکس</h4>
+<p class="text-body-md text-[14px] text-on-surface-variant">اپنی لسٹنگز کی کارکردگی کا تفصیلی جائزہ</p>
+</div>
+</li>
+<li class="flex items-center gap-3 bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/30">
+<div class="w-10 h-10 rounded-full bg-tertiary/10 text-tertiary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-[16px] text-on-surface">تیز ترین فروخت</h4>
+<p class="text-body-md text-[14px] text-on-surface-variant">ویڈیو ٹورز کے ذریعے پراپرٹی جلدی فروخت کریں</p>
+</div>
+</li>
+</ul>
+<button class="mt-md bg-transparent border-2 border-primary text-primary h-touch-target px-8 rounded-full font-headline-sm text-headline-sm hover:bg-primary/5 transition-colors flex items-center justify-center">
+                    بطور ایجنٹ رجسٹر ہوں
+                </button>
+</div>
+</div>
+</section>
+<!-- Statistics -->
+<section class="py-xl bg-primary text-on-primary relative">
+<!-- Abstract Pattern Background -->
+<div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
+<div class="max-w-7xl mx-auto px-6 relative z-10">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg text-center divide-y md:divide-y-0 md:divide-x-reverse md:divide-x divide-on-primary/20">
+<div class="py-md md:py-0 flex flex-col items-center justify-center">
+<span class="text-[48px] font-number-lg font-bold mb-2">10K+</span>
+<span class="font-headline-sm text-headline-sm opacity-90">ایکٹو لسٹنگز</span>
+</div>
+<div class="py-md md:py-0 flex flex-col items-center justify-center">
+<span class="text-[48px] font-number-lg font-bold mb-2">5K+</span>
+<span class="font-headline-sm text-headline-sm opacity-90">تصدیق شدہ ایجنٹس</span>
+</div>
+<div class="py-md md:py-0 flex flex-col items-center justify-center">
+<span class="text-[48px] font-number-lg font-bold mb-2">1M+</span>
+<span class="font-headline-sm text-headline-sm opacity-90">ماہانہ وزٹرز</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Mobile App Promo -->
+<section class="py-xl bg-surface-container-lowest overflow-hidden">
+<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-xl">
+<div class="flex-1 text-center md:text-right">
+<h2 class="text-headline-lg font-headline-lg text-on-background mb-sm">گھر ایپ آج ہی ڈاؤن لوڈ کریں</h2>
+<p class="text-body-lg font-body-lg text-on-surface-variant mb-lg">بہترین پراپرٹی ڈیلز، ویڈیو ٹورز اور لائیو چیٹ کے لیے ہماری موبائل ایپ استعمال کریں۔</p>
+<div class="flex flex-wrap gap-4 justify-center md:justify-start">
+<button class="bg-on-background text-surface-container-lowest h-[60px] px-6 rounded-xl flex items-center gap-3 hover:bg-on-background/90 transition-colors">
+<span class="material-symbols-outlined text-3xl" data-icon="android">android</span>
+<div class="text-right">
+<span class="block text-[10px] font-label-sm uppercase opacity-80">Get it on</span>
+<span class="block text-headline-sm font-headline-sm leading-none">Google Play</span>
+</div>
+</button>
+<button class="bg-on-background text-surface-container-lowest h-[60px] px-6 rounded-xl flex items-center gap-3 hover:bg-on-background/90 transition-colors">
+<span class="material-symbols-outlined text-3xl" data-icon="apple">file_download</span>
+<div class="text-right">
+<span class="block text-[10px] font-label-sm uppercase opacity-80">Download on the</span>
+<span class="block text-headline-sm font-headline-sm leading-none">App Store</span>
+</div>
+</button>
+</div>
+</div>
+<div class="flex-1 relative w-full max-w-md mx-auto">
+<div class="relative w-full aspect-[1/2] rounded-[2.5rem] border-8 border-outline shadow-2xl overflow-hidden bg-surface">
+<div class="bg-cover bg-top w-full h-full" data-alt="A clean, modern mobile app interface showing a real estate property feed. The UI features large video thumbnails of luxury homes, emerald green active states, right-to-left layout for Urdu text, and a prominent floating action button for voice search. The design is sleek, intuitive, and highly legible, prioritizing visual content over text." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuApJtzfngbapU8xn46Hp7TbOxesGevlgmhmONGnVuLY4sNXSCqECeMpJJ2Sa_-hT4pBjdwD9T2V8KzToBlrjl-Etx9LkEQ_BGbjQ5CzRNAxZRAVRbtirJLSN1xYtUd7LI0387tWT6EijOrLecc4N60e1nxLXNKE7ySAq38zgkkHnM6EAeGddNviuLHNWHE8JEoPtfK6Kh6cTAsOUm6aNNZTcFKC17Ezn4es2CFimt4GHODbk7RZb6lV')"></div>
+</div>
+<!-- Decorative blurred circle -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/20 blur-3xl rounded-full -z-10 pointer-events-none"></div>
+</div>
+</div>
+</section>
+<!-- Floating Action Button (Voice Search - Contextual for Landing/Home) -->
+<button class="fixed bottom-6 right-6 md:bottom-8 md:right-8 w-14 h-14 bg-primary text-on-primary rounded-full shadow-[0_8px_16px_rgba(84,95,115,0.2)] flex items-center justify-center hover:bg-primary-container transition-transform hover:scale-105 z-50 group">
+<span class="material-symbols-outlined text-2xl" data-icon="mic">mic</span>
+<span class="absolute right-full mr-4 bg-inverse-surface text-inverse-on-surface px-3 py-1 rounded text-label-sm whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            آواز سے تلاش کریں
+        </span>
+</button>
+<!-- Footer -->
+<footer class="bg-on-background dark:bg-on-secondary-fixed border-t border-on-secondary-fixed-variant w-full mt-auto">
+<div class="flex flex-col md:flex-row-reverse justify-between items-start gap-lg px-6 py-xl w-full max-w-7xl mx-auto">
+<div class="flex flex-col items-end w-full md:w-auto text-right">
+<span class="text-headline-lg font-headline-lg text-primary-fixed mb-4">گھر</span>
+<p class="font-body-md text-body-md text-surface-variant max-w-xs text-right">
+                    پاکستان کا سب سے بڑا اور قابل اعتماد ویڈیو بیسڈ پراپرٹی نیٹ ورک۔
+                </p>
+</div>
+<div class="flex flex-col md:flex-row-reverse gap-xl w-full md:w-auto">
+<div class="flex flex-col gap-3 text-right">
+<h4 class="text-primary-fixed-dim font-headline-sm font-semibold mb-2">روابط</h4>
+<nav class="flex flex-col gap-2 font-body-md text-body-md">
+<a class="text-surface-variant hover:text-primary-fixed transition-colors hover:opacity-80" href="#">ہمارے بارے میں</a>
+<a class="text-surface-variant hover:text-primary-fixed transition-colors hover:opacity-80" href="#">پرائیویسی پالیسی</a>
+<a class="text-surface-variant hover:text-primary-fixed transition-colors hover:opacity-80" href="#">شرائط و ضوابط</a>
+<a class="text-surface-variant hover:text-primary-fixed transition-colors hover:opacity-80" href="#">مدد مرکز</a>
+<a class="text-surface-variant hover:text-primary-fixed transition-colors hover:opacity-80" href="#">بلاگ</a>
+</nav>
+</div>
+</div>
+</div>
+<div class="border-t border-outline/20 px-6 py-4 w-full text-center">
+<p class="text-surface-variant text-sm font-label-sm">© ۲۰۲۴ گھر پراپرٹی مارکیٹ پلیس۔ جملہ حقوق محفوظ ہیں۔</p>
+</div>
+</footer>
+<style>
+        .active-scale:active {
+            transform: scale(0.95);
+            transition: transform 150ms;
+        }
+    </style>
+</body></html>

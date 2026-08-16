@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "composite": true
+  },
+  // Resolve @ghar/shared through node_modules (the pnpm workspace symlink) to
+  // its BUILT types, not its source. Pointing `paths` at ../shared/src drags
+  // those files into this program and breaks rootDir. Turbo's `dependsOn:
+  // ["^build"]` guarantees shared is built first.
+  "references": [{ "path": "../shared" }],
+  // composite projects must list every file explicitly, JSON included.
+  "include": ["src/**/*.ts", "src/**/*.json"]
+}

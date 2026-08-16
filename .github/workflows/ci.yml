@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Urdu gates run FIRST and are cheap. A missing Urdu string renders as a
+      # raw key on screen, which for a user who cannot read Latin script is
+      # indistinguishable from a crash — so it fails the build, not a review.
+      - name: i18n parity (ur ↔ en)
+        run: node packages/i18n/scripts/check-parity.mjs
+
+      - name: i18n usage (every t() key exists)
+        run: node packages/i18n/scripts/check-usage.mjs
+
+      - name: Prisma schema
+        run: pnpm --filter @ghar/api exec prisma validate
+
+      - name: Build packages
+        run: pnpm build
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      # Covers the pricing model, the visibility rules, the JazzCash hash and
+      # the design-token accessibility floors.
+      - name: Test
+        run: pnpm test
+
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    # Real Postgres with PostGIS. The billing tests are about transactions,
+    # unique constraints and concurrency — a mocked Prisma client cannot tell
+    # you whether two parallel publishes both charge Rs 50.
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_USER: ghar
+          POSTGRES_PASSWORD: ghar
+          POSTGRES_DB: ghar_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U ghar -d ghar_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://ghar:ghar@localhost:5432/ghar_test?schema=public
+      JWT_SECRET: ci-secret
+      JWT_REFRESH_SECRET: ci-refresh-secret
+      REDIS_URL: redis://localhost:6379
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - name: Generate Prisma client
+        run: pnpm --filter @ghar/api exec prisma generate
+
+      - name: Billing integration tests
+        working-directory: apps/api
+        run: node --import tsx --test test/*.integration.test.ts

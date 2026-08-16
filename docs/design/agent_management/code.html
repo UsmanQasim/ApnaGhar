@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html class="light" dir="rtl" lang="ur"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ghar Admin - Agent Management</title>
+<!-- Google Fonts: Plus Jakarta Sans for labels/numbers, Noto Nastaliq Urdu for text -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            font-feature-settings: 'liga';
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.surface');
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.outline-variant');
+            border-radius: theme('borderRadius.full');
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.outline');
+        }
+    </style>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-container": "#fffbff",
+                        "secondary": "#545f73",
+                        "inverse-surface": "#213145",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#0b1c30",
+                        "on-primary-container": "#f5fff7",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "inverse-primary": "#68dba9",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#a36700",
+                        "surface-bright": "#f8f9ff",
+                        "background": "#f8f9ff",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "on-surface-variant": "#3d4a42",
+                        "on-primary-fixed": "#002114",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-secondary-fixed": "#111c2d",
+                        "outline": "#6d7a72",
+                        "surface-container-high": "#dce9ff",
+                        "primary-container": "#00855d",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#85f8c4",
+                        "surface-dim": "#cbdbf5",
+                        "surface-tint": "#006c4a",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary": "#825100",
+                        "surface-container-highest": "#d3e4fe",
+                        "on-secondary-container": "#586377",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#e5eeff",
+                        "outline-variant": "#bccac0",
+                        "primary": "#006948",
+                        "surface-variant": "#d3e4fe",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "secondary-fixed": "#d8e3fb",
+                        "primary-fixed-dim": "#68dba9",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#d5e0f8",
+                        "on-background": "#0b1c30",
+                        "on-primary-fixed-variant": "#005137",
+                        "surface": "#f8f9ff",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#ffddb8",
+                        "on-tertiary-fixed": "#2a1700"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "touch-target": "48px",
+                        "sm": "12px",
+                        "xs": "8px",
+                        "base": "4px",
+                        "md": "16px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "number-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Noto Nastaliq Urdu"],
+                        "number-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Noto Nastaliq Urdu"],
+                        "headline-md": ["Noto Nastaliq Urdu"],
+                        "body-md": ["Noto Nastaliq Urdu"],
+                        "headline-sm": ["Noto Nastaliq Urdu"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "number-md": ["16px", { "lineHeight": "20px", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "36px", "fontWeight": "400" }],
+                        "number-lg": ["20px", { "lineHeight": "24px", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "64px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "48px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "32px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "40px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen">
+<!-- TopNavBar (from Shared Components JSON) -->
+<header class="bg-surface flex flex-row-reverse justify-between items-center w-full px-lg h-touch-target z-50 sticky top-0 flat shadow-none transition-all duration-200 border-b border-surface-container-highest">
+<!-- Search Bar (on right side based on rtl & layout) -->
+<div class="flex items-center bg-surface-container rounded-full px-4 h-10 border border-outline-variant focus-within:border-primary w-1/3">
+<span class="material-symbols-outlined text-on-surface-variant ml-2" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 w-full text-body-md text-on-surface font-body-md py-0 placeholder:text-on-surface-variant" placeholder="ایجنٹ تلاش کریں..." type="text"/>
+</div>
+<!-- Brand / Logo -->
+<div class="text-headline-md font-headline-md font-bold text-primary flex items-center justify-center absolute left-1/2 transform -translate-x-1/2">
+            گھر ایڈمن
+        </div>
+<!-- Trailing Icons (notifications, help, translate) & Profile -->
+<div class="flex items-center gap-md">
+<button class="h-touch-target w-touch-target flex items-center justify-center rounded-full hover:bg-secondary-container hover:text-on-secondary-container transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="translate">translate</span>
+</button>
+<button class="h-touch-target w-touch-target flex items-center justify-center rounded-full hover:bg-secondary-container hover:text-on-secondary-container transition-colors text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<button class="h-touch-target w-touch-target flex items-center justify-center rounded-full hover:bg-secondary-container hover:text-on-secondary-container transition-colors text-on-surface-variant relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="h-10 w-10 rounded-full bg-primary-container overflow-hidden border border-outline-variant cursor-pointer">
+<img alt="ایڈمن پروفائل" class="w-full h-full object-cover" data-alt="A highly detailed close-up portrait of a professional Pakistani male executive in his 40s wearing a modern corporate suit. The lighting is soft and flattering, creating a high-end corporate headshot aesthetic. The background is a clean, bright, light-mode architectural space, subtly blurred." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgFg6CYEw1-pjQ0xIndZ8u2lSVlNI9Ne1d8ibG-lj-dbQW1j9TDGYmwKl8_bs8VGC-u_Texp9bkFsZ8B_1OD3GkZHGPlyaLaoWPCMavXAF5gBkjXXpTc7SEXhPTQc4eWuMwtXrAihW5vCRUK_yIq9Fnp-lULFCqj4zFSlW6SMjakUJhlk7GTC0ZAP7x16ulF6G_mhbfRsgUezaSebnyDJOzGr1IdyNFqhM0AQn5k8ftLxewnUX-sMK"/>
+</div>
+</div>
+</header>
+<!-- Page Content Wrapper -->
+<div class="flex">
+<!-- SideNavBar (from Shared Components JSON) -->
+<nav class="bg-surface-container fixed right-0 top-0 h-full w-64 flex flex-col z-40 pt-20 border-l border-outline-variant">
+<div class="flex flex-col items-center mb-lg px-md">
+<div class="w-16 h-16 rounded-full bg-primary-container mb-2 overflow-hidden flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[32px]" data-icon="home">home</span>
+</div>
+<h2 class="text-headline-sm font-headline-sm text-primary font-bold">ایڈمن پینل</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant">گھر مارکیٹ پلیس</p>
+</div>
+<div class="flex-1 overflow-y-auto w-full px-2 flex flex-col gap-1">
+<!-- Tab 1 -->
+<a class="text-on-surface-variant hover:text-on-surface flex flex-row-reverse items-center gap-md px-md py-sm rounded-l-full hover:bg-surface-container-highest transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-body-md font-body-md w-full text-left">جائزہ</span>
+</a>
+<!-- Tab 2 -->
+<a class="text-on-surface-variant hover:text-on-surface flex flex-row-reverse items-center gap-md px-md py-sm rounded-l-full hover:bg-surface-container-highest transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="text-body-md font-body-md w-full text-left">ادائیگی کی تصدیق</span>
+</a>
+<!-- Tab 3 (Active) -->
+<a class="bg-primary-container text-on-primary-container font-bold rounded-l-full flex flex-row-reverse items-center gap-md px-md py-sm transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="text-body-md font-body-md w-full text-left">ایجنٹس</span>
+</a>
+<!-- Tab 4 -->
+<a class="text-on-surface-variant hover:text-on-surface flex flex-row-reverse items-center gap-md px-md py-sm rounded-l-full hover:bg-surface-container-highest transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="apartment">apartment</span>
+<span class="text-body-md font-body-md w-full text-left">لسٹنگز</span>
+</a>
+<!-- Tab 5 -->
+<a class="text-on-surface-variant hover:text-on-surface flex flex-row-reverse items-center gap-md px-md py-sm rounded-l-full hover:bg-surface-container-highest transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-body-md font-body-md w-full text-left">ترتیبات</span>
+</a>
+</div>
+<!-- Footer Tab & CTA -->
+<div class="px-md pb-lg pt-md mt-auto border-t border-outline-variant w-full">
+<button class="w-full bg-primary text-on-primary h-touch-target rounded-full font-body-md mb-4 hover:bg-on-primary-fixed-variant transition-colors flex items-center justify-center gap-2 shadow-sm">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+                    رپورٹ ڈاؤن لوڈ کریں
+                </button>
+<a class="text-on-surface-variant hover:text-on-surface flex flex-row-reverse items-center gap-md px-md py-sm rounded-l-full hover:bg-surface-container-highest transition-colors duration-200 w-full" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="text-body-md font-body-md w-full text-left">لاگ آؤٹ</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 mr-64 p-lg pb-xl min-h-[calc(100vh-48px)]">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-lg">
+<div>
+<h1 class="text-headline-lg font-headline-lg text-on-surface">ایجنٹس مینجمنٹ</h1>
+<p class="text-body-md font-body-md text-on-surface-variant">تمام رجسٹرڈ ایجنٹس کی فہرست اور تفصیلات</p>
+</div>
+<!-- Filters -->
+<div class="flex gap-sm">
+<button class="h-touch-target px-md border border-outline rounded-full flex items-center gap-2 text-on-surface hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="filter_list">filter_list</span>
+<span class="font-label-sm text-label-sm">فلٹر کریں</span>
+</button>
+</div>
+</div>
+<!-- Agents List (Rich Horizontal Cards Layout) -->
+<div class="flex flex-col gap-sm">
+<!-- Column Headers (visually hidden on small screens, structural aid for desktop) -->
+<div class="grid grid-cols-12 gap-4 px-md py-2 border-b border-outline-variant text-label-sm font-label-sm text-on-surface-variant mb-2">
+<div class="col-span-3">ایجنٹ کی تفصیل</div>
+<div class="col-span-2 text-center">سٹیٹس</div>
+<div class="col-span-2 text-center">کل لسٹنگز</div>
+<div class="col-span-2 text-center">ریونیو</div>
+<div class="col-span-2 text-center">ریٹنگ</div>
+<div class="col-span-1 text-left">ایکشن</div>
+</div>
+<!-- Agent Card 1 (Verified) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center hover:bg-surface-container-low transition-colors group">
+<div class="grid grid-cols-12 gap-4 w-full items-center">
+<!-- Agent Info -->
+<div class="col-span-3 flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-high overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A professional portrait of a successful Pakistani real estate agent in his 30s smiling warmly. He is wearing a crisp white shirt and a dark blazer. The background is a bright, modern office with lots of natural light, embodying a trustworthy and highly competent corporate vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD8XM_GoGKAknZ4Lvpx8oxo7RQsz9w0hrvCHYjwoesw0KE844qfLm76ITBXkA_Tl0jTL7OWc55LYDy9B0MYKfpJWS1H-RNbdXNfolLfI8oZQUahzjzaQmbhDLaWeIhF5sW6cBklUAGnmDybZunBFe9htcraPPKGVqF0G9fd6h1JhvDTsyfIOFQF_YcWwNCAdBu7TW3lVm7jgPGlNEEzVAebgv9zdQHGhbPoWIhIiHFJw-MByQYbzok"/>
+</div>
+<div>
+<h3 class="text-body-md font-body-md font-bold text-on-surface leading-tight">علی خان</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant">علی اسٹیٹ ایجنسی</p>
+</div>
+</div>
+<!-- Status -->
+<div class="col-span-2 flex justify-center">
+<span class="bg-primary-container text-on-primary-container font-label-sm text-label-sm px-3 py-1 rounded-full inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="verified">verified</span>
+                                ویریفائیڈ
+                            </span>
+</div>
+<!-- Total Listings -->
+<div class="col-span-2 flex justify-center text-number-md font-number-md text-on-surface">
+                            145
+                        </div>
+<!-- Revenue -->
+<div class="col-span-2 flex justify-center flex-col items-center">
+<span class="text-number-md font-number-md text-on-surface">4.2 کروڑ</span>
+</div>
+<!-- Rating -->
+<div class="col-span-2 flex justify-center items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-[20px]" data-icon="star" data-weight="fill">star</span>
+<span class="text-number-md font-number-md font-bold text-on-surface">4.8</span>
+</div>
+<!-- Actions -->
+<div class="col-span-1 flex justify-end">
+<button class="h-10 w-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Agent Card 2 (Unverified) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center hover:bg-surface-container-low transition-colors group">
+<div class="grid grid-cols-12 gap-4 w-full items-center">
+<div class="col-span-3 flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-high overflow-hidden shrink-0 flex items-center justify-center text-primary font-headline-sm">
+                                ف
+                            </div>
+<div>
+<h3 class="text-body-md font-body-md font-bold text-on-surface leading-tight">فاطمہ پراپرٹیز</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant">آزاد ایجنٹ</p>
+</div>
+</div>
+<div class="col-span-2 flex justify-center">
+<span class="bg-surface-variant text-on-surface-variant border border-outline-variant font-label-sm text-label-sm px-3 py-1 rounded-full inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="pending">pending</span>
+                                غیر ویریفائیڈ
+                            </span>
+</div>
+<div class="col-span-2 flex justify-center text-number-md font-number-md text-on-surface">
+                            12
+                        </div>
+<div class="col-span-2 flex justify-center flex-col items-center">
+<span class="text-number-md font-number-md text-on-surface">85 لاکھ</span>
+</div>
+<div class="col-span-2 flex justify-center items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-[20px]" data-icon="star" data-weight="fill">star</span>
+<span class="text-number-md font-number-md font-bold text-on-surface">3.9</span>
+</div>
+<div class="col-span-1 flex justify-end">
+<button class="h-10 w-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Agent Card 3 (Blocked) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center hover:bg-surface-container-low transition-colors group opacity-75">
+<div class="grid grid-cols-12 gap-4 w-full items-center">
+<div class="col-span-3 flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-high overflow-hidden shrink-0">
+<img class="w-full h-full object-cover grayscale" data-alt="A black and white, slightly desaturated portrait of an office worker to signify a blocked or inactive account state. The lighting is flat and neutral. The background is an empty office space, communicating a lack of activity or presence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIqHvOCRm4d9oSplk9GHM3GrBa0fStzudiS_yuTQgGZF2lzb5ri0-NtyigYkZQ11MFgDFosJeqdsVPnz22pxlYs13KHBwVjL1V4tSfs3Yv-WQqHY3iYLXoXTywyPFn34Yf9Y9ZLemNKxOTOW972Jo0bTOtbgDmmIXVhYdWv8fAuJv16KgJhU3EdOZ4_YowUk_T0ShbA5Klq76B-Z7C4SWbiUx2GHZGqNz0rL1ChoX8GKROvFapXrv7"/>
+</div>
+<div>
+<h3 class="text-body-md font-body-md font-bold text-on-surface leading-tight line-through decoration-error">عمران سید</h3>
+<p class="text-label-sm font-label-sm text-error">اکاؤنٹ معطل</p>
+</div>
+</div>
+<div class="col-span-2 flex justify-center">
+<span class="bg-error-container text-on-error-container font-label-sm text-label-sm px-3 py-1 rounded-full inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="block">block</span>
+                                بلاک شدہ
+                            </span>
+</div>
+<div class="col-span-2 flex justify-center text-number-md font-number-md text-on-surface">
+                            48
+                        </div>
+<div class="col-span-2 flex justify-center flex-col items-center">
+<span class="text-number-md font-number-md text-on-surface text-opacity-50">1.2 کروڑ</span>
+</div>
+<div class="col-span-2 flex justify-center items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]" data-icon="star_half">star_half</span>
+<span class="text-number-md font-number-md font-bold">2.1</span>
+</div>
+<div class="col-span-1 flex justify-end">
+<button class="h-10 w-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination (Simple implementation) -->
+<div class="flex justify-center items-center gap-2 mt-lg pt-md border-t border-outline-variant">
+<button class="h-10 w-10 flex items-center justify-center rounded-full hover:bg-surface-variant text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+<button class="h-10 w-10 flex items-center justify-center rounded-full bg-primary text-on-primary font-number-md">1</button>
+<button class="h-10 w-10 flex items-center justify-center rounded-full hover:bg-surface-variant text-on-surface font-number-md">2</button>
+<button class="h-10 w-10 flex items-center justify-center rounded-full hover:bg-surface-variant text-on-surface font-number-md">3</button>
+<button class="h-10 w-10 flex items-center justify-center rounded-full hover:bg-surface-variant text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+</div>
+</main>
+</div>
+</body></html>

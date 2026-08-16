@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "types": ["node"]
+  },
+  // @ghar/* resolve through the pnpm workspace symlink to their built types.
+  // Do NOT add a `paths` mapping into ../../packages/*/src — it pulls those
+  // files into this program and breaks rootDir.
+  "references": [{ "path": "../../packages/shared" }, { "path": "../../packages/i18n" }],
+  "include": ["src/**/*"]
+}

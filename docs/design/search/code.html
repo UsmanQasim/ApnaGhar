@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ur"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Property Search - Modern Corporate UI</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#bcc7de",
+                    "on-secondary-container": "#586377",
+                    "error-container": "#ffdad6",
+                    "on-error": "#ffffff",
+                    "outline": "#6d7a72",
+                    "surface-container-high": "#dce9ff",
+                    "surface-container-highest": "#d3e4fe",
+                    "secondary-fixed": "#d8e3fb",
+                    "on-tertiary-container": "#fffbff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "surface-variant": "#d3e4fe",
+                    "tertiary": "#825100",
+                    "outline-variant": "#bccac0",
+                    "on-error-container": "#93000a",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#ffddb8",
+                    "on-secondary-fixed-variant": "#3c475a",
+                    "on-surface": "#0b1c30",
+                    "on-background": "#0b1c30",
+                    "tertiary-container": "#a36700",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#cbdbf5",
+                    "secondary-container": "#d5e0f8",
+                    "secondary": "#545f73",
+                    "surface-container": "#e5eeff",
+                    "primary-fixed-dim": "#68dba9",
+                    "on-surface-variant": "#3d4a42",
+                    "inverse-surface": "#213145",
+                    "primary": "#006948",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "on-primary-fixed": "#002114",
+                    "surface-container-low": "#eff4ff",
+                    "on-primary-fixed-variant": "#005137",
+                    "inverse-primary": "#68dba9",
+                    "on-secondary-fixed": "#111c2d",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-fixed": "#2a1700",
+                    "surface": "#f8f9ff",
+                    "surface-bright": "#f8f9ff",
+                    "primary-container": "#00855d",
+                    "on-primary-container": "#f5fff7",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed": "#85f8c4",
+                    "background": "#f8f9ff",
+                    "surface-tint": "#006c4a",
+                    "error": "#ba1a1a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "12px",
+                    "touch-target": "48px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "base": "4px",
+                    "xs": "8px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Noto Nastaliq Urdu"],
+                    "body-md": ["Noto Nastaliq Urdu"],
+                    "headline-lg": ["Noto Nastaliq Urdu"],
+                    "headline-md": ["Noto Nastaliq Urdu"],
+                    "number-lg": ["Plus Jakarta Sans"],
+                    "body-lg": ["Noto Nastaliq Urdu"],
+                    "number-md": ["Plus Jakarta Sans"],
+                    "label-sm": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "headline-sm": ["20px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "64px", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "48px", "fontWeight": "600"}],
+                    "number-lg": ["20px", {"lineHeight": "24px", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "36px", "fontWeight": "400"}],
+                    "number-md": ["16px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "500"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        /* Fallback for Material Symbols rendering issue before load */
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        
+        /* Hide scrollbar for clean horizontal scrolls */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen pb-[100px]">
+<!-- Main Canvas -->
+<main class="w-full max-w-7xl mx-auto px-md pt-lg pb-md flex flex-col gap-lg">
+<!-- Search Header Area -->
+<section class="flex flex-col gap-md">
+<div class="relative w-full">
+<!-- Search Input with High Contrast Focus -->
+<div class="flex items-center bg-surface-container-lowest rounded-xl border border-outline-variant focus-within:border-primary focus-within:border-2 transition-all shadow-sm h-touch-target overflow-hidden">
+<button aria-label="Text Search" class="w-[48px] h-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors focus:outline-none">
+<span class="material-symbols-outlined" style="font-size: 24px;">search</span>
+</button>
+<input class="flex-1 h-full bg-transparent border-none text-body-lg font-body-lg text-on-surface placeholder:text-on-surface-variant focus:ring-0 px-2" dir="rtl" placeholder="اردو میں تلاش کریں..." type="text"/>
+<!-- Integrated Mic Icon / Trigger -->
+<button aria-label="Voice Search" class="w-[48px] h-full flex items-center justify-center bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors focus:outline-none">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mic</span>
+</button>
+</div>
+</div>
+<!-- Location & Quick Filters -->
+<div class="flex items-center gap-sm overflow-x-auto no-scrollbar py-1">
+<button class="flex-shrink-0 flex items-center gap-2 h-[48px] px-4 rounded-full bg-secondary-container text-on-secondary-container border border-transparent hover:border-outline-variant transition-all">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">my_location</span>
+<span class="font-label-sm text-label-sm pt-1">میرے قریب</span>
+</button>
+<button class="flex-shrink-0 flex items-center gap-2 h-[48px] px-4 rounded-full bg-surface-container text-on-surface border border-outline-variant hover:bg-surface-variant transition-all">
+<span class="material-symbols-outlined text-[20px]">location_on</span>
+<span class="font-label-sm text-label-sm pt-1">جوہر ٹاؤن، لاہور</span>
+<span class="material-symbols-outlined text-[18px]">arrow_drop_down</span>
+</button>
+</div>
+</section>
+<!-- Pictorial Category Grid (Bento Style) -->
+<section class="grid grid-cols-2 sm:grid-cols-4 gap-sm">
+<button class="flex flex-col items-center justify-center gap-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-md h-[100px] hover:border-primary hover:shadow-md transition-all group">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors text-primary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">home</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface">گھر</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-md h-[100px] hover:border-primary hover:shadow-md transition-all group">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors text-primary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">apartment</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface">فلیٹ</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-md h-[100px] hover:border-primary hover:shadow-md transition-all group">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors text-primary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">landscape</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface">پلاٹ</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 bg-surface-container-lowest border border-outline-variant rounded-xl p-md h-[100px] hover:border-primary hover:shadow-md transition-all group">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors text-primary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">storefront</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface">دکان</span>
+</button>
+</section>
+<!-- Results Section (Mixed Bento/List Layout) -->
+<section class="flex flex-col gap-md">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">تازہ ترین نتائج</h2>
+<button class="font-label-sm text-label-sm text-primary flex items-center gap-1 min-h-[48px]">
+                    سب دیکھیں
+                    <span class="material-symbols-outlined text-[16px] transform rotate-180">arrow_right_alt</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md">
+<!-- Featured Video-Centric Card (Spans full width on mobile) -->
+<article class="col-span-1 md:col-span-2 lg:col-span-2 flex flex-col bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden hover:shadow-md transition-shadow">
+<div class="relative w-full h-[240px] bg-surface-variant">
+<img class="w-full h-full object-cover" data-alt="A modern luxury house in Johar Town Lahore, featuring a contemporary geometric facade, large glass windows, and a manicured front lawn. The scene is bathed in warm afternoon sunlight, emphasizing the high-contrast corporate aesthetic with vibrant green accents. The overall mood is aspirational and highly professional, typical of premium real estate photography in Pakistan." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaN618cptN0JmJdrB1TEp7Bbh0G37lNAp4YvhohY553aqOPpdlI38FQc9VK_QMOVvO59CNtwTO0q2MYd7NDAWF8WtAQYPm0JhBOerfKClSM5-v4R7YyJzxF-KDNPknGfC4IbsHpsQEqGDcyqbe658KrvoCrxztxjOUb_AYZp2vJqi_3IDxkWyd6xZY3znD87vCjT_vfy18r6Xp0jFUqEDSIIr70mzazeg32_l-Vem5abgX0ZN7yW3B"/>
+<!-- Video Play Overlay -->
+<div class="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none">
+<div class="w-16 h-16 rounded-full bg-surface-container-lowest/90 backdrop-blur-sm flex items-center justify-center shadow-lg pointer-events-auto cursor-pointer hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-primary text-[32px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+<!-- Tertiary Price Pill (Top Right in RTL context physically) -->
+<div class="absolute top-0 right-0 bg-tertiary text-on-tertiary px-4 py-2 rounded-bl-xl font-number-lg text-number-lg shadow-sm">
+                            2.5 کروڑ
+                        </div>
+<!-- Video Badge -->
+<div class="absolute bottom-3 right-3 bg-surface-container-lowest/90 backdrop-blur-sm text-on-surface px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-error" style="font-variation-settings: 'FILL' 1;">videocam</span>
+<span class="font-label-sm text-label-sm pt-1">ویڈیو موجود ہے</span>
+</div>
+</div>
+<div class="p-md flex flex-col gap-2">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-tight">شاندار 10 مرلہ گھر</h3>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                                    فیز 2، جوہر ٹاؤن، لاہور
+                                </p>
+</div>
+<!-- TTS Icon -->
+<button aria-label="Read description aloud" class="w-[48px] h-[48px] flex items-center justify-center text-primary bg-primary-container/20 rounded-full hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined">volume_up</span>
+</button>
+</div>
+<div class="flex items-center gap-4 mt-2 pt-3 border-t border-surface-variant">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bed</span>
+<span class="font-number-md text-number-md">5</span>
+<span class="font-label-sm text-label-sm pt-1">بیڈز</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bathtub</span>
+<span class="font-number-md text-number-md">6</span>
+<span class="font-label-sm text-label-sm pt-1">باتھ</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant mr-auto">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">straighten</span>
+<span class="font-number-md text-number-md">10</span>
+<span class="font-label-sm text-label-sm pt-1">مرلہ</span>
+</div>
+</div>
+</div>
+</article>
+<!-- Standard Property Card -->
+<article class="flex flex-col bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden hover:shadow-md transition-shadow">
+<div class="relative w-full h-[180px] bg-surface-variant">
+<img class="w-full h-full object-cover" data-alt="An exterior view of a modern 5 marla residential home in Lahore. Clean architectural lines, light gray paint with wooden texture accents. Small front gate and a neat boundary wall. Shot during a bright, sunny day highlighting a trustworthy and clean real estate offering." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDzlrjz4-x9YGwn_0PsLFtr9Qt-8Kb9DSzXd9INXQY0Ko0G0sIi3b4By_UamtXqSaq8qLFjYBme0N0u5d9IN3qlkCFiCohTc3050k__5bOtMK8vIge7Mqx1wZlYiEG44aHomvkV6eh_PGW4aruS8O6l14ZkkLPRT29KF4MnPbkzJTUtqfo-A-KIHK-qSkTCmSAVPBMFGsDc7LHOrt_22-etvEiklIxCWMJi97S-GsR4AO3hPnYkpi1"/>
+<!-- Tertiary Price Pill -->
+<div class="absolute top-0 right-0 bg-tertiary text-on-tertiary px-3 py-1.5 rounded-bl-xl font-number-md text-number-md shadow-sm">
+                            1.2 کروڑ
+                        </div>
+</div>
+<div class="p-md flex flex-col gap-2">
+<h3 class="font-body-lg text-body-lg text-on-surface font-semibold leading-tight">جدید 5 مرلہ گھر</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 line-clamp-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                            بلاک جی، جوہر ٹاؤن
+                        </p>
+<div class="flex items-center gap-3 mt-1 pt-2 border-t border-surface-variant">
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">bed</span>
+<span class="font-number-md text-number-md text-sm">3</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant mr-auto">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">straighten</span>
+<span class="font-number-md text-number-md text-sm">5 مرلہ</span>
+</div>
+</div>
+</div>
+</article>
+<!-- Standard Property Card -->
+<article class="flex flex-col bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden hover:shadow-md transition-shadow">
+<div class="relative w-full h-[180px] bg-surface-variant">
+<img class="w-full h-full object-cover" data-alt="A commercial shop front in a busy plaza in Lahore. Modern glass entrance, clean signage area, and bright interior lighting. The exterior is sleek and well-maintained, fitting a professional property marketplace aesthetic. Clear daytime shot." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3pudVf5tUHXEaVECPvkfWTmc-HPdUBbJjDs253Uw2XeEpkFj4O23oXoXJODMFet5UdZQW19W5y6pzwDP_nCRZ4wigh-yfkTbPRZOau4aof7B7L6z_C2YnJ57BHsUgHY6sRCATz0Vn7vVxJeao0-tMslSeJvzhPqx8bIyHsWQRs5uwOwyd7VueWkGl04G6ggHeCxb4qA-11q3-0AweJVl_EZSiLJtkC700hI6POUniVRf_xfKFq2hX"/>
+<!-- Tertiary Price Pill -->
+<div class="absolute top-0 right-0 bg-tertiary text-on-tertiary px-3 py-1.5 rounded-bl-xl font-number-md text-number-md shadow-sm">
+                            85 لاکھ
+                        </div>
+</div>
+<div class="p-md flex flex-col gap-2">
+<h3 class="font-body-lg text-body-lg text-on-surface font-semibold leading-tight">پرائم لوکیشن دکان</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 line-clamp-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                            مین بلیوارڈ، جوہر ٹاؤن
+                        </p>
+<div class="flex items-center gap-3 mt-1 pt-2 border-t border-surface-variant">
+<div class="flex items-center gap-1 text-on-surface-variant mr-auto">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">straighten</span>
+<span class="font-number-md text-number-md text-sm">300 مربع فٹ</span>
+</div>
+</div>
+</div>
+</article>
+</div>
+</section>
+</main>
+<!-- Global FAB for Voice Search (Contextual) -->
+<!-- Positioned according to Tonal Layer rules: Level 2 (Active/Floating) -->
+<div class="fixed bottom-[100px] left-6 z-40">
+<button aria-label="Global Voice Search" class="w-[64px] h-[64px] rounded-full bg-primary text-on-primary flex items-center justify-center shadow-[0_8px_16px_rgba(84,95,115,0.2)] hover:scale-105 active:scale-95 transition-all focus:outline-none focus:ring-4 focus:ring-primary-container">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">mic</span>
+</button>
+</div>
+<!-- Semantic Shell: BottomNavBar (Execution from JSON) -->
+<!-- Intent Mapping: Search & Discovery -> active index 1 ("تلاش") -->
+<nav class="bg-surface-container dark:bg-inverse-surface text-primary dark:text-primary-fixed font-body-md text-body-md docked full-width bottom-0 rounded-t-xl shadow-lg fixed bottom-0 left-0 w-full z-50 flex flex-row-reverse justify-around items-center px-md pb-safe h-20">
+<!-- ہوم (home) - Inactive -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-sm py-xs hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant active:scale-90 transition-all min-w-[64px] min-h-[48px]">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="text-xs pt-1">ہوم</span>
+</button>
+<!-- تلاش (search) - Active -->
+<button class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl px-sm py-xs hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant active:scale-90 transition-all min-w-[64px] min-h-[48px]">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">search</span>
+<span class="text-xs pt-1 font-semibold">تلاش</span>
+</button>
+<!-- اپ لوڈ (add_circle) - Inactive -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-sm py-xs hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant active:scale-90 transition-all min-w-[64px] min-h-[48px]">
+<span class="material-symbols-outlined mb-1">add_circle</span>
+<span class="text-xs pt-1">اپ لوڈ</span>
+</button>
+<!-- میری لسٹنگز (format_list_bulleted) - Inactive -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-sm py-xs hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant active:scale-90 transition-all min-w-[64px] min-h-[48px]">
+<span class="material-symbols-outlined mb-1">format_list_bulleted</span>
+<span class="text-xs pt-1">میری لسٹنگز</span>
+</button>
+<!-- پروفائل (person) - Inactive -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-sm py-xs hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant active:scale-90 transition-all min-w-[64px] min-h-[48px]">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="text-xs pt-1">پروفائل</span>
+</button>
+</nav>
+</body></html>
