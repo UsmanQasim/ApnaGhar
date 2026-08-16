@@ -46,9 +46,9 @@ export default function ContactPage() {
                   fontSize: 16,
                 }}
               >
-                +92 51 1234567
+                +92 309 5307723
                 <br />
-                support@ghar.pk
+                1998Usman@gmail.com
               </p>
             </div>
           </div>

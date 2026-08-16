@@ -1,5 +1,6 @@
 import {
   CanActivate,
+  CustomDecorator,
   ExecutionContext,
   ForbiddenException,
   Injectable,
@@ -17,9 +18,9 @@ export const IS_PUBLIC = 'isPublic';
 export const ROLES = 'roles';
 
 /** Route is reachable without a token. Browsing is anonymous by design. */
-export const Public = (): MethodDecorator => SetMetadata(IS_PUBLIC, true);
+export const Public = (): CustomDecorator => SetMetadata(IS_PUBLIC, true);
 
-export const Roles = (...roles: UserRole[]): MethodDecorator => SetMetadata(ROLES, roles);
+export const Roles = (...roles: UserRole[]): CustomDecorator => SetMetadata(ROLES, roles);
 
 export interface AuthenticatedRequest extends Request {
   viewer: Viewer;

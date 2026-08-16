@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
@@ -44,7 +46,15 @@ export const PAYMENT_PROVIDERS = Symbol('PAYMENT_PROVIDERS');
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true, envFilePath: ['.env.local', '.env'] }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: [
+        path.resolve(__dirname, '../../../.env.local'),
+        path.resolve(__dirname, '../../../.env'),
+        '.env.local',
+        '.env',
+      ],
+    }),
     ScheduleModule.forRoot(),
     JwtModule.registerAsync({
       global: true,
