@@ -9,6 +9,12 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "dev:api": "pnpm --dir apps/api dev",
+    "dev:admin": "pnpm --dir apps/admin dev",
+    "dev:web": "pnpm --dir apps/web dev",
+    "dev:share": "pnpm --dir apps/share dev",
+    "dev:mobile": "pnpm --dir apps/mobile dev",
+    "dev:all": "turbo run dev --filter=@ghar/api --filter=@ghar/admin --filter=@ghar/web --filter=@ghar/share --filter=@ghar/mobile",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "lint": "turbo run lint",
