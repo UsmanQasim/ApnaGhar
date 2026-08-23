@@ -11,6 +11,24 @@ import { verifyStreamSignature } from './stream-signature';
 
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 
+/**
+ * The three members of a fetch response this file actually uses.
+ *
+ * Not `Response`. `nest build` compiles that fine against @types/node, but
+ * Vercel's builder runs a second TypeScript pass over the entrypoint with its
+ * own compiler options — it does not honour this package's `types: ["node"]` —
+ * and there the global `Response` resolves to a declaration with no `ok`,
+ * `status` or `json`. The build then fails with TS2339 on all three.
+ *
+ * Narrowing to what is used keeps both passes happy and documents the contract.
+ * The runtime is Node's built-in fetch either way.
+ */
+interface FetchResponse {
+  ok: boolean;
+  status: number;
+  json(): Promise<unknown>;
+}
+
 @Injectable()
 export class MediaService {
   private readonly logger = new Logger(MediaService.name);
@@ -120,7 +138,9 @@ export class MediaService {
     const token = this.config.getOrThrow<string>('CF_STREAM_TOKEN');
     const maxDuration = Number(this.config.get<string>('VIDEO_MAX_DURATION_SECONDS') ?? 90);
 
-    const response = await fetch(
+    // Cast through unknown: the ambient Response type differs between the two
+    // TypeScript passes, so neither is a safe direct assignment target.
+    const response = (await fetch(
       `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream/direct_upload`,
       {
         method: 'POST',
@@ -133,7 +153,7 @@ export class MediaService {
           meta: { propertyId },
         }),
       },
-    );
+    )) as unknown as FetchResponse;
 
     if (!response.ok) {
       this.logger.error(`Cloudflare Stream direct_upload failed: ${response.status}`);
