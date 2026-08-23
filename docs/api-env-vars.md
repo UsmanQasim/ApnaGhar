@@ -10,8 +10,8 @@ a failing endpoint, it is a container that crash-loops before serving anything.
 
 | Key | Where it comes from |
 |---|---|
-| `DATABASE_URL` | Neon → direct (non-pooler) connection string |
-| `REDIS_URL` | Upstash → the `rediss://…` connection string, **not** the REST URL |
+| `DATABASE_URL` | Neon → **pooled** string (contains `-pooler`), plus `?pgbouncer=true&connection_limit=1` |
+| `DIRECT_URL` | Neon → the **direct** string (no `-pooler`). Only migrations use it, but `prisma generate` fails if it is unset |
 | `JWT_SECRET` | generate yourself, 32+ random bytes |
 | `JWT_REFRESH_SECRET` | generate yourself, different from the above |
 
@@ -31,6 +31,7 @@ set them once and leave them alone.
 | `SHARE_BASE_URL` | creating share links | that endpoint 500s; everything else works |
 | `R2_*` | image upload and playback | media endpoints 500s |
 | `CF_STREAM_*` | video upload | video endpoints 500s — **Stream is a paid product**, leave blank for the demo |
+| `CRON_SECRET` | the maintenance endpoint | billing sweeps never run; the endpoint fails closed and returns 401 |
 | `JAZZCASH_*` | the direct JazzCash rail | only read when `JAZZCASH_ENABLED=true` |
 
 ## Safe defaults
@@ -53,14 +54,17 @@ for a demo.
 ```dotenv
 # ── Boot-critical ────────────────────────────────────────────────────────────
 DATABASE_URL=
-REDIS_URL=
+# Neon DIRECT string (no "-pooler"). Migrations only, but generate needs it set.
+DIRECT_URL=
 JWT_SECRET=
 JWT_REFRESH_SECRET=
 
 # ── Core ─────────────────────────────────────────────────────────────────────
 NODE_ENV=production
-PORT=3000
 LOG_LEVEL=info
+# Shared secret for POST /api/maintenance/run — the GitHub Actions schedule that
+# replaced the in-process @Cron jobs. Must match the CRON_SECRET repo secret.
+CRON_SECRET=
 API_BASE_URL=
 SHARE_BASE_URL=https://apna-ghar-share.vercel.app
 

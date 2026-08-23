@@ -4,7 +4,6 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
-import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 import { PaymentProviderCode } from '@ghar/shared';
@@ -25,6 +24,7 @@ import { AuthGuard } from './common/auth.guard';
 import { EngagementController } from './engagement/engagement.controller';
 import { EngagementService } from './engagement/engagement.service';
 import { HealthController } from './common/health.controller';
+import { MaintenanceController } from './common/maintenance.controller';
 import { PrismaService } from './common/prisma.service';
 import { ListingsController } from './listings/listings.controller';
 import { ListingsService } from './listings/listings.service';
@@ -55,7 +55,9 @@ export const PAYMENT_PROVIDERS = Symbol('PAYMENT_PROVIDERS');
         '.env',
       ],
     }),
-    ScheduleModule.forRoot(),
+    // ScheduleModule.forRoot() was here. It registers in-process timers, which
+    // never fire on a serverless runtime — the process is gone between
+    // requests. DunningService's jobs are now driven by MaintenanceController.
     JwtModule.registerAsync({
       global: true,
       inject: [ConfigService],
@@ -70,6 +72,9 @@ export const PAYMENT_PROVIDERS = Symbol('PAYMENT_PROVIDERS');
   ],
   controllers: [
     HealthController,
+    // Replaces @nestjs/schedule: an external cron calls this over HTTP,
+    // because serverless has no process to hold a timer.
+    MaintenanceController,
     AuthController,
     ListingsController,
     AgentsController,

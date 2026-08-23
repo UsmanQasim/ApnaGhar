@@ -7,19 +7,20 @@ Target shape, all on free plans:
 | `apps/web` (marketing) | **Vercel** | Static-ish, always fast |
 | `apps/admin` (admin panel) | **Vercel** | Server components, always fast |
 | `apps/share` (public listing links) | **Vercel** | Always fast |
-| `apps/api` (NestJS) | **Koyeb** (Docker) | No card needed. Sleeps after 1h idle; a keep-alive workflow handles this. |
-| Postgres + PostGIS | **Neon** | 0.5 GB, no expiry, PostGIS available, no card |
-| Redis (OTP only) | **Upstash** | 500k commands/month, no card |
+| `apps/api` (NestJS) | **Vercel** (serverless) | Same account as the frontends. No card, no expiry. |
+| Postgres + PostGIS | **Neon** | 0.5 GB, no expiry, PostGIS available, no card. Also holds OTP codes. |
+
 | Images / media | **Cloudflare R2** | 10 GB storage, no egress fees |
 | Video | **Cloudflare Stream** | ⚠️ Not free — leave disabled for the demo |
 | `apps/mobile` (Expo) | **Expo Go / EAS** | Not a Vercel thing at all |
 
-> **Why the API is not on Vercel.** `apps/api` is a long-lived Nest server with
-> four `@Cron` jobs in `DunningService` (hourly overdue sweeps, daily reminders).
-> Vercel functions are ephemeral — they cannot hold a schedule — and Vercel's
-> free Hobby plan caps cron jobs at **once per day**. Moving the API there means
-> rewriting the scheduler and wrapping Nest in a serverless handler. A container
-> host runs your code unchanged.
+> **Why this took four attempts.** The API originally needed three things that
+> only paid hosting provides: a process that stays alive, a Redis instance, and
+> an in-process scheduler. Render wanted a card, Koyeb's free tier was
+> discontinued when Mistral acquired them, and Railway's is a 30-day trial.
+> Rather than keep hunting for a host, the three requirements were removed. The
+> app is simpler for it — one platform, one database, one bill when there
+> eventually is one.
 
 ---
 
@@ -112,137 +113,107 @@ If `migrate deploy` succeeds here, Render will succeed too.
 
 ---
 
-## 2. API — Koyeb + Upstash, no card (20 minutes)
+## 2. API — Vercel (20 minutes)
 
-> **Render now asks for a credit card**, including on its free plan. Several
-> comparison sites still say otherwise; the signup screen is the authority. The
-> `render.yaml` in this repo stays valid — use it the day you have a card — but
-> the primary path below needs no payment method at all.
+Everything runs on **one platform, one account, no card, no trial, no clock**.
+The API is now a Vercel project like the other three.
 
-Two pieces, because Koyeb's free tier is one web service and does not include
-Redis:
+Getting here needed three changes to `apps/api`, all already committed:
 
-| Piece | Host | Card? |
-|---|---|---|
-| NestJS API (Docker) | **Koyeb** free instance | No\* |
-| Redis (OTP codes only) | **Upstash** free | No |
+| What forced paid hosting | What replaced it |
+|---|---|
+| Redis, for OTP codes | an `otp_codes` table in Neon — see migration `0002_otp_codes` |
+| An always-on process | `src/serverless.ts` + `api/index.js` — Nest built once per cold start and cached |
+| `@nestjs/schedule` in-process crons | `POST /api/maintenance/run`, called by GitHub Actions |
 
-\* Koyeb asks for a card only when it cannot verify automatically that you are
-human. If it does ask, jump to *Fallbacks* at the end of this section.
+`ioredis`, `bullmq` and `@nestjs/schedule` are gone from `package.json`. BullMQ
+was never actually wired up in `app.module.ts` — no queue was ever created — so
+nothing was lost with it.
 
-### 2a. Redis first — Upstash
+### 2a. Repoint the database at Neon's pooler
 
-The API cannot boot without it. `OtpService`'s **constructor** calls
-`config.getOrThrow('REDIS_URL')`, so a missing value is not a broken endpoint,
-it is a container that never starts.
+A serverless function can be a fresh process per request, and direct
+connections would exhaust Postgres's connection limit. `schema.prisma` now
+declares two URLs:
 
-1. **console.upstash.com** → sign up with GitHub.
-2. Create Database → name `ghar-otp` → **Regional**, region **ap-southeast-1
-   (Singapore)** → Free plan.
-3. Copy the **connection string** from the Redis tab — the `rediss://…` one, not
-   the REST URL. It looks like:
-   ```
-   rediss://default:PASSWORD@apn1-xxxx-12345.upstash.io:6379
-   ```
-   `ioredis` (what `OtpService` uses) speaks the native protocol and enables TLS
-   automatically from the `rediss://` scheme. The REST URL will not work here.
+- `DATABASE_URL` — the **pooled** host (contains `-pooler`), with
+  `?pgbouncer=true&connection_limit=1` appended. What the deployed functions use.
+- `DIRECT_URL` — the **direct** host. Migrations only; PgBouncer cannot run the
+  DDL transactions they need.
 
-Free plan is 500,000 commands/month. OTP login uses about 4 commands per
-sign-in, so that is not a limit you will reach during a demo.
+Both live in `apps/api/.env.neon` for local use. Neon's dashboard gives you both
+strings — the "Pooled connection" toggle switches between them.
 
-### 2b. The API — Koyeb
+### 2b. Apply the new migration
 
-1. Push to GitHub first: `git push origin main`.
-2. **koyeb.com** → sign up with GitHub → **Create Web Service** → **GitHub** →
-   pick `UsmanQasim/ApnaGhar`, branch `main`.
-3. Builder → **Dockerfile**.
-   - Dockerfile location: `apps/api/Dockerfile`
-   - Work directory / build context: leave at the repository root. The image
-     needs `packages/` for `@ghar/shared` and `@ghar/i18n`, so a context of
-     `apps/api` will fail.
-4. Instance → **Free**. Region: Frankfurt or Washington — the free instance runs
-   nowhere else. Frankfurt is ~130ms from Pakistan, which is fine for a demo.
-5. Exposed port **3000**, path `/`. Health check path `/health`.
-6. Environment variables — see the full table in
-   [`docs/api-env-vars.md`](./api-env-vars.md). Paste that in, then fill the
-   blanks.
-7. Deploy. First Docker build takes 5–10 minutes on a free builder.
-8. Verify `https://<your-app>-<org>.koyeb.app/health` returns
-   `{"status":"ok","database":"up",…}`. `database: "down"` means `DATABASE_URL`
-   is wrong; a container that never starts usually means `REDIS_URL` is missing.
-
-**Generate the two JWT secrets yourself** — Koyeb has no equivalent of Render's
-`generateValue`. In PowerShell:
-
-```powershell
-[Convert]::ToBase64String((1..48 | ForEach-Object { Get-Random -Max 256 }))
+```
+powershell -ExecutionPolicy Bypass -File scripts\deploy-db.ps1
 ```
 
-Run it twice, once for `JWT_SECRET` and once for `JWT_REFRESH_SECRET`. Keep them
-stable — rotating either logs every user out.
+This adds the `otp_codes` table. Safe to re-run — `migrate deploy` skips what is
+already applied.
 
-### 2c. Keep it awake
+### 2c. Create the Vercel project
 
-Koyeb's free instance scales to zero after **1 hour** without traffic, and a
-sleeping process runs no `@Cron` jobs — so overdue invoices would never be
-chased. `.github/workflows/keep-api-awake.yml` pings `/health` every 10 minutes
-between 07:00 and 02:00 PKT. Enable it:
+Same flow as the other three, a fourth time:
 
-> GitHub repo → Settings → Secrets and variables → Actions → **Variables** tab →
-> New repository variable → `API_HEALTH_URL` = your `/health` URL
+1. **Add New → Project** → import `ApnaGhar`
+2. **Root Directory** → `apps/api`
+3. **Framework Preset** → **Other**. Vercel will otherwise try to detect a
+   frontend and fail. `apps/api/vercel.json` supplies the build, install and
+   rewrite rules.
+4. Environment variables → paste the block from
+   [`docs/api-env-vars.md`](./api-env-vars.md)
+5. Deploy, then check `https://<api>.vercel.app/health`
 
-Unlike Render, Koyeb's free instance has no monthly hour budget to burn, so you
-can widen the schedule to `*/10 * * * *` if you want it always up.
+> **Expect the first request after idle to take a second or two.** A cold start
+> boots the Nest DI graph and connects Prisma. Warm requests are fast, and the
+> app caches the initialised Express instance at module scope so the cost is
+> paid per container, not per request.
 
-### Fallbacks, if Koyeb asks for a card too
+### 2d. Wire up the schedule
 
-1. **Hugging Face Spaces** — Docker Spaces, free, no card, never asks. Needs a
-   `Dockerfile` at the repo root and the app listening on port 7860, so it costs
-   one small config change. Sleeps after 48h idle rather than 1h.
-2. **Railway** — no card, and the best experience of the lot *while it lasts*.
-   $5 of one-time credit over 30 days (GitHub-verified accounts get unrestricted
-   networking; unverified ones get limited ports). 1 GB RAM, no sleep, a
-   Southeast Asia region, and Redis is just another service in the same project
-   — so no Upstash and no cold starts.
+`.github/workflows/api-cron.yml` calls the maintenance endpoint hourly, and
+once a day at 05:00 UTC with the daily steps too (reminders and dormancy send
+SMS, so they must not run hourly).
 
-   The catch is the end of it. When the $5 or the 30 days runs out, whichever
-   comes first, the account drops to the Free plan: **$1 of usage credit per
-   month, no rollover**. An always-on Nest container costs several times that,
-   so the API stops. Railway also deletes trial volumes 30 days after credits
-   expire.
+1. Generate a secret:
+   ```powershell
+   [Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Max 256 }))
+   ```
+2. Vercel → API project → Settings → Environment Variables → `CRON_SECRET` →
+   **redeploy**
+3. GitHub → repo Settings → Secrets and variables → Actions:
+   - **Secrets** tab → `CRON_SECRET` = the same value
+   - **Variables** tab → `API_BASE_URL` = `https://<api>.vercel.app`
+4. Actions tab → *API maintenance* → **Run workflow** to test it
 
-   Reasonable use: run the demo on Railway for a month, and treat the Docker
-   image as portable — moving to Koyeb later is re-pointing environment
-   variables, not a rewrite.
+The URL is a variable and the secret is a secret on purpose — variables are
+printed in run logs.
 
-3. **Move the API onto Vercel.** You already have a working card-free Vercel
-   account. This is the most work: Nest needs a serverless handler wrapper, the
-   four `@Cron` jobs must become HTTP endpoints driven by GitHub Actions (Vercel
-   Hobby cron only fires once a day), and Prisma must switch to Neon's
-   `-pooler` connection string with `?pgbouncer=true&connection_limit=1`. Ask
-   before starting — it is a few hours, not minutes.
-4. **Render**, unchanged, the day a card is available — `render.yaml` already
-   provisions both the API and a free Key Value instance, so Upstash would no
-   longer be needed. Render is the better host of the two if you can use it:
-   Singapore region (~90ms from Pakistan vs Frankfurt's ~130ms) and one
-   blueprint instead of two dashboards.
+If `CRON_SECRET` is unset on the server the endpoint returns 401 rather than
+running. It fails closed: an unset secret must never mean an open endpoint that
+anyone can use to hammer your database.
 
-   **Does adding a card start charging you?** No — a payment method does not
-   upgrade a service or open a subscription. Free instances stay free. What it
-   changes is the failure mode on two overages:
+### 2e. Point the frontends at it
 
-   | Overage | No card | Card on file |
-   |---|---|---|
-   | 750 instance-hours/month | services suspend until next month | **same** — suspend, never billed |
-   | Outbound bandwidth above the free allowance | suspend for the rest of the month | billed as overage |
-   | Build pipeline minutes | builds stop | billed as overage |
+| Vercel project | Key | Value |
+|---|---|---|
+| `apps/admin` | `API_BASE_URL` | `https://<api>.vercel.app/api` |
+| `apps/share` | `API_BASE_URL` | `https://<api>.vercel.app` |
 
-   So the card turns "it stops" into "a small charge" for bandwidth and build
-   minutes only. For this app, bandwidth is negligible — the API serves JSON,
-   and images come from R2, which never touches the API host. Build minutes are
-   the one to watch: every push to `main` rebuilds the Docker image, and Docker
-   builds are not fast. Set a spend limit in Billing before you deploy, and
-   check what the lowest allowed value is on a free workspace.
+Redeploy both — Vercel bakes environment variables in at build time.
+
+### What this costs
+
+Nothing, indefinitely. Vercel Hobby covers 1,000,000 function invocations a
+month; GitHub Actions schedules are free on public and private repos; Neon and
+R2 free tiers have no expiry.
+
+The one future cost is unchanged and unrelated to hosting: **Vercel Hobby is
+non-commercial use only.** When you start charging agents, all four projects
+move to a Pro team — $20/month total, not per project. Nothing about the
+architecture changes.
 
 ---
 
@@ -329,10 +300,9 @@ through EAS later — that has its own free-tier queue.
 
 | Limit | Effect |
 |---|---|
-| Koyeb free: scales to zero after 1h idle | Cold start on the next request; the keep-alive workflow mostly hides this |
-| Koyeb free: one web service, Frankfurt or Washington only | ~130ms from Pakistan. Fine for a demo, worth moving closer at launch |
-| Koyeb free: 512 MB RAM, 0.1 vCPU | Enough for Nest + Prisma, but boots slowly |
-| Upstash free: 500k commands/month | OTP login is ~4 commands per sign-in |
+| Vercel Hobby: 1,000,000 function invocations/month | Not a limit a demo reaches |
+| Vercel functions: cold start after idle | ~1-2s on the first request; warm requests are unaffected |
+| GitHub Actions: schedules pause after 60 days without a commit | The billing sweeps would stop silently. Push something, or use cron-job.org |
 | Neon free: 0.5 GB storage | Thousands of listings. Media is in R2, not the DB. |
 | Neon free: scale-to-zero | ~500ms wake on first query. Invisible in practice. |
 | Vercel Hobby: 100 GB bandwidth | Plenty for a demo |
@@ -352,9 +322,9 @@ These are not optional at launch, only during the demo:
 - [ ] `OTP_DEV_MODE=false` and a real Pakistani SMS aggregator wired into
       `SMS_PROVIDER` / `SMS_API_KEY`. Right now the OTP is `123456` and is
       returned in the API response — anyone can log in as anyone.
-- [ ] Move the API off a free instance (Koyeb Starter, Render Starter $7/month,
-      or Fly.io ~$5) so cold starts stop mattering, and pick a region closer to
-      Pakistan than Frankfurt.
+- [ ] Move all four Vercel projects to a **Pro team** ($20/month total). This
+      is the same item as the Hobby non-commercial rule above, not a separate
+      cost.
 - [ ] `JAZZCASH_ENABLED=true` with real merchant credentials, and
       `JAZZCASH_RETURN_URL` pointing at the live API.
 - [ ] Lock down CORS. `main.ts` currently does `origin: true`, which reflects
@@ -394,11 +364,22 @@ suffix. See the trap in step 3.
 **First request after a quiet night takes a minute** — that's the Render free
 tier waking up. Expected.
 
-**Prisma engine errors on the API host** — the Dockerfile installs `openssl` and
-`libc6-compat` for exactly this. If you change the base image away from
-`node:22-alpine`, keep those.
+**API function returns 500 on every route** — a missing boot-critical env var.
+`DATABASE_URL`, `DIRECT_URL`, `JWT_SECRET` and `JWT_REFRESH_SECRET` are read
+with `getOrThrow` during startup, so Nest fails to initialise and every request
+fails identically. Check the function log for `getOrThrow`.
 
-**Container starts then immediately exits, no useful log** — a missing
-boot-critical env var. `DATABASE_URL`, `REDIS_URL`, `JWT_SECRET` and
-`JWT_REFRESH_SECRET` are read with `getOrThrow` during startup. See
-[`docs/api-env-vars.md`](./api-env-vars.md).
+**`Query engine library for current platform not found`** — `prisma generate`
+ran without the RHEL binary target. `schema.prisma` sets
+`binaryTargets = ["native", "rhel-openssl-3.0.x"]` for exactly this; if you
+edited that line, put it back and redeploy.
+
+**`Nest can't resolve dependencies of …` only in production** — something is
+importing TypeScript into the Vercel function directly. `api/index.js` must stay
+JavaScript and must require `../dist/…`: Vercel compiles this directory with
+esbuild, which silently drops `emitDecoratorMetadata`, and Nest's DI is built
+entirely on that metadata.
+
+**Billing sweeps never run** — check the Actions tab. Either `CRON_SECRET`
+differs between Vercel and the GitHub secret (the endpoint returns 401), or
+GitHub paused the schedule after 60 days without a commit.

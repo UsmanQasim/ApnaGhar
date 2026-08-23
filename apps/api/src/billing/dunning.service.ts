@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
 
 import { DORMANT_AFTER_DAYS, SubscriptionStatus } from '@ghar/shared';
 
@@ -18,6 +17,19 @@ import { BillingService } from './billing.service';
  * Nothing is ever deleted for non-payment. A restricted agent who comes back
  * three months later finds every listing, photo and comment exactly as he left
  * it — that recovery rate is worth far more than the storage it costs.
+ *
+ * ── Scheduling ──────────────────────────────────────────────────────────────
+ * These four methods used to carry @Cron decorators from @nestjs/schedule.
+ * That only works inside a process that stays alive, which ruled out every
+ * free host. They are plain methods now, driven over HTTP by
+ * MaintenanceController on a GitHub Actions schedule — free, no card, no time
+ * limit, and a failed run is visible in the Actions log instead of vanishing
+ * into a container's stdout.
+ *
+ * Each is idempotent and re-entrant: it selects rows by state, acts, and moves
+ * them out of that state. A missed run self-heals on the next one and a double
+ * run is a no-op — which matters, because cron delivery is best-effort
+ * everywhere.
  */
 @Injectable()
 export class DunningService {
@@ -30,7 +42,6 @@ export class DunningService {
   ) {}
 
   /** Close billing cycles that have reached their end. */
-  @Cron(CronExpression.EVERY_HOUR)
   async runCycleClose(): Promise<void> {
     const due = await this.prisma.subscription.findMany({
       where: {
@@ -51,7 +62,6 @@ export class DunningService {
   }
 
   /** Reminders during the grace window. */
-  @Cron(CronExpression.EVERY_DAY_AT_10AM)
   async sendReminders(): Promise<void> {
     const pastDue = await this.prisma.subscription.findMany({
       where: { status: SubscriptionStatus.PAST_DUE, graceEndsAt: { gt: new Date() } },
@@ -74,7 +84,6 @@ export class DunningService {
   }
 
   /** Move agents past their grace window into restriction. */
-  @Cron(CronExpression.EVERY_HOUR)
   async applyRestrictions(): Promise<void> {
     const expired = await this.prisma.subscription.findMany({
       where: { status: SubscriptionStatus.PAST_DUE, graceEndsAt: { lte: new Date() } },
@@ -93,7 +102,6 @@ export class DunningService {
   }
 
   /** Long-restricted accounts go dormant. Still nothing is deleted. */
-  @Cron(CronExpression.EVERY_DAY_AT_3AM)
   async applyDormancy(): Promise<void> {
     const cutoff = new Date(Date.now() - DORMANT_AFTER_DAYS * 86_400_000);
     const stale = await this.prisma.subscription.findMany({

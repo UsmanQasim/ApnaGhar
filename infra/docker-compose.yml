@@ -1,3 +1,9 @@
+# Local development only. Production uses Neon (Postgres) and Cloudflare R2.
+#
+# The Redis service was removed on 2026-08-23: OTP codes moved into Postgres, so
+# the API no longer needs an always-on service to connect to — which is what let
+# it run serverless. BullMQ was a dependency but no queue was ever wired up in
+# app.module.ts, so nothing else used it.
 services:
   postgres:
     image: postgis/postgis:16-3.4
@@ -17,21 +23,6 @@ services:
       timeout: 5s
       retries: 10
 
-  redis:
-    image: redis:7-alpine
-    container_name: ghar-redis
-    restart: unless-stopped
-    command: ['redis-server', '--appendonly', 'yes']
-    ports:
-      - '6379:6379'
-    volumes:
-      - redisdata:/data
-    healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
-      interval: 5s
-      timeout: 3s
-      retries: 10
-
   minio:
     # Local stand-in for Cloudflare R2 (S3-compatible) during development.
     image: minio/minio:latest
@@ -49,5 +40,4 @@ services:
 
 volumes:
   pgdata:
-  redisdata:
   miniodata:

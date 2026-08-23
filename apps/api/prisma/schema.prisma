@@ -9,11 +9,21 @@
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["postgresqlExtensions", "fullTextSearch"]
+  // Vercel's Node runtime is RHEL-based. Without this, only the engine binary
+  // for the machine that ran `prisma generate` is shipped, and the function
+  // dies at runtime with "Query engine library for current platform not found".
+  binaryTargets   = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
   provider   = "postgresql"
+  // POOLED connection (Neon's `-pooler` host). Each serverless invocation can
+  // be a fresh process, so direct connections would exhaust Postgres's
+  // connection limit under even modest traffic.
   url        = env("DATABASE_URL")
+  // DIRECT connection, used only by `migrate` and `db push`. PgBouncer cannot
+  // run the DDL transactions migrations need.
+  directUrl  = env("DIRECT_URL")
   extensions = [postgis, pg_trgm, uuidOssp(map: "uuid-ossp")]
 }
 
@@ -226,6 +236,35 @@ model Session {
   @@index([userId, revokedAt])
   @@index([refreshTokenHash])
   @@map("sessions")
+}
+
+/// Login codes, hashed.
+///
+/// These used to live in Redis with a TTL. Moving them here removes the only
+/// reason this app needed a second always-on service — which in turn is what
+/// lets the whole API run serverless. The trade is a few milliseconds per
+/// lookup against an indexed primary key, which nobody can perceive next to
+/// the round trip of receiving an SMS.
+model OtpCode {
+  /// One live code per phone, so the number is the key. Requesting a new code
+  /// upserts over the old one — the same "last code wins" behaviour the Redis
+  /// SET had, without needing a separate delete.
+  phone       String   @id @db.VarChar(20)
+  /// SHA-256 of phone + code + JWT_SECRET. Never store the code itself: a
+  /// database dump must not hand anyone a working login.
+  codeHash    String   @db.VarChar(64)
+  attempts    Int      @default(0)
+  /// Replaces the Redis key TTL. Expiry is enforced in the query, not by the
+  /// storage engine, so rows outlive their usefulness until swept.
+  expiresAt   DateTime @db.Timestamptz
+  /// Replaces the separate Redis cooldown key. Distinct from expiresAt: a code
+  /// stays valid for five minutes but may only be re-sent every sixty seconds.
+  resendAfter DateTime @db.Timestamptz
+  createdAt   DateTime @default(now()) @db.Timestamptz
+
+  /// Supports the hourly sweep of expired rows.
+  @@index([expiresAt])
+  @@map("otp_codes")
 }
 
 model Agent {

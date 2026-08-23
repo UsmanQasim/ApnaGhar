@@ -3,9 +3,15 @@
 
       powershell -ExecutionPolicy Bypass -File scripts\deploy-db.ps1
 
-  Reads DATABASE_URL from apps\api\.env.neon (or uses $env:DATABASE_URL if you
-  have already set one). Nothing here is destructive: `migrate deploy` only
-  applies migrations the database has not seen, and the seed uses upserts.
+  Reads DATABASE_URL and DIRECT_URL from apps\api\.env.neon (or uses whatever
+  is already set in the shell). Nothing here is destructive: `migrate deploy`
+  only applies migrations the database has not seen, and the seed upserts.
+
+  Two URLs, because schema.prisma now declares both:
+    DATABASE_URL - Neon's POOLED host (contains "-pooler"). What the deployed
+                   serverless functions use.
+    DIRECT_URL   - Neon's DIRECT host. What migrations use; PgBouncer cannot
+                   run the DDL transactions they need.
 
   Safe to re-run.
 #>
@@ -22,22 +28,36 @@ Set-Location $repo
 # ── Resolve the connection string ───────────────────────────────────────────
 $envFile = Join-Path $repo 'apps\api\.env.neon'
 
-if ($env:DATABASE_URL) {
-    Write-Host 'Using DATABASE_URL already set in this shell.'
+function Read-EnvValue([string]$file, [string]$name) {
+    if (-not (Test-Path $file)) { return $null }
+    $line = Select-String -Path $file -Pattern "^\s*$name\s*=" | Select-Object -First 1
+    if (-not $line) { return $null }
+    return ($line.Line -split '=', 2)[1].Trim().Trim('"').Trim("'")
 }
-elseif (Test-Path $envFile) {
-    $line = Select-String -Path $envFile -Pattern '^\s*DATABASE_URL\s*=' | Select-Object -First 1
-    if (-not $line) { throw "No DATABASE_URL line found in $envFile" }
-    $value = ($line.Line -split '=', 2)[1].Trim().Trim('"').Trim("'")
-    $env:DATABASE_URL = $value
-    Write-Host "Loaded DATABASE_URL from apps\api\.env.neon"
-}
-else {
+
+if (-not $env:DATABASE_URL) { $env:DATABASE_URL = Read-EnvValue $envFile 'DATABASE_URL' }
+if (-not $env:DIRECT_URL)   { $env:DIRECT_URL   = Read-EnvValue $envFile 'DIRECT_URL' }
+
+if (-not $env:DATABASE_URL) {
     throw "No DATABASE_URL. Create apps\api\.env.neon or set `$env:DATABASE_URL first."
+}
+
+# schema.prisma declares directUrl, and `prisma generate` refuses to run if the
+# variable is unset even though only migrations read it. Falling back to the
+# pooled URL keeps a single-URL setup working.
+if (-not $env:DIRECT_URL) {
+    Write-Host 'DIRECT_URL not set - falling back to DATABASE_URL.' -ForegroundColor DarkYellow
+    $env:DIRECT_URL = $env:DATABASE_URL
 }
 
 if ($env:DATABASE_URL -notmatch '^postgres(ql)?://') {
     throw "DATABASE_URL does not look like a Postgres connection string."
+}
+
+# Migrations must not go through PgBouncer.
+if ($env:DIRECT_URL -match '-pooler') {
+    Write-Host 'WARNING: DIRECT_URL points at the pooled host. Migrations may fail.' -ForegroundColor Yellow
+    Write-Host '         Use the connection string WITHOUT "-pooler" for DIRECT_URL.' -ForegroundColor Yellow
 }
 
 # Show the host only — never echo the password into a terminal that might be

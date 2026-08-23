@@ -10,7 +10,8 @@
     "test": "node --test dist",
     "test:integration": "node --import tsx --test test/*.integration.test.ts",
     "prisma": "prisma",
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts",
+    "vercel-build": "prisma generate && nest build"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
@@ -23,11 +24,9 @@
     "@nestjs/core": "^10.4.4",
     "@nestjs/jwt": "^10.2.0",
     "@nestjs/platform-express": "^10.4.4",
-    "@nestjs/schedule": "^4.1.1",
     "@nestjs/throttler": "^6.2.1",
     "@prisma/client": "^5.22.0",
-    "bullmq": "^5.21.2",
-    "ioredis": "^5.4.1",
+    "express": "^4.21.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "zod": "^3.23.8"

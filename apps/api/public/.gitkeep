@@ -1,0 +1,8 @@
+This directory is intentionally empty.
+
+Vercel expects an output directory for static assets. The API serves none — every
+route is rewritten to the function in api/index.js — but the build fails without
+a directory to point outputDirectory at.
+
+Do not add an index.html here: static files are matched before rewrites, so it
+would shadow the API's own root route.
