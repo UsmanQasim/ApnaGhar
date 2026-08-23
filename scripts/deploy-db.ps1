@@ -71,7 +71,17 @@ Write-Host ''
 # testing the create-listing flow.
 $env:NODE_ENV = 'development'
 
+# ── 0. Dependencies ─────────────────────────────────────────────────────────
+# package.json changed when Redis was removed (ioredis, bullmq and
+# @nestjs/schedule came out), so node_modules and the lockfile are stale until
+# this runs. Skipping it is what makes `nest build` fail with a wall of
+# unresolved-import errors.
+Write-Host '[0/4] Installing dependencies...' -ForegroundColor Yellow
+& pnpm install
+if ($LASTEXITCODE -ne 0) { throw "pnpm install failed ($LASTEXITCODE)" }
+
 # ── 1. Prisma client ────────────────────────────────────────────────────────
+Write-Host ''
 Write-Host '[1/4] Generating Prisma client...' -ForegroundColor Yellow
 & pnpm --filter '@ghar/api' exec prisma generate
 if ($LASTEXITCODE -ne 0) { throw "prisma generate failed ($LASTEXITCODE)" }
