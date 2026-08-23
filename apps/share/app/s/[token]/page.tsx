@@ -47,10 +47,30 @@ export const metadata: Metadata = {
 };
 
 async function fetchShare(token: string): Promise<ShareResponse> {
+  // Note: no /api suffix. main.ts excludes `s/:token` from the global prefix,
+  // so this base URL is the bare API origin — unlike the admin panel, which
+  // sets API_BASE_URL *with* /api. Same variable name, different value.
   const base = process.env['API_BASE_URL'] ?? 'http://localhost:3000';
-  const response = await fetch(`${base}/s/${encodeURIComponent(token)}`, { cache: 'no-store' });
+
+  // fetch() rejects outright when the host is unreachable — API not deployed,
+  // asleep on a free tier, DNS wrong. Unhandled, that renders a bare 500 to a
+  // customer who just tapped a WhatsApp link. Degrade to the expired-state
+  // screen instead: it is the same thing they would see for a dead link, and
+  // it tells them what to do about it.
+  let response: Response;
+  try {
+    response = await fetch(`${base}/s/${encodeURIComponent(token)}`, { cache: 'no-store' });
+  } catch {
+    return { ok: false, reason: 'not_found' };
+  }
+
   if (!response.ok) return { ok: false, reason: 'not_found' };
-  return (await response.json()) as ShareResponse;
+
+  try {
+    return (await response.json()) as ShareResponse;
+  } catch {
+    return { ok: false, reason: 'not_found' };
+  }
 }
 
 export default async function SharePage({ params }: { params: Promise<{ token: string }> }) {

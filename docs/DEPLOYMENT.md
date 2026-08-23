@@ -159,9 +159,12 @@ Each `vercel.json` is already in place. Do this **three times**, once per app:
    `ApnaGhar`.
 2. **Root Directory** → click *Edit* → choose `apps/web` (then `apps/admin`,
    then `apps/share`).
-3. ✅ Turn on **"Include files outside of the Root Directory in the Build Step"**.
-   Without this the build cannot see `packages/` and fails on
-   `Cannot find module '@ghar/ui'`.
+3. There is **no toggle to hunt for.** Older guides tell you to enable "Include
+   source files outside of the Root Directory in the Build Step" — that option is
+   no longer shown because Vercel enables it by default on every project created
+   since 27 August 2020. Your build can already see `packages/`, and the
+   `cd ../..` in the build command is supported (Vercel's own Turborepo docs use
+   the same pattern).
 4. Leave Build/Install commands alone — `vercel.json` overrides them. They filter
    the pnpm install to just that app's dependency subtree, so Expo and React
    Native never get installed and builds stay under 2 minutes.
@@ -269,9 +272,13 @@ These are not optional at launch, only during the demo:
 
 ## Troubleshooting
 
-**`Cannot find module '@ghar/ui'` on Vercel** — "Include files outside of the
-Root Directory" is off, or the Root Directory is set to the repo root instead of
-`apps/web`.
+**`Cannot find module '@ghar/ui'` on Vercel** — the Root Directory is wrong.
+It must be `apps/web` / `apps/admin` / `apps/share`, not the repo root. (This is
+*not* the old "include files outside the Root Directory" setting — that is on by
+default now and no longer displayed.) If the Root Directory is right, check that
+the install actually ran from the repo root: the build log should show
+`cd ../.. && pnpm install`, and `packages/ui/dist` must exist before `next build`
+starts.
 
 **`ERR_PNPM_OUTDATED_LOCKFILE`** — `pnpm-lock.yaml` is stale. Run
 `pnpm install` locally and commit the lockfile.
