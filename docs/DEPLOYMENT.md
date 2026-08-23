@@ -123,7 +123,7 @@ Getting here needed three changes to `apps/api`, all already committed:
 | What forced paid hosting | What replaced it |
 |---|---|
 | Redis, for OTP codes | an `otp_codes` table in Neon — see migration `0002_otp_codes` |
-| An always-on process | `src/serverless.ts` + `api/index.js` — Nest built once per cold start and cached |
+| An always-on process | nothing — Vercel has **native NestJS support**: it finds `src/main.ts` and runs the app as one Vercel Function on Fluid compute |
 | `@nestjs/schedule` in-process crons | `POST /api/maintenance/run`, called by GitHub Actions |
 
 `ioredis`, `bullmq` and `@nestjs/schedule` are gone from `package.json`. BullMQ
@@ -159,17 +159,19 @@ Same flow as the other three, a fourth time:
 
 1. **Add New → Project** → import `ApnaGhar`
 2. **Root Directory** → `apps/api`
-3. **Framework Preset** → **Other**. Vercel will otherwise try to detect a
-   frontend and fail. `apps/api/vercel.json` supplies the build, install and
-   rewrite rules.
+3. **Framework Preset** → leave it on the auto-detected **NestJS**. Do not set
+   it to "Other" — the native preset is what turns `src/main.ts` into a
+   function. `apps/api/vercel.json` only supplies the install and build
+   commands, because the workspace packages and the Prisma client still have to
+   be built first.
 4. Environment variables → paste the block from
    [`docs/api-env-vars.md`](./api-env-vars.md)
 5. Deploy, then check `https://<api>.vercel.app/health`
 
 > **Expect the first request after idle to take a second or two.** A cold start
-> boots the Nest DI graph and connects Prisma. Warm requests are fast, and the
-> app caches the initialised Express instance at module scope so the cost is
-> paid per container, not per request.
+> boots the Nest DI graph and connects Prisma. Fluid compute keeps containers
+> warm between invocations, so this is paid per container rather than per
+> request.
 
 ### 2d. Wire up the schedule
 
@@ -374,11 +376,11 @@ ran without the RHEL binary target. `schema.prisma` sets
 `binaryTargets = ["native", "rhel-openssl-3.0.x"]` for exactly this; if you
 edited that line, put it back and redeploy.
 
-**`Nest can't resolve dependencies of …` only in production** — something is
-importing TypeScript into the Vercel function directly. `api/index.js` must stay
-JavaScript and must require `../dist/…`: Vercel compiles this directory with
-esbuild, which silently drops `emitDecoratorMetadata`, and Nest's DI is built
-entirely on that metadata.
+**`No entrypoint found in output directory`** — `vercel.json` is setting
+`outputDirectory`, so Vercel is hunting for `src/main.ts` inside that folder
+instead of the project root. The API's `vercel.json` should contain only
+`installCommand` and `buildCommand`; no `outputDirectory`, `functions` or
+`rewrites`. The native NestJS preset handles routing.
 
 **Billing sweeps never run** — check the Actions tab. Either `CRON_SECRET`
 differs between Vercel and the GitHub secret (the endpoint returns 401), or
