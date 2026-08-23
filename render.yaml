@@ -11,8 +11,28 @@
 # expire. See docs/DEPLOYMENT.md.
 # ─────────────────────────────────────────────────────────────────────────────
 services:
+  # ── Redis / Key Value ────────────────────────────────────────────────────
+  # NOT optional. OtpService's *constructor* does
+  #   new Redis(config.getOrThrow('REDIS_URL'))
+  # so the whole Nest app fails to boot if this is missing — the API would
+  # crash-loop before serving a single request.
+  #
+  # Free Key Value is in-memory with no persistence, which is exactly right
+  # here: the only thing stored is hashed OTP codes on a 5-minute TTL. A
+  # restart loses in-flight codes and the user taps "resend". Nothing durable
+  # lives in Redis — BullMQ is a dependency in package.json but no queue is
+  # wired up in app.module.ts.
+  - type: keyvalue
+    name: apna-ghar-redis
+    plan: free
+    region: singapore
+    # Empty list = reachable only from services inside this Render workspace.
+    # OTP codes should not be exposed to the public internet.
+    ipAllowList: []
+    maxmemoryPolicy: allkeys-lru
+
   - type: web
-    name: ghar-api
+    name: apna-ghar-api
     runtime: docker
     plan: free
     # Singapore is Render's closest region to Pakistan (~90ms vs ~250ms from Oregon).
@@ -44,6 +64,14 @@ services:
       # long-lived Nest server, so it wants a real persistent connection.
       - key: DATABASE_URL
         sync: false
+
+      # ── Redis ───────────────────────────────────────────────────────────
+      # Filled in automatically by Render from the keyvalue service above.
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: apna-ghar-redis
+          property: connectionString
 
       # ── Auth ────────────────────────────────────────────────────────────
       # Render generates these once and keeps them stable across deploys.

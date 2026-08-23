@@ -1,8 +1,11 @@
 import type { ReactNode } from 'react';
+import { cookies } from 'next/headers';
 import Link from 'next/link';
 
 import { colors, radius, roles, spacing } from '@ghar/ui';
 
+import { signOut } from '../src/session';
+import { SESSION_COOKIE } from '../src/session-cookie';
 import { S } from '../src/strings';
 
 export const metadata = {
@@ -27,7 +30,12 @@ const NAV = [
  * operator who spends their day in Urdu listings should not have to switch
  * reading direction to approve a payment.
  */
-export default function AdminLayout({ children }: { children: ReactNode }) {
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+  // The login page renders inside this same layout. Showing it the sidebar
+  // would offer a signed-out visitor a menu where every link bounces straight
+  // back here, so the chrome is drawn only once there is a session.
+  const signedIn = (await cookies()).has(SESSION_COOKIE);
+
   return (
     <html lang="ur" dir="rtl">
       <head>
@@ -51,6 +59,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           lineHeight: 2,
         }}
       >
+        {!signedIn ? (
+          <main style={{ padding: spacing.lg }}>{children}</main>
+        ) : (
         <div style={{ display: 'grid', gridTemplateColumns: '260px minmax(0, 1fr)', minHeight: '100vh' }}>
           <aside
             style={{
@@ -90,7 +101,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               ))}
             </nav>
 
-            <form action="/api/logout" method="post" style={{ marginTop: 'auto' }}>
+            {/* Was action="/api/logout" — a route that never existed in this app,
+                so the button silently 404'd. A server action clears the cookie
+                where it was set, on the server. */}
+            <form action={signOut} style={{ marginTop: 'auto' }}>
               <button
                 type="submit"
                 style={{
@@ -127,6 +141,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <main style={{ padding: spacing.lg, maxWidth: 1240 }}>{children}</main>
           </div>
         </div>
+        )}
       </body>
     </html>
   );

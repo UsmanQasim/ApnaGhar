@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 const BASE = process.env['API_BASE_URL'] ?? 'http://localhost:3000/api';
 
@@ -33,6 +34,12 @@ export async function adminApi<T>(
   });
 
   if (!response.ok) {
+    // An expired or missing token is not an application error, it is a signed
+    // -out user. Sending it to the error boundary shows "something went wrong"
+    // for the most ordinary event in the panel's life — the 15-minute
+    // JWT_ACCESS_TTL lapsing while someone reads a report.
+    if (response.status === 401) redirect('/login?expired=1');
+
     const payload = (await response.json().catch(() => ({}))) as { code?: string };
     throw new AdminApiError(response.status, payload.code ?? 'request_failed');
   }
