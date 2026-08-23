@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile --filter \"@ghar/api...\"",
-  "buildCommand": "cd ../.. && pnpm --filter \"@ghar/api\" exec prisma generate && pnpm --filter \"@ghar/api...\" run build"
+  "buildCommand": "cd ../.. && pnpm --filter \"@ghar/api\" exec prisma generate && pnpm --filter \"@ghar/api...\" run build",
+  "outputDirectory": "."
 }
