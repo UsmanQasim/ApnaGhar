@@ -9,6 +9,7 @@ import { colors, radius, spacing, typography } from '@ghar/ui';
 import { ApiError, api } from '../../src/api/client';
 import { Button } from '../../src/components/Button';
 import { Text } from '../../src/components/Text';
+import { activeLocale } from '../../src/i18n';
 import { useAuthStore } from '../../src/store/auth';
 
 interface VerifyResponse {
@@ -117,7 +118,10 @@ export default function OtpScreen() {
     try {
       const tokens = await api<VerifyResponse>('/auth/otp/verify', {
         method: 'POST',
-        body: { phone, code: value },
+        // Verification is where the account is created, so this is the only
+        // chance to record the language before the first SMS goes out. The
+        // server defaults to Urdu if an older client omits it.
+        body: { phone, code: value, locale: activeLocale() },
       });
 
       setTokens(tokens.accessToken, tokens.refreshToken);

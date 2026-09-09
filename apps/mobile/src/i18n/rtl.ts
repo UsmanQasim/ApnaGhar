@@ -1,7 +1,7 @@
 import { I18nManager, Platform } from 'react-native';
 import * as Updates from 'expo-updates';
 
-import { Locale } from '@ghar/shared';
+import { isRtlLocale as isRtlLocaleShared, type Locale } from '@ghar/shared';
 
 /**
  * RTL is the single most error-prone part of an Urdu-first React Native app,
@@ -16,8 +16,16 @@ import { Locale } from '@ghar/shared';
  * So: set it once at boot, and if the direction actually changed, reload.
  */
 
+/**
+ * Re-exported from @ghar/shared rather than reimplemented.
+ *
+ * The trap this avoids: with three locales, `locale === Locale.UR` is still
+ * *correct* — but only by accident, and the next person adding a locale has to
+ * rediscover that Roman Urdu is Urdu written left-to-right. One definition,
+ * shared with the web apps, which face exactly the same question.
+ */
 export function isRtlLocale(locale: Locale): boolean {
-  return locale === Locale.UR;
+  return isRtlLocaleShared(locale);
 }
 
 /**

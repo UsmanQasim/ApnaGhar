@@ -3,14 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 
-import { Locale, PlanCode, UserRole } from '@ghar/shared';
+import { Locale, LOCALES, PlanCode, UserRole } from '@ghar/shared';
 import { colors, radius, roles, spacing } from '@ghar/ui';
 
 import { api } from '../../src/api/client';
 import { Button } from '../../src/components/Button';
 import { Icon, type IconName } from '../../src/components/Icon';
 import { NumberText, Text } from '../../src/components/Text';
-import { i18n } from '../../src/i18n';
+import { i18n, saveLocale } from '../../src/i18n';
 import { applyLayoutDirection } from '../../src/i18n/rtl';
 import { useAuthStore } from '../../src/store/auth';
 
@@ -170,20 +170,49 @@ function LinkRow({ icon, label, onPress }: { icon: IconName; label: string; onPr
 }
 
 /**
- * Language switch.
+ * Language switch — Urdu, Roman Urdu, English.
  *
- * Changing between Urdu and English changes the LAYOUT DIRECTION, which React
- * Native can only apply on reload — see src/i18n/rtl.ts. So this changes the
- * language and then asks for the direction flip; the app restarts itself if the
- * direction actually differs. Doing only the first half is how you get a
- * half-flipped UI that feels broken.
+ * Three things have to happen together, and skipping any one of them produces
+ * a distinct bug:
+ *
+ *  1. change the strings — otherwise nothing visibly happens;
+ *  2. PERSIST the choice — otherwise the next cold start reads the device
+ *     locale again and reverts it;
+ *  3. apply the layout direction — React Native can only do this on reload
+ *     (see src/i18n/rtl.ts), and doing only half of it is how you get the
+ *     half-flipped UI that feels broken.
+ *
+ * Urdu ⇄ Roman Urdu is the interesting pair: same language, different script
+ * AND different direction, so it triggers the reload just as Urdu ⇄ English
+ * does. Roman Urdu ⇄ English does not — both are LTR — so that switch is
+ * instant.
+ *
+ * The server is told too, when there is an account to tell: it renders SMS in
+ * the recipient's stored locale, and a user who reads Roman Urdu because their
+ * handset mangles Nastaliq should not keep receiving Nastaliq texts. Failure
+ * is swallowed — the UI language is a local preference first, and a dropped
+ * request must not block it.
  */
+const LANGUAGE_LABEL_KEY: Record<Locale, string> = {
+  [Locale.UR]: 'settings.urdu',
+  [Locale.UR_LATN]: 'settings.romanUrdu',
+  [Locale.EN]: 'settings.english',
+};
+
 function LanguageRow() {
   const { t, i18n: active } = useTranslation();
+  const signedIn = useAuthStore((s) => s.accessToken !== null);
 
   const choose = async (locale: Locale) => {
     if (active.language === locale) return;
+
     await i18n.changeLanguage(locale);
+    await saveLocale(locale);
+
+    if (signedIn) {
+      void api('/auth/locale', { method: 'PATCH', body: { locale } }).catch(() => undefined);
+    }
+
     await applyLayoutDirection(locale);
   };
 
@@ -193,7 +222,7 @@ function LanguageRow() {
         {t('settings.language')}
       </Text>
       <View style={{ flexDirection: 'row', gap: spacing.xs }}>
-        {[Locale.UR, Locale.EN].map((locale) => {
+        {LOCALES.map((locale) => {
           const selected = active.language === locale;
           return (
             <Pressable
@@ -206,13 +235,19 @@ function LanguageRow() {
                 minHeight: spacing.touchTarget,
                 alignItems: 'center',
                 justifyContent: 'center',
+                paddingHorizontal: spacing.base,
                 borderRadius: radius.md,
-                borderWidth: 1,
+                borderWidth: selected ? 2 : 1,
                 borderColor: selected ? colors.primary : roles.cardBorder,
                 backgroundColor: selected ? colors.primaryFixed : roles.cardBackground,
               }}
             >
-              <Text variant="bodyMd">{t(locale === Locale.UR ? 'settings.urdu' : 'settings.english')}</Text>
+              {/* Each language names itself in its own script, so a reader can
+                  find their language without already being able to read the
+                  one currently active. */}
+              <Text variant="bodyMd" center>
+                {t(LANGUAGE_LABEL_KEY[locale])}
+              </Text>
             </Pressable>
           );
         })}

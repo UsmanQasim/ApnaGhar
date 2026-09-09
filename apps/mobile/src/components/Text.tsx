@@ -1,7 +1,10 @@
 import type { ReactNode } from 'react';
 import { Text as RNText, type StyleProp, type TextProps, type TextStyle } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
-import { colors, typography, type TypographyToken } from '@ghar/ui';
+import { activeLocale, scriptFor } from '../i18n';
+
+import { colors, typographyFor, type TypographyToken } from '@ghar/ui';
 
 interface Props extends Omit<TextProps, 'style'> {
   variant?: TypographyToken;
@@ -22,7 +25,12 @@ interface Props extends Omit<TextProps, 'style'> {
  *     app mixing Urdu prose with Latin numerals needs.
  */
 export function Text({ variant = 'bodyMd', color, center, style, ...rest }: Props) {
-  const base = typography[variant];
+  // Subscribing to i18n is what makes a language switch re-typeset the app:
+  // Roman Urdu and English are Latin script and must not be set in Nastaliq,
+  // which has no Latin glyphs worth the name — left alone, every line falls
+  // back glyph by glyph to whatever the OS supplies.
+  useTranslation();
+  const base = typographyFor(scriptFor(activeLocale()))[variant];
 
   return (
     <RNText
@@ -37,6 +45,7 @@ export function Text({ variant = 'bodyMd', color, center, style, ...rest }: Prop
           textAlign: center ? 'center' : 'auto',
           // Nastaliq glyphs sit high in their em box; without this the visual
           // centre of a line looks shifted upward inside a fixed-height row.
+          // Harmless for Latin, so it stays unconditional.
           includeFontPadding: false,
         },
         style,

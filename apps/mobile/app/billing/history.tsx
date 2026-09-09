@@ -117,7 +117,7 @@ export default function PaymentHistoryScreen() {
               {t('billing.nextBillingDate')}
             </Text>
             <NumberText variant="numberMd">
-              {new Date(data.subscription.currentPeriodEnd).toLocaleDateString('en-PK', {
+              {new Date(data.subscription.currentPeriodEnd).toLocaleDateString(format.intlLocale, {
                 day: 'numeric',
                 month: 'short',
                 year: 'numeric',
@@ -175,7 +175,7 @@ export default function PaymentHistoryScreen() {
           />
           <View style={{ flex: 1 }}>
             <NumberText variant="numberMd">
-              {new Date(invoice.periodStart).toLocaleDateString('en-PK', {
+              {new Date(invoice.periodStart).toLocaleDateString(format.intlLocale, {
                 month: 'short',
                 year: 'numeric',
               })}

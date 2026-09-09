@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
-import { InvoiceStatus, Locale } from '@ghar/shared';
+import { InvoiceStatus } from '@ghar/shared';
 import { colors, radius, roles, spacing } from '@ghar/ui';
 
 import { api, toPaisa } from '../../../src/api/client';
@@ -52,7 +52,7 @@ export default function InvoiceDetailScreen() {
   const payable = OPEN_STATUSES.includes(invoice.status) && remaining > 0;
 
   const dueDate = invoice.dueAt
-    ? new Date(invoice.dueAt).toLocaleDateString(format.locale === Locale.EN ? 'en-PK' : 'ur-PK', {
+    ? new Date(invoice.dueAt).toLocaleDateString(format.intlLocale, {
         day: 'numeric',
         month: 'long',
         year: 'numeric',

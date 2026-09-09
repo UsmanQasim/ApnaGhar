@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AreaUnit, Locale, type Paisa } from '@ghar/shared';
+import { AreaUnit, isLatinScript, parseLocale, type Paisa } from '@ghar/shared';
 import {
   formatArea,
   formatPrice,
@@ -25,12 +25,24 @@ import { isolateNumber } from '../i18n/rtl';
  */
 export function useFormat(urduNumerals = false) {
   const { i18n } = useTranslation();
-  const locale = (i18n.language === Locale.EN ? Locale.EN : Locale.UR) as Locale;
+  // Was `i18n.language === EN ? EN : UR`, which quietly folded Roman Urdu into
+  // Urdu — every price, area and timestamp on every screen would have come
+  // back in Nastaliq inside an otherwise Latin-script page.
+  const locale = parseLocale(i18n.language);
 
   const opts = useMemo(() => ({ locale, urduNumerals }), [locale, urduNumerals]);
 
   return {
     locale,
+    /**
+     * BCP-47 tag for Intl (`toLocaleDateString` and friends).
+     *
+     * Roman Urdu maps to en-PK on purpose: asking Intl for "ur-PK" returns
+     * month names in Arabic script, which is precisely what a Roman Urdu
+     * reader chose this locale to avoid. Same calendar and conventions,
+     * readable alphabet.
+     */
+    intlLocale: isLatinScript(locale) ? 'en-PK' : 'ur-PK',
     /** "85 لاکھ روپے" — magnitude words, never raw digit strings. */
     price: useCallback((paisa: Paisa) => isolateNumber(formatPrice(paisa, opts)), [opts]),
     /** Exact, grouped south-asian style. Invoices only. */

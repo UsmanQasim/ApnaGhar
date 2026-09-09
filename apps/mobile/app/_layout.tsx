@@ -20,7 +20,7 @@ import {
 
 import { colors } from '@ghar/ui';
 
-import { detectLocale, initI18n } from '../src/i18n';
+import { initI18n, loadLocale } from '../src/i18n';
 import { applyLayoutDirection } from '../src/i18n/rtl';
 
 void SplashScreen.preventAutoHideAsync();
@@ -58,7 +58,10 @@ export default function RootLayout() {
 
   useEffect(() => {
     void (async () => {
-      const locale = detectLocale();
+      // The STORED choice, not the device's. detectLocale() only decides the
+      // very first run; after that, reading the device again would revert an
+      // English or Roman Urdu reader to Nastaliq on every cold start.
+      const locale = await loadLocale();
 
       // Must run before first render: forceRTL only applies after a reload,
       // and a half-flipped UI is worse than either direction.
