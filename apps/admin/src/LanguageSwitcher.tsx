@@ -1,5 +1,4 @@
 import { Locale, LOCALES } from '@ghar/shared';
-import { colors, radius, spacing } from '@ghar/ui';
 
 import { setLocale } from './locale-actions';
 
@@ -17,7 +16,9 @@ const LABEL: Record<Locale, string> = {
  * A plain <form> posting to a server action — no client component, no
  * JavaScript, no hydration boundary in an otherwise server-rendered tree.
  *
- * `inverse` renders it against the dark sidebar, which is where it lives.
+ * `inverse` renders it against the dark sidebar, which is where it lives on a
+ * wide screen; the header carries a second copy below `lg`, where the sidebar
+ * has collapsed to a nav strip with no room for it.
  */
 export function LanguageSwitcher({
   active,
@@ -28,16 +29,16 @@ export function LanguageSwitcher({
   label: string;
   inverse?: boolean;
 }) {
-  const fg = inverse ? colors.inverseOnSurface : colors.onSurface;
-  const border = inverse ? colors.outline : colors.outlineVariant;
-
   return (
-    <form action={setLocale} style={{ display: 'grid', gap: spacing.base }}>
-      <span style={{ fontSize: 12, opacity: 0.75, color: fg }}>{label}</span>
+    <form action={setLocale} className="grid gap-1">
+      <span className={`text-xs ${inverse ? 'text-inverse-on-surface/70' : 'text-on-surface-variant'}`}>
+        {label}
+      </span>
 
-      <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+      <div className="flex gap-1">
         {LOCALES.map((locale) => {
           const selected = locale === active;
+
           return (
             <button
               key={locale}
@@ -45,24 +46,19 @@ export function LanguageSwitcher({
               name="locale"
               value={locale}
               aria-current={selected ? 'true' : undefined}
-              style={{
-                flex: 1,
-                minHeight: 36,
-                padding: `0 ${spacing.xs}px`,
-                borderRadius: radius.full,
-                border: `1px solid ${selected ? colors.primary : border}`,
-                background: selected ? colors.primary : 'transparent',
-                color: selected ? colors.onPrimary : fg,
-                // Each button carries its own face rather than inheriting the
-                // page's: a Latin label set in Nastaliq falls back per glyph.
-                fontFamily:
-                  locale === Locale.UR
-                    ? "'Noto Nastaliq Urdu', serif"
-                    : "'Plus Jakarta Sans', system-ui, sans-serif",
-                fontSize: 12,
-                lineHeight: 1.4,
-                cursor: 'pointer',
-              }}
+              className={[
+                'min-h-9 flex-1 cursor-pointer whitespace-nowrap rounded-full border px-2 text-[11px] leading-none',
+                'transition-colors duration-150',
+                // Each chip carries its own face rather than inheriting the
+                // page's: a Latin label set in Nastaliq falls back glyph by
+                // glyph and stops looking like one typeface.
+                locale === Locale.UR ? 'font-[family-name:var(--ghar-font-nastaliq)]' : 'font-[family-name:var(--ghar-font-latin)]',
+                selected
+                  ? 'border-primary bg-primary text-on-primary'
+                  : inverse
+                    ? 'border-outline/60 text-inverse-on-surface/85 hover:bg-white/10'
+                    : 'border-card-border text-on-surface-variant hover:bg-surface-container-low',
+              ].join(' ')}
             >
               {LABEL[locale]}
             </button>

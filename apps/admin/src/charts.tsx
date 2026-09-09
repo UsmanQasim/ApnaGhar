@@ -2,8 +2,6 @@ import type { CSSProperties } from 'react';
 
 import { chart, colors, radius, spacing } from '@ghar/ui';
 
-import { muted } from './ui';
-
 /**
  * Charts, in plain HTML and CSS.
  *
@@ -179,7 +177,7 @@ export function ShareBar({
   const total = data.reduce((sum, slice) => sum + slice.value, 0);
   const slots = [chart.series1, chart.series2];
 
-  if (total === 0) return <p style={muted}>—</p>;
+  if (total === 0) return <p className="m-0 text-sm text-on-surface-variant">—</p>;
 
   return (
     <div style={{ display: 'grid', gap: spacing.xs }}>

@@ -1,4 +1,8 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, readFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { test } from 'node:test';
 
 import {
@@ -276,4 +280,48 @@ test('chart series clear 3:1 against the white card surface they render on', () 
 test('chart grid and axis stay recessive against the marks', () => {
   // A gridline that competes with the data is worse than no gridline.
   assert.ok(contrast(chart.grid, colors.surfaceContainerLowest) < 3);
+});
+
+// ─── The CSS bridge ──────────────────────────────────────────────────────────
+
+test('the generated CSS is not stale', () => {
+  // tokens.ts is the source of truth; tokens.css and tailwind-theme.css are
+  // generated from it so the web apps can build Tailwind utilities out of the
+  // same values the React Native app uses.
+  //
+  // This is the check that keeps them honest. Without it, changing a colour in
+  // tokens.ts and forgetting to regenerate leaves the app and the web surfaces
+  // a shade apart — the exact drift the token system exists to prevent, and
+  // invisible until someone puts two screenshots side by side.
+  //
+  // Regenerated into a temp directory and diffed, rather than imported: the
+  // emitter is ESM and this test compiles to CommonJS.
+  //
+  // If this fails: pnpm --filter @ghar/ui build
+  const pkg = join(__dirname, '..');
+  const scratch = mkdtempSync(join(tmpdir(), 'ghar-tokens-'));
+
+  execFileSync(process.execPath, [join(pkg, 'scripts', 'emit-css.mjs')], {
+    env: { ...process.env, EMIT_CSS_OUT: scratch },
+  });
+
+  for (const file of ['tokens.css', 'tailwind-theme.css']) {
+    assert.equal(
+      readFileSync(join(pkg, file), 'utf8'),
+      readFileSync(join(scratch, file), 'utf8'),
+      `${file} is out of date with src/tokens.ts — run: pnpm --filter @ghar/ui build`,
+    );
+  }
+});
+
+test('every colour token reaches CSS', () => {
+  const css = readFileSync(join(__dirname, '..', 'tokens.css'), 'utf8');
+
+  for (const [name, value] of Object.entries(colors)) {
+    const cssName = name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+    assert.ok(
+      css.includes(`--ghar-color-${cssName}: ${value};`),
+      `${name} (${value}) is missing from tokens.css`,
+    );
+  }
 });

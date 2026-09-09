@@ -3,9 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
-import { colors, radius, roles, spacing } from '@ghar/ui';
-
 import type { AdminStrings } from '../../src/strings';
+import { fieldStyle, primaryButtonStyle } from '../../src/ui';
 import { requestOtp, verifyOtp } from '../../src/session';
 
 type LoginStrings = AdminStrings['login'];
@@ -86,16 +85,24 @@ export function LoginForm({
   // No `dir` here: the <html> element carries it, per locale. Hardcoding rtl
   // put a Roman Urdu form into a mirrored layout.
   return (
-    <div style={wrap}>
-      <h1 style={heading}>{S.title}</h1>
+    <div className="card grid w-full max-w-[400px] gap-sm p-lg">
+      <h1 className="m-0 text-2xl font-semibold tracking-tight">{S.title}</h1>
 
-      {expired ? <div style={notice}>{S.sessionExpired}</div> : null}
+      {expired ? (
+        <div className="rounded-md bg-secondary-container px-sm py-2 text-sm text-on-secondary-container">
+          {S.sessionExpired}
+        </div>
+      ) : null}
 
-      {error ? <div style={warning}>{error}</div> : null}
+      {error ? (
+        <div className="rounded-md bg-error-container px-sm py-2 text-sm text-on-error-container">
+          {error}
+        </div>
+      ) : null}
 
       {step === 'phone' ? (
-        <form onSubmit={onRequest} style={form}>
-          <label htmlFor="phone" style={label}>
+        <form onSubmit={onRequest} className="grid gap-xs">
+          <label htmlFor="phone" className="text-sm text-on-surface-variant">
             {S.phoneLabel}
           </label>
           <input
@@ -108,15 +115,15 @@ export function LoginForm({
             placeholder="03009999999"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            style={input}
+            className={`${fieldStyle} numeric text-lg`}
           />
-          <button type="submit" disabled={working} style={button}>
+          <button type="submit" disabled={working} className={`${primaryButtonStyle} mt-1`}>
             {working ? S.sending : S.sendCode}
           </button>
         </form>
       ) : (
-        <form onSubmit={onVerify} style={form}>
-          <label htmlFor="code" style={label}>
+        <form onSubmit={onVerify} className="grid gap-xs">
+          <label htmlFor="code" className="text-sm text-on-surface-variant">
             {S.codeLabel}
           </label>
           <input
@@ -130,17 +137,17 @@ export function LoginForm({
             maxLength={6}
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            style={{ ...input, letterSpacing: 6, textAlign: 'center' }}
+            className={`${fieldStyle} numeric text-center text-xl tracking-[0.4em]`}
           />
 
           {devCode ? (
-            <p style={hint}>
+            <p className="m-0 rounded-md bg-primary-fixed px-sm py-2 text-sm text-on-primary-fixed">
               {S.devCode}{' '}
-              <strong style={{ direction: 'ltr', display: 'inline-block' }}>{devCode}</strong>
+              <strong className="numeric inline-block font-semibold">{devCode}</strong>
             </p>
           ) : null}
 
-          <button type="submit" disabled={working} style={button}>
+          <button type="submit" disabled={working} className={`${primaryButtonStyle} mt-1`}>
             {working ? S.verifying : S.submit}
           </button>
 
@@ -151,7 +158,7 @@ export function LoginForm({
               setCode('');
               setError(null);
             }}
-            style={linkButton}
+            className="touch cursor-pointer border-0 bg-transparent text-sm text-primary hover:underline"
           >
             {S.changeNumber}
           </button>
@@ -160,78 +167,3 @@ export function LoginForm({
     </div>
   );
 }
-
-const wrap: React.CSSProperties = {
-  maxWidth: 380,
-  margin: '10vh auto',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: spacing.sm,
-  background: roles.cardBackground,
-  border: `1px solid ${roles.cardBorder}`,
-  borderRadius: radius.lg,
-  padding: spacing.lg,
-};
-
-const heading: React.CSSProperties = { fontSize: 22, lineHeight: 2, margin: 0 };
-
-const form: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: spacing.xs };
-
-const label: React.CSSProperties = { fontSize: 15, color: colors.onSurfaceVariant };
-
-const input: React.CSSProperties = {
-  minHeight: spacing.touchTarget,
-  padding: `0 ${spacing.sm}px`,
-  border: `1px solid ${colors.outline}`,
-  borderRadius: radius.md,
-  fontSize: 18,
-  // Latin digits in an RTL page: force LTR or the number renders reversed.
-  direction: 'ltr',
-  fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
-};
-
-const button: React.CSSProperties = {
-  minHeight: spacing.touchTarget,
-  background: colors.primary,
-  color: colors.onPrimary,
-  border: 'none',
-  borderRadius: radius.md,
-  fontFamily: 'inherit',
-  fontSize: 16,
-  cursor: 'pointer',
-  marginTop: spacing.base,
-};
-
-const linkButton: React.CSSProperties = {
-  background: 'transparent',
-  border: 'none',
-  color: colors.primary,
-  fontFamily: 'inherit',
-  fontSize: 14,
-  cursor: 'pointer',
-  minHeight: spacing.touchTarget,
-};
-
-const warning: React.CSSProperties = {
-  background: roles.warningBackground,
-  color: roles.warningText,
-  padding: spacing.sm,
-  borderRadius: radius.md,
-  fontSize: 15,
-  lineHeight: 2,
-};
-
-const notice: React.CSSProperties = {
-  background: colors.surfaceContainer,
-  color: colors.onSurface,
-  padding: spacing.sm,
-  borderRadius: radius.md,
-  fontSize: 15,
-  lineHeight: 2,
-};
-
-const hint: React.CSSProperties = {
-  margin: 0,
-  fontSize: 14,
-  color: colors.onSurfaceVariant,
-};

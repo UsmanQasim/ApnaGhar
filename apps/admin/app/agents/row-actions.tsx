@@ -2,8 +2,6 @@
 
 import { useState, useTransition } from 'react';
 
-import { spacing } from '@ghar/ui';
-
 import type { AdminStrings } from '../../src/strings';
 import { buttonStyle, dangerButtonStyle, primaryButtonStyle } from '../../src/ui';
 import { setAgentStatus, setAgentVerified } from './actions';
@@ -31,11 +29,11 @@ export function RowActions({
   const [confirming, setConfirming] = useState(false);
 
   return (
-    <div style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap' }}>
+    <div className="flex flex-wrap gap-xs">
       <button
         type="button"
         disabled={pending}
-        style={verified ? buttonStyle : primaryButtonStyle}
+        className={verified ? buttonStyle : primaryButtonStyle}
         onClick={() => startTransition(() => void setAgentVerified(agentId, !verified))}
       >
         {verified ? S.agents.unverify : S.agents.verify}
@@ -46,7 +44,7 @@ export function RowActions({
           <button
             type="button"
             disabled={pending}
-            style={dangerButtonStyle}
+            className={dangerButtonStyle}
             onClick={() =>
               startTransition(() => {
                 void setAgentStatus(agentId, !suspended);
@@ -56,15 +54,20 @@ export function RowActions({
           >
             {S.agents.suspend}
           </button>
-          <button type="button" style={buttonStyle} onClick={() => setConfirming(false)}>
-            ✕
+          <button
+            type="button"
+            className={buttonStyle}
+            aria-label={S.payments.cancel}
+            onClick={() => setConfirming(false)}
+          >
+            <span aria-hidden>✕</span>
           </button>
         </>
       ) : (
         <button
           type="button"
           disabled={pending}
-          style={buttonStyle}
+          className={buttonStyle}
           onClick={() =>
             suspended
               ? startTransition(() => void setAgentStatus(agentId, false))

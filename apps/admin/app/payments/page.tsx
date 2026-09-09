@@ -1,8 +1,10 @@
-import { colors, radius, roles, spacing } from '@ghar/ui';
+import { isRtlLocale } from '@ghar/shared';
 
 import { adminApi, rupees } from '../../src/api';
+import { AlertIcon } from '../../src/icons';
 import { getLocale } from '../../src/locale';
 import { stringsFor, type AdminStrings } from '../../src/strings';
+import { Badge, EmptyState, PageHeader } from '../../src/ui';
 import { DecisionForm } from './decision-form';
 
 interface QueueItem {
@@ -39,30 +41,43 @@ export default async function PaymentsQueuePage() {
     getLocale(),
   ]);
   const S = stringsFor(locale);
+  const intl = isRtlLocale(locale) ? 'ur-PK' : 'en-PK';
 
   return (
-    <main style={{ padding: spacing.lg, maxWidth: 1100, margin: '0 auto' }}>
-      <header style={{ marginBottom: spacing.lg }}>
-        <h1 style={{ margin: 0, fontSize: 24 }}>{S.payments.title}</h1>
-        <p style={{ color: colors.onSurfaceVariant, margin: `${spacing.base}px 0 0` }}>
-          {queue.length === 0
+    <>
+      <PageHeader
+        title={S.payments.title}
+        subtitle={
+          queue.length === 0
             ? S.payments.nothingWaiting
-            : S.payments.awaitingDecision.replace('{count}', String(queue.length))}
-        </p>
-      </header>
+            : S.payments.awaitingDecision.replace('{count}', String(queue.length))
+        }
+      />
 
-      {queue.length === 0 ? null : (
-        <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gap: spacing.md }}>
+      {queue.length === 0 ? (
+        <div className="card">
+          <EmptyState hint={S.payments.nothingWaiting}>{S.overview.nothingPending}</EmptyState>
+        </div>
+      ) : (
+        <ul className="grid list-none gap-md p-0">
           {queue.map((item) => (
-            <PaymentRow key={item.id} item={item} S={S} />
+            <PaymentRow key={item.id} item={item} S={S} intl={intl} />
           ))}
         </ul>
       )}
-    </main>
+    </>
   );
 }
 
-function PaymentRow({ item, S }: { item: QueueItem; S: AdminStrings }) {
+function PaymentRow({
+  item,
+  S,
+  intl,
+}: {
+  item: QueueItem;
+  S: AdminStrings;
+  intl: string;
+}) {
   const expected = item.invoice ? Number(item.invoice.totalPaisa) : null;
   const claimed = Number(item.amountPaisa);
 
@@ -76,45 +91,53 @@ function PaymentRow({ item, S }: { item: QueueItem; S: AdminStrings }) {
 
   return (
     <li
-      style={{
-        border: `1px solid ${mismatch ? colors.error : roles.cardBorder}`,
-        borderRadius: radius.lg,
-        padding: spacing.md,
-        background: roles.cardBackground,
-        display: 'grid',
-        gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)',
-        gap: spacing.md,
-      }}
+      className={[
+        'card grid gap-md p-md md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]',
+        // A mismatch is the one thing on this screen that must be impossible
+        // to miss, so it gets the border as well as the banner below.
+        mismatch ? 'border-error' : '',
+      ].join(' ')}
     >
-      <div>
-        <div style={{ display: 'flex', gap: 12, alignItems: 'baseline', flexWrap: 'wrap' }}>
-          <strong style={{ fontSize: 20 }}>{rupees(item.amountPaisa)}</strong>
-          <span style={badge}>{item.provider.replace('manual_', '')}</span>
-          {item.invoice ? <span style={muted}>{item.invoice.number}</span> : null}
+      <div className="min-w-0">
+        <div className="flex flex-wrap items-baseline gap-sm">
+          <strong className="numeric text-xl font-semibold tracking-tight">
+            {rupees(item.amountPaisa)}
+          </strong>
+          <Badge>
+            <span className="capitalize">{item.provider.replace('manual_', '')}</span>
+          </Badge>
+          {item.invoice ? (
+            <span className="numeric text-xs text-on-surface-variant">{item.invoice.number}</span>
+          ) : null}
         </div>
 
-        <dl style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '4px 12px', margin: '12px 0 0' }}>
-          <dt style={muted}>{S.payments.agent}</dt>
-          <dd style={cell}>
+        <dl className="mt-sm grid grid-cols-[auto_minmax(0,1fr)] gap-x-sm gap-y-1 text-sm">
+          <dt className="text-on-surface-variant">{S.payments.agent}</dt>
+          <dd className="m-0 min-w-0 truncate">
             {item.agent.user.name ?? '—'}
             {item.agent.agencyName ? ` · ${item.agent.agencyName}` : ''}
           </dd>
 
-          <dt style={muted}>{S.payments.agentPhone}</dt>
-          <dd style={cell}>{item.agent.user.phone}</dd>
+          <dt className="text-on-surface-variant">{S.payments.agentPhone}</dt>
+          <dd className="m-0"><span className="numeric">{item.agent.user.phone}</span></dd>
 
-          <dt style={muted}>{S.payments.paidFrom}</dt>
-          <dd style={cell}>{item.payerMsisdn ?? '—'}</dd>
+          <dt className="text-on-surface-variant">{S.payments.paidFrom}</dt>
+          <dd className="m-0"><span className="numeric">{item.payerMsisdn ?? '—'}</span></dd>
 
-          <dt style={muted}>{S.payments.transactionId}</dt>
-          <dd style={{ ...cell, fontFamily: 'monospace' }}>{item.providerTxnId ?? '—'}</dd>
+          <dt className="text-on-surface-variant">{S.payments.transactionId}</dt>
+          <dd className="m-0"><span className="numeric break-all">{item.providerTxnId ?? '—'}</span></dd>
 
-          <dt style={muted}>{S.payments.submitted}</dt>
-          <dd style={cell}>{new Date(item.createdAt).toLocaleString('en-PK')}</dd>
+          <dt className="text-on-surface-variant">{S.payments.submitted}</dt>
+          <dd className="m-0">
+            <span className="numeric">{new Date(item.createdAt).toLocaleString(intl)}</span>
+          </dd>
         </dl>
 
         {mismatch ? (
-          <p style={alert}>
+          <p className="mt-sm flex items-start gap-xs rounded-md bg-error-container p-sm text-sm text-on-error-container">
+            <span className="mt-0.5 shrink-0">
+              <AlertIcon size={16} />
+            </span>
             {S.payments.amountMismatch
               .replace('{claimed}', rupees(claimed))
               .replace('{expected}', rupees(expected))}
@@ -122,7 +145,7 @@ function PaymentRow({ item, S }: { item: QueueItem; S: AdminStrings }) {
         ) : null}
 
         {provisionalLeft !== null ? (
-          <p style={{ ...muted, marginTop: 8 }}>
+          <p className="mt-xs mb-0 text-xs text-on-surface-variant">
             {provisionalLeft > 0
               ? S.payments.provisionalLeft.replace('{minutes}', String(provisionalLeft))
               : S.payments.provisionalExpired}
@@ -130,7 +153,7 @@ function PaymentRow({ item, S }: { item: QueueItem; S: AdminStrings }) {
         ) : null}
       </div>
 
-      <div style={{ display: 'grid', gap: 12 }}>
+      <div className="grid content-start gap-sm">
         {item.proofKey ? (
           // The receipt screenshot is the evidence. Full size in a new tab,
           // because a thumbnail is not enough to read a transaction ID.
@@ -138,16 +161,19 @@ function PaymentRow({ item, S }: { item: QueueItem; S: AdminStrings }) {
             href={`${process.env['MEDIA_BASE_URL'] ?? ''}/${item.proofKey}`}
             target="_blank"
             rel="noreferrer"
-            style={{ display: 'block' }}
+            className="block overflow-hidden rounded-md border border-card-border transition-opacity hover:opacity-90"
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={`${process.env['MEDIA_BASE_URL'] ?? ''}/${item.proofKey}`}
               alt={S.payments.receiptAlt}
-              style={{ width: '100%', borderRadius: radius.DEFAULT, border: `1px solid ${roles.cardBorder}` }}
+              className="block w-full"
             />
           </a>
         ) : (
-          <p style={muted}>{S.payments.noReceipt}</p>
+          <p className="m-0 rounded-md border border-dashed border-outline-variant p-sm text-center text-xs text-on-surface-variant">
+            {S.payments.noReceipt}
+          </p>
         )}
 
         {/* A client island: the strings travel with it, because it has no
@@ -157,21 +183,3 @@ function PaymentRow({ item, S }: { item: QueueItem; S: AdminStrings }) {
     </li>
   );
 }
-
-const muted: React.CSSProperties = { color: colors.onSurfaceVariant, fontSize: 13, margin: 0 };
-const cell: React.CSSProperties = { margin: 0, fontSize: 14 };
-const badge: React.CSSProperties = {
-  background: colors.secondaryContainer,
-  borderRadius: radius.full,
-  padding: '2px 10px',
-  fontSize: 12,
-  textTransform: 'capitalize',
-};
-const alert: React.CSSProperties = {
-  background: colors.errorContainer,
-  color: colors.onErrorContainer,
-  borderRadius: radius.DEFAULT,
-  padding: spacing.sm,
-  marginTop: spacing.sm,
-  fontSize: 14,
-};

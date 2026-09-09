@@ -1,10 +1,18 @@
 import { isRtlLocale, PropertyPurpose, PropertyStatus, PropertyType } from '@ghar/shared';
-import { colors, radius, roles, spacing } from '@ghar/ui';
 
 import { adminApi } from '../../src/api';
 import { getLocale } from '../../src/locale';
 import { stringsFor } from '../../src/strings';
-import { Badge, Card, PageHeader, muted, rupees, tableStyle, tdStyle, thStyle } from '../../src/ui';
+import {
+  Badge,
+  Card,
+  EmptyState,
+  PageHeader,
+  TableScroll,
+  fieldStyle,
+  primaryButtonStyle,
+  rupees,
+} from '../../src/ui';
 import { ListingActions } from './row-actions';
 
 interface ListingRow {
@@ -64,23 +72,30 @@ export default async function AdminListingsPage({
     <>
       <PageHeader title={S.listings.title} subtitle={S.listings.subtitle} />
 
-      <form
-        method="get"
-        style={{ display: 'flex', gap: spacing.xs, flexWrap: 'wrap', marginBottom: spacing.md }}
-      >
+      <form method="get" className="mb-md flex flex-wrap gap-xs">
         <input
           name="city"
           defaultValue={params.city ?? ''}
           placeholder={S.listings.allCities}
           aria-label={S.listings.allCities}
-          style={fieldStyle}
+          className={`${fieldStyle} min-w-0 flex-1 basis-[180px]`}
         />
-        <select name="purpose" defaultValue={params.purpose ?? ''} aria-label={S.listings.allPurposes} style={fieldStyle}>
+        <select
+          name="purpose"
+          defaultValue={params.purpose ?? ''}
+          aria-label={S.listings.allPurposes}
+          className={fieldStyle}
+        >
           <option value="">{S.listings.allPurposes}</option>
           <option value={PropertyPurpose.SALE}>{S.listings.sale}</option>
           <option value={PropertyPurpose.RENT}>{S.listings.rent}</option>
         </select>
-        <select name="type" defaultValue={params.type ?? ''} aria-label={S.listings.allTypes} style={fieldStyle}>
+        <select
+          name="type"
+          defaultValue={params.type ?? ''}
+          aria-label={S.listings.allTypes}
+          className={fieldStyle}
+        >
           <option value="">{S.listings.allTypes}</option>
           {Object.values(PropertyType).map((type) => (
             <option key={type} value={type}>
@@ -88,7 +103,12 @@ export default async function AdminListingsPage({
             </option>
           ))}
         </select>
-        <select name="status" defaultValue={params.status ?? ''} aria-label={S.agents.status} style={fieldStyle}>
+        <select
+          name="status"
+          defaultValue={params.status ?? ''}
+          aria-label={S.agents.status}
+          className={fieldStyle}
+        >
           <option value="">{S.agents.all}</option>
           {Object.values(PropertyStatus).map((status) => (
             <option key={status} value={status}>
@@ -96,103 +116,87 @@ export default async function AdminListingsPage({
             </option>
           ))}
         </select>
-        <button type="submit" style={submitStyle}>
-          {S.listings.title}
+        <button type="submit" className={primaryButtonStyle}>
+          {S.agents.filter}
         </button>
       </form>
 
-      <Card style={{ overflowX: 'auto' }}>
+      <Card>
         {listings.length === 0 ? (
-          <p style={muted}>{S.listings.none}</p>
+          <EmptyState hint={S.listings.subtitle}>{S.listings.none}</EmptyState>
         ) : (
-          <table style={tableStyle}>
-            <thead>
-              <tr>
-                <th style={thStyle}>{S.listings.title}</th>
-                <th style={thStyle}>{S.agents.detail}</th>
-                <th style={thStyle}>{S.agents.status}</th>
-                <th style={thStyle}>{S.listings.views}</th>
-                <th style={thStyle}>{S.agents.action}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {listings.map((listing) => (
-                <tr key={listing.id}>
-                  <td style={tdStyle}>
-                    <div style={{ display: 'flex', gap: spacing.xs, alignItems: 'center' }}>
-                      <div
-                        style={{
-                          width: 56,
-                          height: 44,
-                          borderRadius: radius.md,
-                          background: colors.surfaceContainerHigh,
-                          border: `1px solid ${roles.cardBorder}`,
-                          overflow: 'hidden',
-                          flexShrink: 0,
-                        }}
-                      >
-                        {listing.media[0]?.thumbnailUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={listing.media[0].thumbnailUrl}
-                            alt=""
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          />
-                        ) : null}
-                      </div>
-                      <div style={{ minWidth: 0 }}>
-                        <div style={{ fontSize: 15 }}>{listing.titleUr}</div>
-                        <div style={muted}>
-                          {[listing.locality, listing.city].filter(Boolean).join(isRtlLocale(locale) ? '، ' : ', ')}
-                        </div>
-                        <div style={{ ...muted, direction: 'ltr', textAlign: 'start' }}>
-                          {listing.priceVisibility === 'on_request' || listing.pricePaisa === null
-                            ? S.priceOnRequest
-                            : rupees(listing.pricePaisa)}
-                        </div>
-                      </div>
-                    </div>
-                  </td>
-                  <td style={tdStyle}>
-                    <div style={{ fontSize: 14 }}>{listing.agent.user.name ?? '—'}</div>
-                    <div style={muted}>{listing.agent.agencyName ?? S.agents.independent}</div>
-                  </td>
-                  <td style={tdStyle}>
-                    <Badge tone={STATUS_TONE[listing.status]}>{S.status[listing.status]}</Badge>
-                  </td>
-                  <td style={{ ...tdStyle, direction: 'ltr', textAlign: 'end' }}>
-                    {listing.viewCount.toLocaleString('en-PK')}
-                  </td>
-                  <td style={tdStyle}>
-                    <ListingActions
-                      propertyId={listing.id}
-                      archived={listing.status === PropertyStatus.ARCHIVED}
-                      strings={S}
-                    />
-                  </td>
+          <TableScroll>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>{S.listings.title}</th>
+                  <th>{S.agents.detail}</th>
+                  <th>{S.agents.status}</th>
+                  <th className="num">{S.listings.views}</th>
+                  <th>{S.agents.action}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {listings.map((listing) => (
+                  <tr key={listing.id}>
+                    <td>
+                      <div className="flex items-center gap-xs">
+                        {/* A fixed 56×44 well, filled or empty. Without the
+                            placeholder the first column jumps in height
+                            between rows that have a photo and rows that do
+                            not, and a scannable table stops scanning. */}
+                        <div className="h-11 w-14 shrink-0 overflow-hidden rounded-md border border-card-border bg-surface-container-high">
+                          {listing.media[0]?.thumbnailUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={listing.media[0].thumbnailUrl}
+                              alt=""
+                              className="size-full object-cover"
+                            />
+                          ) : null}
+                        </div>
+
+                        <div className="min-w-0">
+                          <div className="truncate font-medium">{listing.titleUr}</div>
+                          <div className="truncate text-xs text-on-surface-variant">
+                            {[listing.locality, listing.city]
+                              .filter(Boolean)
+                              .join(isRtlLocale(locale) ? '، ' : ', ')}
+                          </div>
+                          <div className="numeric text-xs text-on-surface-variant">
+                            {listing.priceVisibility === 'on_request' || listing.pricePaisa === null
+                              ? S.priceOnRequest
+                              : rupees(listing.pricePaisa)}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="text-sm">{listing.agent.user.name ?? '—'}</div>
+                      <div className="text-xs text-on-surface-variant">
+                        {listing.agent.agencyName ?? S.agents.independent}
+                      </div>
+                    </td>
+                    <td>
+                      <Badge tone={STATUS_TONE[listing.status]}>{S.status[listing.status]}</Badge>
+                    </td>
+                    <td className="num">
+                      {listing.viewCount.toLocaleString('en-PK')}
+                    </td>
+                    <td>
+                      <ListingActions
+                        propertyId={listing.id}
+                        archived={listing.status === PropertyStatus.ARCHIVED}
+                        strings={S}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableScroll>
         )}
       </Card>
     </>
   );
 }
-
-const fieldStyle = {
-  minHeight: spacing.touchTarget,
-  padding: `0 ${spacing.sm}px`,
-  borderRadius: radius.md,
-  border: `1px solid ${colors.outlineVariant}`,
-  fontFamily: 'inherit',
-  fontSize: 14,
-};
-
-const submitStyle = {
-  ...fieldStyle,
-  border: 'none',
-  background: colors.primary,
-  color: colors.onPrimary,
-  cursor: 'pointer',
-};

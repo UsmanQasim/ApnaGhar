@@ -1,9 +1,8 @@
 'use client';
 
-import { colors, radius, roles, spacing } from '@ghar/ui';
-
 import { useLocale } from '../src/use-locale';
 import { stringsFor } from '../src/strings';
+import { primaryButtonStyle } from '../src/ui';
 
 /**
  * Error boundary for the admin panel.
@@ -31,31 +30,31 @@ export default function AdminError({
   const S = stringsFor(useLocale()).error;
 
   return (
-    <div style={wrap}>
-      <h1 style={heading}>{S.title}</h1>
+    <div className="grid max-w-[720px] gap-sm">
+      <h1 className="m-0 text-2xl font-semibold tracking-tight">{S.title}</h1>
 
-      <div style={warning}>{S.body}</div>
+      <div className="rounded-md bg-error-container p-sm text-on-error-container">{S.body}</div>
 
-      <p style={subtle}>{S.hint}</p>
+      <p className="m-0 text-on-surface-variant">{S.hint}</p>
 
-      <button type="button" onClick={reset} style={button}>
+      <button type="button" onClick={reset} className={`${primaryButtonStyle} justify-self-start`}>
         {S.retry}
       </button>
 
       {/* English, and deliberately not translated: the only person who can act
           on this list is whoever deploys the service. */}
-      <details style={details}>
-        <summary style={summary}>Troubleshooting</summary>
-        <ul style={list}>
+      <details className="mt-sm rounded-md border border-card-border bg-card-background p-sm text-left text-sm ltr">
+        <summary className="cursor-pointer font-semibold">Troubleshooting</summary>
+        <ul className="mt-xs grid gap-2 ps-4 leading-normal">
           <li>
-            Is the API up? Open <code style={code}>/health</code> on the API host — it
-            should return <code style={code}>{'{"status":"ok","database":"up"}'}</code>.
+            Is the API up? Open <code className="numeric rounded bg-surface-container px-1">/health</code> on the API host — it
+            should return <code className="numeric rounded bg-surface-container px-1">{'{"status":"ok","database":"up"}'}</code>.
           </li>
           <li>
-            Is <code style={code}>API_BASE_URL</code> set on this Vercel project? It must
-            include the <code style={code}>/api</code> suffix, e.g.{' '}
-            <code style={code}>https://ghar-api.onrender.com/api</code>. Without it the
-            build falls back to <code style={code}>http://localhost:3000/api</code>, which
+            Is <code className="numeric rounded bg-surface-container px-1">API_BASE_URL</code> set on this Vercel project? It must
+            include the <code className="numeric rounded bg-surface-container px-1">/api</code> suffix, e.g.{' '}
+            <code className="numeric rounded bg-surface-container px-1">https://ghar-api.onrender.com/api</code>. Without it the
+            build falls back to <code className="numeric rounded bg-surface-container px-1">http://localhost:3000/api</code>, which
             does not exist on Vercel.
           </li>
           <li>
@@ -63,89 +62,16 @@ export default function AdminError({
             deployment — redeploy after saving.
           </li>
           <li>
-            Signed in? Admin routes need the <code style={code}>ghar_admin</code> cookie; a
+            Signed in? Admin routes need the <code className="numeric rounded bg-surface-container px-1">ghar_admin</code> cookie; a
             401 from the API surfaces here too.
           </li>
         </ul>
         {error.digest ? (
-          <p style={digest}>
-            Vercel log digest: <code style={code}>{error.digest}</code>
+          <p className="mt-sm text-xs text-on-surface-variant">
+            Vercel log digest: <code className="numeric rounded bg-surface-container px-1">{error.digest}</code>
           </p>
         ) : null}
       </details>
     </div>
   );
 }
-
-const wrap: React.CSSProperties = {
-  maxWidth: 720,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: spacing.sm,
-};
-
-const heading: React.CSSProperties = { fontSize: 24, lineHeight: 2, margin: 0 };
-
-const warning: React.CSSProperties = {
-  background: roles.warningBackground,
-  color: roles.warningText,
-  padding: spacing.sm,
-  borderRadius: radius.md,
-  fontSize: 16,
-  lineHeight: 2,
-};
-
-const subtle: React.CSSProperties = {
-  color: colors.onSurfaceVariant,
-  fontSize: 16,
-  lineHeight: 2,
-  margin: 0,
-};
-
-const button: React.CSSProperties = {
-  minHeight: spacing.touchTarget,
-  alignSelf: 'flex-start',
-  padding: `0 ${spacing.lg}px`,
-  background: colors.primary,
-  color: colors.onPrimary,
-  border: 'none',
-  borderRadius: radius.md,
-  fontFamily: 'inherit',
-  fontSize: 16,
-  cursor: 'pointer',
-};
-
-const details: React.CSSProperties = {
-  direction: 'ltr',
-  textAlign: 'left',
-  background: roles.cardBackground,
-  border: `1px solid ${roles.cardBorder}`,
-  borderRadius: radius.md,
-  padding: spacing.sm,
-  fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
-  fontSize: 14,
-  lineHeight: 1.6,
-  marginTop: spacing.sm,
-};
-
-const summary: React.CSSProperties = { cursor: 'pointer', fontWeight: 700 };
-
-const list: React.CSSProperties = {
-  margin: `${spacing.xs}px 0 0`,
-  paddingInlineStart: spacing.lg,
-  display: 'grid',
-  gap: spacing.base,
-};
-
-const code: React.CSSProperties = {
-  background: colors.surfaceContainer,
-  borderRadius: radius.sm,
-  padding: '1px 4px',
-  fontFamily: 'ui-monospace, SFMono-Regular, monospace',
-};
-
-const digest: React.CSSProperties = {
-  marginTop: spacing.xs,
-  marginBottom: 0,
-  color: colors.onSurfaceVariant,
-};

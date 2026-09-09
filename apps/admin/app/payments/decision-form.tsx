@@ -3,9 +3,8 @@
 import { useActionState, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 
-import { colors, radius } from '@ghar/ui';
-
 import type { AdminStrings } from '../../src/strings';
+import { dangerButtonStyle, fieldStyle, ghostButtonStyle, primaryButtonStyle } from '../../src/ui';
 import { decidePayment, type DecisionState } from './actions';
 
 type PaymentStrings = AdminStrings['payments'];
@@ -36,11 +35,15 @@ export function DecisionForm({
   const [reason, setReason] = useState('');
 
   if (state.status === 'ok') {
-    return <p style={{ color: colors.primary, fontSize: 14, margin: 0 }}>{state.message}</p>;
+    return (
+      <p className="m-0 rounded-md bg-primary-fixed px-sm py-2 text-sm text-on-primary-fixed">
+        {state.message}
+      </p>
+    );
   }
 
   return (
-    <form action={action} style={{ display: 'grid', gap: 8 }}>
+    <form action={action} className="grid gap-xs">
       <input type="hidden" name="paymentId" value={paymentId} />
 
       {rejecting ? (
@@ -49,7 +52,7 @@ export function DecisionForm({
             name="reason"
             value={reason}
             onChange={(event) => setReason(event.target.value)}
-            style={input}
+            className={fieldStyle}
           >
             <option value="">{strings.chooseReason}</option>
             {strings.rejectReasons.map((option) => (
@@ -69,7 +72,7 @@ export function DecisionForm({
             {strings.confirmRejection}
           </SubmitButton>
 
-          <button type="button" onClick={() => setRejecting(false)} style={ghost}>
+          <button type="button" onClick={() => setRejecting(false)} className={ghostButtonStyle}>
             {strings.cancel}
           </button>
         </>
@@ -79,14 +82,14 @@ export function DecisionForm({
             {strings.approve}
           </SubmitButton>
 
-          <button type="button" onClick={() => setRejecting(true)} style={ghost}>
+          <button type="button" onClick={() => setRejecting(true)} className={ghostButtonStyle}>
             {strings.rejectEllipsis}
           </button>
         </>
       )}
 
       {state.status === 'error' ? (
-        <p style={{ color: colors.onErrorContainer, fontSize: 13, margin: 0 }}>{state.message}</p>
+        <p className="m-0 text-xs text-on-error-container">{state.message}</p>
       ) : null}
     </form>
   );
@@ -115,46 +118,10 @@ function SubmitButton({
     <button
       type="submit"
       disabled={pending || disabled}
-      style={{
-        ...button,
-        background: tone === 'primary' ? colors.primary : colors.error,
-        opacity: pending || disabled ? 0.5 : 1,
-      }}
+      className={tone === 'primary' ? primaryButtonStyle : dangerButtonStyle}
       {...rest}
     >
       {pending ? working : children}
     </button>
   );
 }
-
-const button: React.CSSProperties = {
-  minHeight: 44,
-  border: 0,
-  borderRadius: radius.DEFAULT,
-  color: colors.onPrimary,
-  fontFamily: 'inherit',
-  fontSize: 15,
-  cursor: 'pointer',
-};
-
-const ghost: React.CSSProperties = {
-  minHeight: 40,
-  background: 'transparent',
-  border: `1px solid ${colors.outlineVariant}`,
-  borderRadius: radius.DEFAULT,
-  color: colors.onSurface,
-  fontFamily: 'inherit',
-  fontSize: 14,
-  cursor: 'pointer',
-};
-
-const input: React.CSSProperties = {
-  minHeight: 44,
-  borderRadius: radius.DEFAULT,
-  border: `1px solid ${colors.outlineVariant}`,
-  padding: '0 8px',
-  // The select inherits the page's script; a Nastaliq reason list set in a
-  // Latin face (or vice versa) is unreadable.
-  fontFamily: 'inherit',
-  fontSize: 15,
-};
