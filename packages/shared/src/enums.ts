@@ -1,7 +1,52 @@
-export const Locale = { UR: 'ur', EN: 'en' } as const;
+/**
+ * Three locales, two scripts, two directions.
+ *
+ *  ur       Urdu in Nastaliq  — RTL. The default, and not merely the fallback:
+ *                               an English string leaking into the Urdu UI is
+ *                               a CI failure (packages/i18n check-parity).
+ *  ur-Latn  Roman Urdu        — LTR, Latin script. The same language written
+ *                               the way most Pakistanis actually type it. Many
+ *                               readers who speak Urdu fluently read Nastaliq
+ *                               slowly, and plenty of handsets render it badly
+ *                               in SMS — this is the locale for them, and it
+ *                               is NOT a dialect of English.
+ *  en       English           — LTR.
+ *
+ * `ur-Latn` is the BCP-47 tag (language + script subtag), so it is valid in
+ * `<html lang>`, in i18next, and in Intl. Anything keyed by locale must handle
+ * all three; `isRtl` and the font choice are the two that bite.
+ */
+export const Locale = { UR: 'ur', UR_LATN: 'ur-Latn', EN: 'en' } as const;
 export type Locale = (typeof Locale)[keyof typeof Locale];
-export const LOCALES: readonly Locale[] = [Locale.UR, Locale.EN];
+export const LOCALES: readonly Locale[] = [Locale.UR, Locale.UR_LATN, Locale.EN];
 export const DEFAULT_LOCALE: Locale = Locale.UR;
+
+/** Locales written right-to-left. Roman Urdu is Urdu, but it is not RTL. */
+export function isRtlLocale(locale: Locale): boolean {
+  return locale === Locale.UR;
+}
+
+/** Latin-script locales, which must NOT be set in a Nastaliq face. */
+export function isLatinScript(locale: Locale): boolean {
+  return locale !== Locale.UR;
+}
+
+/** Narrow an untrusted string (a cookie, a query param, a device setting). */
+export function parseLocale(value: string | null | undefined): Locale {
+  if (!value) return DEFAULT_LOCALE;
+
+  const found = LOCALES.find((l) => l.toLowerCase() === value.toLowerCase());
+  if (found) return found;
+
+  // "ur-PK" and "ur_Latn_PK" both arrive from real devices; match the prefix
+  // rather than dropping the user to English on a regional variant.
+  const lower = value.toLowerCase().replace(/_/g, '-');
+  if (lower.startsWith('ur-latn')) return Locale.UR_LATN;
+  if (lower.startsWith('ur')) return Locale.UR;
+  if (lower.startsWith('en')) return Locale.EN;
+
+  return DEFAULT_LOCALE;
+}
 
 export const UserRole = { CUSTOMER: 'customer', AGENT: 'agent', ADMIN: 'admin' } as const;
 export type UserRole = (typeof UserRole)[keyof typeof UserRole];

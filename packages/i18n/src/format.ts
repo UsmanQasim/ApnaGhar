@@ -1,4 +1,4 @@
-import { AreaUnit, Locale, type Paisa } from '@ghar/shared';
+import { AreaUnit, isRtlLocale, Locale, type Paisa } from '@ghar/shared';
 
 /**
  * Formatting for a Pakistani audience.
@@ -26,6 +26,10 @@ export interface NumeralOptions {
 }
 
 function applyNumerals(text: string, opts: NumeralOptions): string {
+  // Urdu-Indic digits belong with Urdu-Indic script. Roman Urdu is written in
+  // Latin letters, so "۸۵ lakh" would be a hybrid nobody writes — it defaults
+  // to Latin digits like English does. A user can still force either via the
+  // urduNumerals preference.
   const useUrdu = opts.urduNumerals ?? opts.locale === Locale.UR;
   return useUrdu ? toUrduDigits(text) : text;
 }
@@ -40,6 +44,10 @@ const THOUSAND = 1_000;
 
 const UNIT_WORDS = {
   [Locale.UR]: { crore: 'کروڑ', lakh: 'لاکھ', thousand: 'ہزار', rupees: 'روپے' },
+  // The same words a Pakistani would type on a Latin keyboard — "85 lakh
+  // rupay", not "Rs 8,500,000". Roman Urdu keeps Urdu's word order, so the
+  // currency word trails the amount exactly as it does in Nastaliq.
+  [Locale.UR_LATN]: { crore: 'crore', lakh: 'lakh', thousand: 'hazaar', rupees: 'rupay' },
   [Locale.EN]: { crore: 'Crore', lakh: 'Lakh', thousand: 'Thousand', rupees: 'Rs' },
 } as const;
 
@@ -96,9 +104,13 @@ export function formatPriceExact(amountPaisa: Paisa, opts: NumeralOptions): stri
   const rest = digits.slice(0, -3);
   const grouped = rest ? `${rest.replace(/\B(?=(\d{2})+(?!\d))/g, ',')},${last3}` : last3;
   const body = decPart ? `${sign}${grouped}.${decPart}` : `${sign}${grouped}`;
+  // Was a hardcoded 'روپے'. That is correct for Urdu and wrong for the other
+  // two, and it silently put Nastaliq into a Roman Urdu invoice — go through
+  // the word table like every other unit does.
+  const rupeesWord = UNIT_WORDS[opts.locale].rupees;
   return opts.locale === Locale.EN
-    ? applyNumerals(`Rs ${body}`, opts)
-    : applyNumerals(`${body} روپے`, opts);
+    ? applyNumerals(`${rupeesWord} ${body}`, opts)
+    : applyNumerals(`${body} ${rupeesWord}`, opts);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -111,6 +123,12 @@ const AREA_WORDS: Record<Locale, Record<AreaUnit, string>> = {
     [AreaUnit.KANAL]: 'کنال',
     [AreaUnit.SQFT]: 'مربع فٹ',
     [AreaUnit.SQYD]: 'مربع گز',
+  },
+  [Locale.UR_LATN]: {
+    [AreaUnit.MARLA]: 'marla',
+    [AreaUnit.KANAL]: 'kanal',
+    [AreaUnit.SQFT]: 'square foot',
+    [AreaUnit.SQYD]: 'square gaz',
   },
   [Locale.EN]: {
     [AreaUnit.MARLA]: 'Marla',
@@ -138,6 +156,15 @@ const TIME_WORDS = {
     week: 'ہفتے پہلے',
     month: 'مہینے پہلے',
     year: 'سال پہلے',
+  },
+  [Locale.UR_LATN]: {
+    justNow: 'abhi',
+    minute: 'minute pehlay',
+    hour: 'ghantay pehlay',
+    day: 'din pehlay',
+    week: 'haftay pehlay',
+    month: 'mahinay pehlay',
+    year: 'saal pehlay',
   },
   [Locale.EN]: {
     justNow: 'just now',
@@ -172,6 +199,23 @@ export function formatRelativeTime(date: Date, opts: NumeralOptions, now = new D
 }
 
 /**
+ * Countdown words for a share link. A table rather than an if-chain: the old
+ * shape tested `locale === UR` and let everything else fall through to
+ * English, which is exactly how Roman Urdu would have started saying
+ * "27 min left" in the middle of an otherwise Roman Urdu page.
+ */
+const REMAINING_WORDS = {
+  [Locale.UR]: { minute: 'منٹ باقی', hour: 'گھنٹے باقی', day: 'دن باقی', expired: 'ختم ہو گیا' },
+  [Locale.UR_LATN]: {
+    minute: 'minute baqi',
+    hour: 'ghantay baqi',
+    day: 'din baqi',
+    expired: 'khatam ho gaya',
+  },
+  [Locale.EN]: { minute: 'min left', hour: 'hours left', day: 'days left', expired: 'expired' },
+} as const;
+
+/**
  * Countdown for a share link, e.g. "27 منٹ باقی".
  * Returns null when the link never expires.
  */
@@ -181,23 +225,27 @@ export function formatTimeRemaining(
   now = new Date(),
 ): string | null {
   if (expiresAt === null) return null;
+
+  const w = REMAINING_WORDS[opts.locale];
   const ms = expiresAt.getTime() - now.getTime();
-  if (ms <= 0) return opts.locale === Locale.UR ? 'ختم ہو گیا' : 'expired';
+  if (ms <= 0) return w.expired;
 
   const minutes = Math.ceil(ms / 60000);
-  if (opts.locale === Locale.UR) {
-    if (minutes < 60) return applyNumerals(`${minutes} منٹ باقی`, opts);
-    const hours = Math.ceil(minutes / 60);
-    if (hours < 24) return applyNumerals(`${hours} گھنٹے باقی`, opts);
-    return applyNumerals(`${Math.ceil(hours / 24)} دن باقی`, opts);
-  }
-  if (minutes < 60) return `${minutes} min left`;
+  if (minutes < 60) return applyNumerals(`${minutes} ${w.minute}`, opts);
+
   const hours = Math.ceil(minutes / 60);
-  if (hours < 24) return `${hours} hours left`;
-  return `${Math.ceil(hours / 24)} days left`;
+  if (hours < 24) return applyNumerals(`${hours} ${w.hour}`, opts);
+
+  return applyNumerals(`${Math.ceil(hours / 24)} ${w.day}`, opts);
 }
 
-/** Whether the layout should be right-to-left. */
+/**
+ * Whether the layout should be right-to-left.
+ *
+ * Re-exported from @ghar/shared rather than reimplemented: this predicate now
+ * has three cases, not two, and Roman Urdu is the one that catches people out
+ * — it is Urdu, and it is left-to-right.
+ */
 export function isRtl(locale: Locale): boolean {
-  return locale === Locale.UR;
+  return isRtlLocale(locale);
 }

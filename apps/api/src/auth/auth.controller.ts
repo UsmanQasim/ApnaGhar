@@ -1,8 +1,8 @@
-import { Body, Controller, Headers, Post } from '@nestjs/common';
+import { Body, Controller, Headers, Patch, Post } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { z } from 'zod';
 
-import { otpRequestSchema, otpVerifySchema } from '@ghar/shared';
+import { otpRequestSchema, otpVerifySchema, updateLocaleSchema } from '@ghar/shared';
 
 import { CurrentViewer, Public } from '../common/auth.guard';
 import { zodBody } from '../common/zod.pipe';
@@ -53,6 +53,19 @@ export class AuthController {
   async logout(@Body(zodBody(refreshSchema)) input: { refreshToken: string }) {
     await this.auth.logout(input.refreshToken);
     return { ok: true };
+  }
+
+  /**
+   * Keep the account's language in step with the app's. Authenticated, and
+   * scoped to the caller only — locale is a user preference, never an admin
+   * action.
+   */
+  @Patch('locale')
+  async setLocale(
+    @CurrentViewer() viewer: { userId: string | null },
+    @Body(zodBody(updateLocaleSchema)) input: z.infer<typeof updateLocaleSchema>,
+  ) {
+    return this.auth.setLocale(viewer.userId as string, input.locale);
   }
 
   @Post('become-agent')

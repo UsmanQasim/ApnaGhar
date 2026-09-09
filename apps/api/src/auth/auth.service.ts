@@ -42,7 +42,11 @@ export class AuthService {
     const user =
       existing ??
       (await this.prisma.user.create({
-        data: { phone: input.phone, role: UserRole.CUSTOMER, locale: Locale.UR },
+        // The locale the client was showing when they verified. Defaulted to
+        // Urdu by the schema, so an older client that sends nothing is
+        // unchanged — but a user who picked Roman Urdu now gets Roman Urdu SMS
+        // instead of Nastaliq they may not read.
+        data: { phone: input.phone, role: UserRole.CUSTOMER, locale: input.locale },
       }));
 
     const tokens = await this.issueTokens(user.id, user.role as UserRole, input.deviceId, userAgent);
@@ -107,6 +111,19 @@ export class AuthService {
       session.deviceId,
       userAgent,
     );
+  }
+
+  /**
+   * Follow a language change made in the app.
+   *
+   * Without this the account keeps whatever locale it was created with, and a
+   * user who switches to Roman Urdu in settings keeps receiving Nastaliq SMS
+   * — the UI and the messages disagree, and only the messages are the ones
+   * they cannot change.
+   */
+  async setLocale(userId: string, locale: Locale): Promise<{ locale: Locale }> {
+    await this.prisma.user.update({ where: { id: userId }, data: { locale } });
+    return { locale };
   }
 
   async logout(refreshToken: string): Promise<void> {

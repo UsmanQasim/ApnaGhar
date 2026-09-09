@@ -31,11 +31,6 @@ datasource db {
 // Enums
 // ─────────────────────────────────────────────────────────────────────────────
 
-enum Locale {
-  ur
-  en
-}
-
 enum UserRole {
   customer
   agent
@@ -194,7 +189,12 @@ model User {
   phone     String     @unique @db.VarChar(20)
   name      String?    @db.VarChar(120)
   role      UserRole   @default(customer)
-  locale    Locale     @default(ur)
+  /// BCP-47 tag: "ur" (Nastaliq, RTL), "ur-Latn" (Roman Urdu, LTR) or "en".
+  /// Deliberately NOT a Postgres enum: labels cannot contain a hyphen, so an
+  /// enum would force a name-mapping between "ur_Latn" in the database and
+  /// "ur-Latn" everywhere else — one more place for the two to drift apart.
+  /// Validated at the edge instead, by `z.enum(LOCALES)` in @ghar/shared.
+  locale    String     @default("ur") @db.VarChar(12)
   /// User preference: Urdu-Indic (۱۲۳) vs Latin (123) digits.
   urduNumerals Boolean @default(true)
   status    UserStatus @default(active)

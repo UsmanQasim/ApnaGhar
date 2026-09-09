@@ -1,7 +1,18 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { chart, colors, hitSlop, radius, roles, spacing, typography } from './tokens';
+import {
+  chart,
+  colors,
+  fonts,
+  hitSlop,
+  radius,
+  roles,
+  spacing,
+  typography,
+  typographyFor,
+  typographyLatin,
+} from './tokens';
 
 /** Relative luminance per WCAG 2.1. */
 function luminance(hex: string): number {
@@ -96,6 +107,47 @@ test('every Urdu style has ~2x line height, or Nastaliq descenders collide', () 
       `${key} line-height ratio is ${ratio.toFixed(2)}, needs >= 1.8 for Nastaliq`,
     );
   }
+});
+
+test('the Latin scale carries no Nastaliq face', () => {
+  // Roman Urdu and English are Latin script. Left in NotoNastaliqUrdu they
+  // fall back glyph by glyph to whatever the OS supplies, and a single line
+  // ends up set in two or three different typefaces.
+  for (const [key, style] of Object.entries(typographyLatin)) {
+    assert.notEqual(style.fontFamily, fonts.urdu, `${key} is still Nastaliq`);
+    assert.equal(style.fontFamily, fonts.sans);
+  }
+});
+
+test('the Latin scale drops the Nastaliq leading without changing sizes', () => {
+  const latinStyles = ['headlineLg', 'headlineMd', 'headlineSm', 'bodyLg', 'bodyMd'] as const;
+
+  for (const key of latinStyles) {
+    const ratio = typographyLatin[key].lineHeight / typographyLatin[key].fontSize;
+
+    // The ~2x floor is a Nastaliq requirement. Applied to Latin it reads as
+    // double-spaced text, so the Latin scale must sit well under it...
+    assert.ok(ratio < 1.8, `${key} still has Nastaliq leading (${ratio.toFixed(2)})`);
+    // ...but not so tight that lines crowd.
+    assert.ok(ratio >= 1.2, `${key} leading is too tight (${ratio.toFixed(2)})`);
+
+    // Identical sizes, so switching language re-scripts the UI without
+    // reflowing every screen.
+    assert.equal(
+      typographyLatin[key].fontSize,
+      typography[key].fontSize,
+      `${key} font size drifted between scripts`,
+    );
+  }
+});
+
+test('both scales expose exactly the same tokens', () => {
+  // A screen asks for `bodyMd` and must get it in whichever script is active;
+  // a token present in one scale and missing from the other is a crash in one
+  // language only.
+  assert.deepEqual(Object.keys(typographyLatin).sort(), Object.keys(typography).sort());
+  assert.equal(typographyFor('latin'), typographyLatin);
+  assert.equal(typographyFor('nastaliq'), typography);
 });
 
 test('body text is never below 16px', () => {

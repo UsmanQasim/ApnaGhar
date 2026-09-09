@@ -104,6 +104,79 @@ export const typography = {
 
 export type TypographyToken = keyof typeof typography;
 
+/**
+ * Which alphabet a locale is set in. Not the same question as direction:
+ * Roman Urdu is Latin script AND left-to-right, Urdu is Nastaliq AND
+ * right-to-left, but the two properties are decided separately and a locale
+ * added later could mix them.
+ *
+ * Kept as a script name rather than a Locale so this package stays
+ * dependency-free; @ghar/shared owns the locale → script mapping
+ * (`isLatinScript`).
+ */
+export type Script = 'nastaliq' | 'latin';
+
+/**
+ * The same scale, set in Latin.
+ *
+ * Two things change and neither is cosmetic:
+ *
+ *  • the face — Nastaliq has no Latin glyphs worth the name, so Roman Urdu
+ *    rendered in NotoNastaliqUrdu falls back per-character to whatever the OS
+ *    picks, and the line stops looking like one typeface.
+ *  • the leading — the ~2x above is a legibility requirement of Nastaliq's
+ *    descenders, not a style choice. Applied to Latin it reads as
+ *    double-spaced text, and a paragraph stops holding together as a block.
+ *
+ * Sizes are deliberately identical, so a language switch changes the script
+ * without reflowing every screen.
+ */
+export const typographyLatin = {
+  headlineLg: { fontFamily: fonts.sans, fontSize: 32, fontWeight: '700', lineHeight: 40 },
+  headlineMd: { fontFamily: fonts.sans, fontSize: 24, fontWeight: '600', lineHeight: 32 },
+  headlineSm: { fontFamily: fonts.sans, fontSize: 20, fontWeight: '600', lineHeight: 28 },
+  bodyLg: { fontFamily: fonts.sans, fontSize: 18, fontWeight: '400', lineHeight: 28 },
+  bodyMd: { fontFamily: fonts.sans, fontSize: 16, fontWeight: '400', lineHeight: 24 },
+  // Already Latin in both sets — numerals and labels never used Nastaliq.
+  numberLg: { fontFamily: fonts.sans, fontSize: 20, fontWeight: '700', lineHeight: 24 },
+  numberMd: { fontFamily: fonts.sans, fontSize: 16, fontWeight: '600', lineHeight: 20 },
+  labelSm: {
+    fontFamily: fonts.sans,
+    fontSize: 12,
+    fontWeight: '500',
+    lineHeight: 16,
+    letterSpacing: 0.24,
+  },
+} as const;
+
+/** The type scale for a script. `typography` remains the Nastaliq default. */
+export function typographyFor(script: Script) {
+  return script === 'latin' ? typographyLatin : typography;
+}
+
+/**
+ * CSS font stacks for the web surfaces, which load these faces from Google
+ * Fonts rather than bundling them.
+ *
+ * The fallbacks matter more than usual: if Noto Nastaliq Urdu fails to load,
+ * a system Arabic-script fallback still renders readable Urdu, whereas
+ * `sans-serif` alone renders it in a naskh face that changes the shape of
+ * every word.
+ */
+export const webFontStack = {
+  nastaliq: "'Noto Nastaliq Urdu', 'Noto Naskh Arabic', 'Jameel Noori Nastaleeq', serif",
+  latin: "'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif",
+} as const;
+
+/**
+ * Line-height multiplier for body copy on the web, where lineHeight is set as
+ * a unitless ratio rather than the absolute pixel values above.
+ */
+export const webLineHeight = {
+  nastaliq: 2,
+  latin: 1.6,
+} as const;
+
 export const spacing = {
   base: 4,
   xs: 8,

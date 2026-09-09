@@ -3,6 +3,7 @@ import { z } from 'zod';
 import {
   AreaUnit,
   BoostType,
+  DEFAULT_LOCALE,
   LeadChannel,
   Locale,
   MediaKind,
@@ -37,6 +38,18 @@ export const otpVerifySchema = z.object({
   phone: phoneSchema,
   code: z.string().regex(/^\d{6}$/),
   deviceId: z.string().max(128).optional(),
+  /**
+   * The language the client is showing right now. Verification is where the
+   * account is created, so this is the only chance to record a preference
+   * before the first SMS goes out — and Roman Urdu is frequently chosen
+   * precisely because a handset renders Nastaliq badly in SMS.
+   */
+  locale: z.enum(enumValues(Locale)).default(DEFAULT_LOCALE),
+});
+
+/** Changing the UI language must follow the account, or SMS drifts from UI. */
+export const updateLocaleSchema = z.object({
+  locale: z.enum(enumValues(Locale)),
 });
 
 export const localizedTextSchema = z.object({
@@ -195,6 +208,7 @@ export const createBoostSchema = z.object({
 
 export type OtpRequest = z.infer<typeof otpRequestSchema>;
 export type OtpVerify = z.infer<typeof otpVerifySchema>;
+export type UpdateLocale = z.infer<typeof updateLocaleSchema>;
 export type CreateProperty = z.infer<typeof createPropertySchema>;
 export type UpdateProperty = z.infer<typeof updatePropertySchema>;
 export type SearchProperties = z.infer<typeof searchPropertiesSchema>;
