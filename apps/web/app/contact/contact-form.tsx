@@ -4,22 +4,22 @@ import { useFormState, useFormStatus } from 'react-dom';
 
 import { colors, radius, roles, spacing } from '@ghar/ui';
 
-import { C } from '../../src/copy';
+import type { WebCopy } from '../../src/copy';
 import { submitContact, type ContactState } from './actions';
 
 const INITIAL: ContactState = { status: 'idle', message: null };
 
-export function ContactForm() {
+export function ContactForm({ strings }: { strings: WebCopy['contact'] }) {
   const [state, action] = useFormState(submitContact, INITIAL);
 
   return (
     <form action={action} style={{ display: 'grid', gap: spacing.sm }}>
-      <Field name="name" label={C.contact.name} required />
-      <Field name="email" label={C.contact.email} type="email" />
-      <Field name="phone" label={C.contact.phone} type="tel" ltr />
+      <Field name="name" label={strings.name} required />
+      <Field name="email" label={strings.email} type="email" />
+      <Field name="phone" label={strings.phone} type="tel" ltr />
 
       <label style={{ display: 'grid', gap: spacing.base }}>
-        <span style={{ fontSize: 16 }}>{C.contact.message}</span>
+        <span style={{ fontSize: 16 }}>{strings.message}</span>
         <textarea
           name="message"
           required
@@ -30,7 +30,9 @@ export function ContactForm() {
             border: `1px solid ${roles.cardBorder}`,
             fontFamily: 'inherit',
             fontSize: 16,
-            lineHeight: 2,
+            // `inherit` rather than 2: the body's line-height already follows
+            // the script, and a hardcoded 2 double-spaces a Latin textarea.
+            lineHeight: 'inherit',
             resize: 'vertical',
           }}
         />
@@ -52,12 +54,12 @@ export function ContactForm() {
         </p>
       ) : null}
 
-      <SubmitButton />
+      <SubmitButton label={strings.sendMessage} />
     </form>
   );
 }
 
-function SubmitButton() {
+function SubmitButton({ label }: { label: string }) {
   const { pending } = useFormStatus();
 
   return (
@@ -76,7 +78,7 @@ function SubmitButton() {
         opacity: pending ? 0.6 : 1,
       }}
     >
-      {C.contact.sendMessage}
+      {label}
     </button>
   );
 }

@@ -2,17 +2,23 @@ import Link from 'next/link';
 
 import { colors, radius, roles, spacing } from '@ghar/ui';
 
-import { C } from '../../src/copy';
+import { C, copyFor, type WebCopy } from '../../src/copy';
+import { getLocale } from '../../src/locale';
 import { FeatureCard, Grid, Section, cardStyle, primaryLinkStyle } from '../../src/components/chrome';
 
+// Module scope: metadata is generated per build, not per request, so it
+// cannot read the locale cookie. `C` is the default (Urdu) set.
 export const metadata = { title: `${C.nav.buyers} — ${C.brand}` };
 
-const STEPS = [
-  { n: 1, title: C.buyers.step1, body: C.buyers.step1Body },
-  { n: 2, title: C.buyers.step2, body: C.buyers.step2Body },
-  { n: 3, title: C.buyers.step3, body: C.buyers.step3Body },
-  { n: 4, title: C.buyers.step4, body: C.buyers.step4Body },
-] as const;
+/** Per request: these labels are locale-dependent. */
+function stepsFor(C: WebCopy) {
+  return [
+    { n: 1, title: C.buyers.step1, body: C.buyers.step1Body },
+    { n: 2, title: C.buyers.step2, body: C.buyers.step2Body },
+    { n: 3, title: C.buyers.step3, body: C.buyers.step3Body },
+    { n: 4, title: C.buyers.step4, body: C.buyers.step4Body },
+  ] as const;
+}
 
 /**
  * For buyers.
@@ -29,7 +35,11 @@ const STEPS = [
  * What replaces them is a claim the product does keep: the buyer's number is
  * not handed to an agent until the buyer makes contact (see EngagementService).
  */
-export default function BuyersPage() {
+export default async function BuyersPage() {
+  // Per request, not module scope: the visitor's language is a cookie.
+  const C = copyFor(await getLocale());
+  const STEPS = stepsFor(C);
+
   return (
     <main>
       <section style={{ background: colors.primaryFixed, padding: `${spacing.xl * 1.5}px ${spacing.md}px` }}>

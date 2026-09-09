@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { colors, radius, roles, spacing } from '@ghar/ui';
 
 import { adminApi } from '../src/api';
-import { S } from '../src/strings';
+import { getLocale } from '../src/locale';
+import { stringsFor, type AdminStrings } from '../src/strings';
 import { Badge, Card, PageHeader, StatTile, rupees, muted, tableStyle, tdStyle, thStyle } from '../src/ui';
 
 interface Overview {
@@ -33,11 +34,20 @@ interface Overview {
 
 export const dynamic = 'force-dynamic';
 
-const ACTIVITY_LABEL: Record<Overview['activity'][number]['kind'], string> = {
-  listing: S.overview.newListingLogged,
-  agent: S.overview.newAgentLogged,
-  payment: S.overview.paymentApproved,
-};
+/**
+ * Built per request, not frozen at module scope: these labels are
+ * locale-dependent, and a module-level constant would serve every operator
+ * whichever language happened to be imported first.
+ */
+function activityLabels(
+  S: AdminStrings,
+): Record<Overview['activity'][number]['kind'], string> {
+  return {
+    listing: S.overview.newListingLogged,
+    agent: S.overview.newAgentLogged,
+    payment: S.overview.paymentApproved,
+  };
+}
 
 const ACTIVITY_ICON: Record<Overview['activity'][number]['kind'], string> = {
   listing: '🏠',
@@ -54,6 +64,10 @@ const ACTIVITY_ICON: Record<Overview['activity'][number]['kind'], string> = {
  * a feed.
  */
 export default async function AdminOverviewPage() {
+  // Per request, not module scope: the operator's language is a cookie.
+  const S = stringsFor(await getLocale());
+  const ACTIVITY_LABEL = activityLabels(S);
+
   const data = await adminApi<Overview>('/admin/overview');
 
   return (

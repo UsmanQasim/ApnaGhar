@@ -1,9 +1,12 @@
 import type { CSSProperties, ReactNode } from 'react';
 import Link from 'next/link';
 
+import type { Locale } from '@ghar/shared';
 import { colors, radius, roles, spacing } from '@ghar/ui';
 
-import { C } from '../copy';
+import { LanguageSwitcher } from '../LanguageSwitcher';
+import { copyFor, type WebCopy } from '../copy';
+import { getLocale } from '../locale';
 
 /**
  * Shared marketing chrome.
@@ -13,15 +16,26 @@ import { C } from '../copy';
  * hex is how they stop agreeing later.
  */
 
-const NAV = [
-  { href: '/', label: C.nav.home },
-  { href: '/agents', label: C.nav.agents },
-  { href: '/buyers', label: C.nav.buyers },
-  { href: '/pricing', label: C.nav.pricing },
-  { href: '/contact', label: C.nav.contact },
-] as const;
+/**
+ * Built per request, not at module scope: nav labels are locale-dependent, and
+ * a module-level constant would freeze whichever language happened to be
+ * imported first for every visitor.
+ */
+function navFor(C: WebCopy) {
+  return [
+    { href: '/', label: C.nav.home },
+    { href: '/agents', label: C.nav.agents },
+    { href: '/buyers', label: C.nav.buyers },
+    { href: '/pricing', label: C.nav.pricing },
+    { href: '/contact', label: C.nav.contact },
+  ] as const;
+}
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const locale: Locale = await getLocale();
+  const C = copyFor(locale);
+  const NAV = navFor(C);
+
   return (
     <header
       style={{
@@ -70,6 +84,17 @@ export function SiteHeader() {
           ))}
         </nav>
 
+        <LanguageSwitcher
+          active={locale}
+          label={C.language}
+          tone={{
+            fg: colors.onSurfaceVariant,
+            border: roles.cardBorder,
+            selectedBg: colors.primary,
+            selectedFg: colors.onPrimary,
+          }}
+        />
+
         <Link href="/#download" style={primaryLinkStyle}>
           {C.nav.download}
         </Link>
@@ -78,7 +103,10 @@ export function SiteHeader() {
   );
 }
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const locale: Locale = await getLocale();
+  const C = copyFor(locale);
+
   return (
     <footer style={{ background: colors.inverseSurface, color: colors.inverseOnSurface, marginTop: spacing.xl }}>
       <div
@@ -108,6 +136,19 @@ export function SiteFooter() {
             ))}
           </ul>
         </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: spacing.xs }}>
+        <LanguageSwitcher
+          active={locale}
+          label={C.language}
+          tone={{
+            fg: colors.inverseOnSurface,
+            border: colors.outline,
+            selectedBg: colors.inverseOnSurface,
+            selectedFg: colors.inverseSurface,
+          }}
+        />
       </div>
 
       <p style={{ margin: 0, padding: spacing.md, textAlign: 'center', opacity: 0.7, fontSize: 14 }}>

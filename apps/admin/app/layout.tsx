@@ -4,23 +4,34 @@ import Link from 'next/link';
 
 import { colors, radius, roles, spacing } from '@ghar/ui';
 
+import { LanguageSwitcher } from '../src/LanguageSwitcher';
+import { documentAttributes, getLocale } from '../src/locale';
 import { signOut } from '../src/session';
 import { SESSION_COOKIE } from '../src/session-cookie';
-import { S } from '../src/strings';
+import { S, stringsFor, type AdminStrings } from '../src/strings';
 
 export const metadata = {
+  // Static: metadata is generated once, not per request, so it uses the
+  // default locale. The panel is never indexed, so this costs nothing.
   title: S.brand,
   // Never indexed. This panel can approve payments and suspend accounts.
   robots: { index: false, follow: false },
 };
 
-const NAV = [
-  { href: '/', label: S.nav.overview, icon: '▦' },
-  { href: '/payments', label: S.nav.payments, icon: '💳' },
-  { href: '/agents', label: S.nav.agents, icon: '👥' },
-  { href: '/listings', label: S.nav.listings, icon: '🏢' },
-  { href: '/reports', label: S.reports.title, icon: '📈' },
-] as const;
+/**
+ * Navigation is built per request now, not at module scope: the labels are
+ * locale-dependent, and a module-level constant would freeze whichever
+ * language happened to be imported first for every operator.
+ */
+function navFor(S: AdminStrings) {
+  return [
+    { href: '/', label: S.nav.overview, icon: '▦' },
+    { href: '/payments', label: S.nav.payments, icon: '💳' },
+    { href: '/agents', label: S.nav.agents, icon: '👥' },
+    { href: '/listings', label: S.nav.listings, icon: '🏢' },
+    { href: '/reports', label: S.reports.title, icon: '📈' },
+  ] as const;
+}
 
 /**
  * Admin shell — sidebar + content, RTL.
@@ -36,8 +47,13 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   // back here, so the chrome is drawn only once there is a session.
   const signedIn = (await cookies()).has(SESSION_COOKIE);
 
+  const locale = await getLocale();
+  const doc = documentAttributes(locale);
+  const S = stringsFor(locale);
+  const NAV = navFor(S);
+
   return (
-    <html lang="ur" dir="rtl">
+    <html lang={doc.lang} dir={doc.dir}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -51,16 +67,21 @@ export default async function AdminLayout({ children }: { children: ReactNode })
           margin: 0,
           background: colors.surface,
           color: colors.onSurface,
-          // Nastaliq for the chrome; numerals inside tables opt into Plus
-          // Jakarta Sans locally so figures stay scannable.
-          fontFamily: "'Noto Nastaliq Urdu', system-ui, sans-serif",
-          // Nastaliq needs ~2x leading or descenders collide — the same floor
-          // packages/ui asserts for the app.
-          lineHeight: 2,
+          // The face follows the SCRIPT, not the language: Roman Urdu is Urdu
+          // written in Latin letters, and Nastaliq has no usable Latin glyphs.
+          // Numerals inside tables opt into Plus Jakarta Sans locally either
+          // way, so figures stay scannable.
+          fontFamily: doc.fontFamily,
+          // ~2x leading is a legibility requirement of Nastaliq's descenders,
+          // not a style choice; on Latin the same value reads double-spaced.
+          lineHeight: doc.lineHeight,
         }}
       >
         {!signedIn ? (
-          <main style={{ padding: spacing.lg }}>{children}</main>
+          <main style={{ padding: spacing.lg, display: 'grid', gap: spacing.lg, justifyItems: 'center' }}>
+            {children}
+            <LanguageSwitcher active={locale} label={S.language} />
+          </main>
         ) : (
         <div style={{ display: 'grid', gridTemplateColumns: '260px minmax(0, 1fr)', minHeight: '100vh' }}>
           <aside
@@ -104,7 +125,11 @@ export default async function AdminLayout({ children }: { children: ReactNode })
             {/* Was action="/api/logout" — a route that never existed in this app,
                 so the button silently 404'd. A server action clears the cookie
                 where it was set, on the server. */}
-            <form action={signOut} style={{ marginTop: 'auto' }}>
+            <div style={{ marginTop: 'auto' }}>
+              <LanguageSwitcher active={locale} label={S.language} inverse />
+            </div>
+
+            <form action={signOut}>
               <button
                 type="submit"
                 style={{

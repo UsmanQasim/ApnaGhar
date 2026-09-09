@@ -1,4 +1,8 @@
+import { colors, radius, roles, spacing } from '@ghar/ui';
+
 import { adminApi, rupees } from '../../src/api';
+import { getLocale } from '../../src/locale';
+import { stringsFor, type AdminStrings } from '../../src/strings';
 import { DecisionForm } from './decision-form';
 
 interface QueueItem {
@@ -30,23 +34,27 @@ export const dynamic = 'force-dynamic';
  * unblock has left — the queue is a clock, not an inbox.
  */
 export default async function PaymentsQueuePage() {
-  const queue = await adminApi<QueueItem[]>('/payments/queue');
+  const [queue, locale] = await Promise.all([
+    adminApi<QueueItem[]>('/payments/queue'),
+    getLocale(),
+  ]);
+  const S = stringsFor(locale);
 
   return (
-    <main style={{ padding: 24, maxWidth: 1100, margin: '0 auto' }}>
-      <header style={{ marginBottom: 24 }}>
-        <h1 style={{ margin: 0, fontSize: 24 }}>Payment verification</h1>
-        <p style={{ color: '#3d4a42', margin: '4px 0 0' }}>
+    <main style={{ padding: spacing.lg, maxWidth: 1100, margin: '0 auto' }}>
+      <header style={{ marginBottom: spacing.lg }}>
+        <h1 style={{ margin: 0, fontSize: 24 }}>{S.payments.title}</h1>
+        <p style={{ color: colors.onSurfaceVariant, margin: `${spacing.base}px 0 0` }}>
           {queue.length === 0
-            ? 'Nothing waiting.'
-            : `${queue.length} payment${queue.length === 1 ? '' : 's'} awaiting a decision, oldest first.`}
+            ? S.payments.nothingWaiting
+            : S.payments.awaitingDecision.replace('{count}', String(queue.length))}
         </p>
       </header>
 
       {queue.length === 0 ? null : (
-        <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gap: 16 }}>
+        <ul style={{ listStyle: 'none', padding: 0, display: 'grid', gap: spacing.md }}>
           {queue.map((item) => (
-            <PaymentRow key={item.id} item={item} />
+            <PaymentRow key={item.id} item={item} S={S} />
           ))}
         </ul>
       )}
@@ -54,7 +62,7 @@ export default async function PaymentsQueuePage() {
   );
 }
 
-function PaymentRow({ item }: { item: QueueItem }) {
+function PaymentRow({ item, S }: { item: QueueItem; S: AdminStrings }) {
   const expected = item.invoice ? Number(item.invoice.totalPaisa) : null;
   const claimed = Number(item.amountPaisa);
 
@@ -69,13 +77,13 @@ function PaymentRow({ item }: { item: QueueItem }) {
   return (
     <li
       style={{
-        border: `1px solid ${mismatch ? '#ba1a1a' : '#dce9ff'}`,
-        borderRadius: 16,
-        padding: 16,
-        background: '#ffffff',
+        border: `1px solid ${mismatch ? colors.error : roles.cardBorder}`,
+        borderRadius: radius.lg,
+        padding: spacing.md,
+        background: roles.cardBackground,
         display: 'grid',
         gridTemplateColumns: 'minmax(0, 2fr) minmax(0, 1fr)',
-        gap: 16,
+        gap: spacing.md,
       }}
     >
       <div>
@@ -86,37 +94,38 @@ function PaymentRow({ item }: { item: QueueItem }) {
         </div>
 
         <dl style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '4px 12px', margin: '12px 0 0' }}>
-          <dt style={muted}>Agent</dt>
+          <dt style={muted}>{S.payments.agent}</dt>
           <dd style={cell}>
             {item.agent.user.name ?? '—'}
             {item.agent.agencyName ? ` · ${item.agent.agencyName}` : ''}
           </dd>
 
-          <dt style={muted}>Agent phone</dt>
+          <dt style={muted}>{S.payments.agentPhone}</dt>
           <dd style={cell}>{item.agent.user.phone}</dd>
 
-          <dt style={muted}>Paid from</dt>
+          <dt style={muted}>{S.payments.paidFrom}</dt>
           <dd style={cell}>{item.payerMsisdn ?? '—'}</dd>
 
-          <dt style={muted}>Transaction ID</dt>
+          <dt style={muted}>{S.payments.transactionId}</dt>
           <dd style={{ ...cell, fontFamily: 'monospace' }}>{item.providerTxnId ?? '—'}</dd>
 
-          <dt style={muted}>Submitted</dt>
+          <dt style={muted}>{S.payments.submitted}</dt>
           <dd style={cell}>{new Date(item.createdAt).toLocaleString('en-PK')}</dd>
         </dl>
 
         {mismatch ? (
           <p style={alert}>
-            Amount does not match the invoice: agent claims {rupees(claimed)}, invoice is{' '}
-            {rupees(expected)}.
+            {S.payments.amountMismatch
+              .replace('{claimed}', rupees(claimed))
+              .replace('{expected}', rupees(expected))}
           </p>
         ) : null}
 
         {provisionalLeft !== null ? (
           <p style={{ ...muted, marginTop: 8 }}>
             {provisionalLeft > 0
-              ? `Agent is provisionally unblocked for another ${provisionalLeft} min.`
-              : 'Provisional access has expired — this agent is currently blocked.'}
+              ? S.payments.provisionalLeft.replace('{minutes}', String(provisionalLeft))
+              : S.payments.provisionalExpired}
           </p>
         ) : null}
       </div>
@@ -133,34 +142,36 @@ function PaymentRow({ item }: { item: QueueItem }) {
           >
             <img
               src={`${process.env['MEDIA_BASE_URL'] ?? ''}/${item.proofKey}`}
-              alt="Payment receipt"
-              style={{ width: '100%', borderRadius: 8, border: '1px solid #dce9ff' }}
+              alt={S.payments.receiptAlt}
+              style={{ width: '100%', borderRadius: radius.DEFAULT, border: `1px solid ${roles.cardBorder}` }}
             />
           </a>
         ) : (
-          <p style={muted}>No receipt uploaded.</p>
+          <p style={muted}>{S.payments.noReceipt}</p>
         )}
 
-        <DecisionForm paymentId={item.id} />
+        {/* A client island: the strings travel with it, because it has no
+            server parent to ask for the locale at render time. */}
+        <DecisionForm paymentId={item.id} strings={S.payments} />
       </div>
     </li>
   );
 }
 
-const muted: React.CSSProperties = { color: '#6d7a72', fontSize: 13, margin: 0 };
+const muted: React.CSSProperties = { color: colors.onSurfaceVariant, fontSize: 13, margin: 0 };
 const cell: React.CSSProperties = { margin: 0, fontSize: 14 };
 const badge: React.CSSProperties = {
-  background: '#e5eeff',
-  borderRadius: 999,
+  background: colors.secondaryContainer,
+  borderRadius: radius.full,
   padding: '2px 10px',
   fontSize: 12,
   textTransform: 'capitalize',
 };
 const alert: React.CSSProperties = {
-  background: '#ffdad6',
-  color: '#93000a',
-  borderRadius: 8,
-  padding: 12,
-  marginTop: 12,
+  background: colors.errorContainer,
+  color: colors.onErrorContainer,
+  borderRadius: radius.DEFAULT,
+  padding: spacing.sm,
+  marginTop: spacing.sm,
   fontSize: 14,
 };

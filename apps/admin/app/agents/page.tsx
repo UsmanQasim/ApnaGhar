@@ -1,7 +1,8 @@
 import { colors, spacing } from '@ghar/ui';
 
 import { adminApi } from '../../src/api';
-import { S } from '../../src/strings';
+import { getLocale } from '../../src/locale';
+import { stringsFor } from '../../src/strings';
 import { Badge, Card, PageHeader, muted, rupees, tableStyle, tdStyle, thStyle } from '../../src/ui';
 import { RowActions } from './row-actions';
 
@@ -31,6 +32,9 @@ export default async function AgentsPage({
 }: {
   searchParams: Promise<{ q?: string; verified?: string }>;
 }) {
+  // Per request, not module scope: the operator's language is a cookie.
+  const S = stringsFor(await getLocale());
+
   const params = await searchParams;
   const query = new URLSearchParams();
   if (params.q) query.set('q', params.q);
@@ -136,6 +140,7 @@ export default async function AgentsPage({
                         agentId={agent.userId}
                         verified={agent.isVerified}
                         suspended={suspended}
+                        strings={S}
                       />
                     </td>
                   </tr>

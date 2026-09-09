@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
 
+import { getLocale } from '../../src/locale';
+import { stringsFor } from '../../src/strings';
 import { LoginForm } from './login-form';
 
 export const metadata: Metadata = {
+  // Static, so the default locale. Never indexed either way.
   title: 'گھر ایڈمن — لاگ اِن',
   robots: { index: false, follow: false },
 };
@@ -15,6 +18,6 @@ export default async function LoginPage({
 }: {
   searchParams: Promise<{ expired?: string }>;
 }) {
-  const { expired } = await searchParams;
-  return <LoginForm expired={expired === '1'} />;
+  const [{ expired }, locale] = await Promise.all([searchParams, getLocale()]);
+  return <LoginForm expired={expired === '1'} strings={stringsFor(locale).login} />;
 }

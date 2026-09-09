@@ -31,6 +31,45 @@ export function isLatinScript(locale: Locale): boolean {
   return locale !== Locale.UR;
 }
 
+/**
+ * Pick a locale from an `Accept-Language` header.
+ *
+ * Same policy as the mobile app's `detectLocale`, deliberately: Urdu is the
+ * DEFAULT, not the fallback. A browser advertising English gets English;
+ * everything else — including `ur`, `pa`, or nothing at all — gets Urdu,
+ * because the target user is far more likely to have an English-configured
+ * browser than to prefer reading English.
+ *
+ * Roman Urdu is never auto-selected. No browser advertises it, and inferring
+ * that someone wants transliteration is a judgement no header supports; it is
+ * offered explicitly in the language switcher.
+ */
+export function localeFromAcceptLanguage(header: string | null | undefined): Locale {
+  if (!header) return DEFAULT_LOCALE;
+
+  // "en-GB,en;q=0.9,ur;q=0.8" — ordered by preference already, but q-values
+  // are not guaranteed sorted, so read them rather than trusting position.
+  const ranked = header
+    .split(',')
+    .map((part) => {
+      const [tag = '', ...params] = part.trim().split(';');
+      const q = params
+        .map((p) => /^\s*q=([\d.]+)\s*$/.exec(p))
+        .find(Boolean)?.[1];
+      return { tag: tag.trim(), q: q === undefined ? 1 : Number(q) };
+    })
+    .filter((entry) => entry.tag !== '' && Number.isFinite(entry.q))
+    .sort((a, b) => b.q - a.q);
+
+  for (const { tag } of ranked) {
+    const lower = tag.toLowerCase();
+    if (lower.startsWith('ur')) return Locale.UR;
+    if (lower.startsWith('en')) return Locale.EN;
+  }
+
+  return DEFAULT_LOCALE;
+}
+
 /** Narrow an untrusted string (a cookie, a query param, a device setting). */
 export function parseLocale(value: string | null | undefined): Locale {
   if (!value) return DEFAULT_LOCALE;

@@ -2,6 +2,10 @@ import type { Metadata } from 'next';
 
 import { colors, radius, roles, spacing } from '@ghar/ui';
 
+import { LanguageSwitcher } from '../src/LanguageSwitcher';
+import { copyFor } from '../src/copy';
+import { getLocale } from '../src/locale';
+
 /**
  * Landing page for the share host.
  *
@@ -15,6 +19,8 @@ import { colors, radius, roles, spacing } from '@ghar/ui';
  */
 
 export const metadata: Metadata = {
+  // Static, and therefore in the default locale: metadata is generated once
+  // and this host is not indexed anyway.
   title: 'گھر — شیئر لنک',
   // Same posture as /s/[token]: this host is not for search engines.
   robots: { index: false, follow: false },
@@ -22,30 +28,30 @@ export const metadata: Metadata = {
 
 const WEB_URL = process.env['WEB_BASE_URL'] ?? 'https://apna-ghar-web.vercel.app';
 
-export default function ShareIndexPage() {
-  return (
-    <main dir="rtl" style={page}>
-      <h1 style={heading}>گھر — شیئر لنک</h1>
+export default async function ShareIndexPage() {
+  const locale = await getLocale();
+  const C = copyFor(locale);
 
-      <p style={body}>
-        یہ صفحہ صرف ان لنکس کے لیے ہے جو ایجنٹ آپ کو بھیجتے ہیں۔ ہر لنک ایک ہی
-        پراپرٹی کھولتی ہے۔
-      </p>
+  return (
+    <main style={page}>
+      <h1 style={heading}>{C.brand}</h1>
+
+      <p style={body}>{C.index.intro}</p>
 
       <div style={sample}>
-        <span style={sampleLabel}>لنک کی شکل</span>
+        <span style={sampleLabel}>{C.index.linkShapeLabel}</span>
         <code style={sampleCode}>/s/xxxxxxxxxxxx</code>
       </div>
 
-      <p style={subtle}>
-        اگر ایجنٹ کی بھیجی ہوئی لنک نہیں کھل رہی تو ممکن ہے اس کی مدت ختم ہو گئی
-        ہو، ایجنٹ نے اسے بند کر دیا ہو، یا اسے دیکھنے کی حد پوری ہو چکی ہو۔ ایسی
-        صورت میں ایجنٹ سے نئی لنک منگوائیں۔
-      </p>
+      <p style={subtle}>{C.index.troubleshoot}</p>
 
       <a href={WEB_URL} style={primaryButton}>
-        گھر کی ویب سائٹ دیکھیں
+        {C.index.visitWebsite}
       </a>
+
+      <div style={{ marginTop: spacing.lg }}>
+        <LanguageSwitcher active={locale} label={C.language} />
+      </div>
     </main>
   );
 }
@@ -58,7 +64,6 @@ const page: React.CSSProperties = {
   padding: spacing.md,
   background: colors.surface,
   color: colors.onSurface,
-  fontFamily: "'Noto Nastaliq Urdu', serif",
   minHeight: '100vh',
   display: 'flex',
   flexDirection: 'column',
@@ -67,16 +72,14 @@ const page: React.CSSProperties = {
 
 const heading: React.CSSProperties = {
   fontSize: 24,
-  lineHeight: 2,
   margin: `${spacing.lg}px 0 0`,
 };
 
-const body: React.CSSProperties = { fontSize: 16, lineHeight: 2, margin: 0 };
+const body: React.CSSProperties = { fontSize: 16, margin: 0 };
 
 const subtle: React.CSSProperties = {
   color: colors.onSurfaceVariant,
   fontSize: 16,
-  lineHeight: 2,
   margin: 0,
 };
 

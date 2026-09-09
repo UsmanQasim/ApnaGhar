@@ -2,7 +2,8 @@ import Link from 'next/link';
 
 import { colors, radius, spacing } from '@ghar/ui';
 
-import { C } from '../src/copy';
+import { copyFor } from '../src/copy';
+import { getLocale } from '../src/locale';
 import {
   FeatureCard,
   Grid,
@@ -22,7 +23,10 @@ import {
  * fastest way to lose the trust the rest of the page is asking for. Put the
  * band back when the numbers are real — the layout leaves room for it.
  */
-export default function HomePage() {
+export default async function HomePage() {
+  // Per request, not module scope: the visitor's language is a cookie.
+  const C = copyFor(await getLocale());
+
   return (
     <main>
       {/* ── Hero ──────────────────────────────────────────────────────── */}

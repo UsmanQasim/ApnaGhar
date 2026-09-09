@@ -5,7 +5,10 @@ import { useState, useTransition } from 'react';
 
 import { colors, radius, roles, spacing } from '@ghar/ui';
 
+import type { AdminStrings } from '../../src/strings';
 import { requestOtp, verifyOtp } from '../../src/session';
+
+type LoginStrings = AdminStrings['login'];
 
 /**
  * Two-step phone + OTP sign-in.
@@ -16,16 +19,20 @@ import { requestOtp, verifyOtp } from '../../src/session';
  * work on both 18 and 19, so this survives the eventual React upgrade.
  */
 
-const ERRORS: Record<string, string> = {
-  api_unreachable: 'سرور سے رابطہ نہیں ہو سکا۔ ہو سکتا ہے API ابھی بند ہو۔',
-  invalid_pk_mobile_number: 'موبائل نمبر درست نہیں۔ مثال: 03009999999',
-  otp_cooldown: 'نیا کوڈ بھیجنے کے لیے تھوڑا انتظار کریں۔',
-  otp_invalid: 'کوڈ درست نہیں یا اس کی مدت ختم ہو چکی ہے۔',
-  otp_request_failed: 'کوڈ نہیں بھیجا جا سکا۔ دوبارہ کوشش کریں۔',
-  not_admin: 'یہ اکاؤنٹ ایڈمن نہیں ہے۔',
-};
+export function LoginForm({
+  expired,
+  strings: S,
+}: {
+  expired: boolean;
+  /**
+   * Passed down: this is a client component, and the sign-in screen is the one
+   * place an operator cannot navigate away from to change the language — so
+   * getting it in their own language matters more here than anywhere else.
+   */
+  strings: LoginStrings;
+}) {
+  const ERRORS: Record<string, string> = S.errors;
 
-export function LoginForm({ expired }: { expired: boolean }) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
@@ -76,20 +83,20 @@ export function LoginForm({ expired }: { expired: boolean }) {
 
   const working = busy || pending;
 
+  // No `dir` here: the <html> element carries it, per locale. Hardcoding rtl
+  // put a Roman Urdu form into a mirrored layout.
   return (
-    <div dir="rtl" style={wrap}>
-      <h1 style={heading}>ایڈمن لاگ اِن</h1>
+    <div style={wrap}>
+      <h1 style={heading}>{S.title}</h1>
 
-      {expired ? (
-        <div style={notice}>آپ کا سیشن ختم ہو گیا۔ دوبارہ لاگ اِن کریں۔</div>
-      ) : null}
+      {expired ? <div style={notice}>{S.sessionExpired}</div> : null}
 
       {error ? <div style={warning}>{error}</div> : null}
 
       {step === 'phone' ? (
         <form onSubmit={onRequest} style={form}>
           <label htmlFor="phone" style={label}>
-            موبائل نمبر
+            {S.phoneLabel}
           </label>
           <input
             id="phone"
@@ -104,13 +111,13 @@ export function LoginForm({ expired }: { expired: boolean }) {
             style={input}
           />
           <button type="submit" disabled={working} style={button}>
-            {working ? 'بھیجا جا رہا ہے…' : 'کوڈ بھیجیں'}
+            {working ? S.sending : S.sendCode}
           </button>
         </form>
       ) : (
         <form onSubmit={onVerify} style={form}>
           <label htmlFor="code" style={label}>
-            چھ ہندسوں کا کوڈ
+            {S.codeLabel}
           </label>
           <input
             id="code"
@@ -128,12 +135,13 @@ export function LoginForm({ expired }: { expired: boolean }) {
 
           {devCode ? (
             <p style={hint}>
-              ڈیو موڈ کوڈ: <strong style={{ direction: 'ltr', display: 'inline-block' }}>{devCode}</strong>
+              {S.devCode}{' '}
+              <strong style={{ direction: 'ltr', display: 'inline-block' }}>{devCode}</strong>
             </p>
           ) : null}
 
           <button type="submit" disabled={working} style={button}>
-            {working ? 'تصدیق ہو رہی ہے…' : 'لاگ اِن'}
+            {working ? S.verifying : S.submit}
           </button>
 
           <button
@@ -145,7 +153,7 @@ export function LoginForm({ expired }: { expired: boolean }) {
             }}
             style={linkButton}
           >
-            نمبر تبدیل کریں
+            {S.changeNumber}
           </button>
         </form>
       )}

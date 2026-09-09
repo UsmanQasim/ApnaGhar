@@ -2,6 +2,9 @@
 
 import { colors, radius, roles, spacing } from '@ghar/ui';
 
+import { useLocale } from '../src/use-locale';
+import { stringsFor } from '../src/strings';
+
 /**
  * Error boundary for the admin panel.
  *
@@ -13,6 +16,10 @@ import { colors, radius, roles, spacing } from '@ghar/ui';
  * This turns that into something an operator can act on. Next.js redacts server
  * error messages in production (they are replaced with a digest), so this shows
  * the likely causes rather than pretending to know which one it was.
+ *
+ * React requires error boundaries to be client components, so there is no
+ * server parent to hand the locale down — it reads the cookie directly. That
+ * is the reason the locale cookie is deliberately not httpOnly.
  */
 export default function AdminError({
   error,
@@ -21,22 +28,18 @@ export default function AdminError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const S = stringsFor(useLocale()).error;
+
   return (
-    <div dir="rtl" style={wrap}>
-      <h1 style={heading}>ڈیٹا لوڈ نہیں ہو سکا</h1>
+    <div style={wrap}>
+      <h1 style={heading}>{S.title}</h1>
 
-      <div style={warning}>
-        سرور سے رابطہ نہیں ہو سکا۔ عام طور پر اس کی وجہ یہ ہوتی ہے کہ API ابھی
-        بند ہے یا نیند میں ہے۔
-      </div>
+      <div style={warning}>{S.body}</div>
 
-      <p style={subtle}>
-        اگر API رینڈر کے فری پلان پر ہے تو پہلی درخواست میں تقریباً ایک منٹ لگ
-        سکتا ہے۔ دوبارہ کوشش کریں۔
-      </p>
+      <p style={subtle}>{S.hint}</p>
 
       <button type="button" onClick={reset} style={button}>
-        دوبارہ کوشش کریں
+        {S.retry}
       </button>
 
       {/* English, and deliberately not translated: the only person who can act

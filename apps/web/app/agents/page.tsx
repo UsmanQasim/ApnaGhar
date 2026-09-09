@@ -3,9 +3,12 @@ import Link from 'next/link';
 import { PLANS, PlanCode, premiumBreakEvenListings } from '@ghar/shared';
 import { colors, spacing } from '@ghar/ui';
 
-import { C } from '../../src/copy';
+import { C, copyFor } from '../../src/copy';
+import { getLocale } from '../../src/locale';
 import { FeatureCard, Grid, Section, cardStyle, primaryLinkStyle, secondaryLinkStyle } from '../../src/components/chrome';
 
+// Module scope: metadata is generated per build, not per request, so it
+// cannot read the locale cookie. `C` is the default (Urdu) set.
 export const metadata = { title: `${C.nav.agents} — ${C.brand}` };
 
 function rupees(paisa: number): string {
@@ -21,7 +24,10 @@ function rupees(paisa: number): string {
  * than one who was promised nothing. The page leads with what the product
  * actually does instead, and with the real price.
  */
-export default function AgentsPage() {
+export default async function AgentsPage() {
+  // Per request, not module scope: the visitor's language is a cookie.
+  const C = copyFor(await getLocale());
+
   const breakEven = premiumBreakEvenListings();
 
   return (

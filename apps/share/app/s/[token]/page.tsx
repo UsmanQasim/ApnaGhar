@@ -1,8 +1,12 @@
 import type { Metadata } from 'next';
 
-import { PriceVisibility } from '@ghar/shared';
+import { isRtlLocale, PriceVisibility, type Locale } from '@ghar/shared';
 import { formatPrice, formatTimeRemaining } from '@ghar/i18n';
 import { colors, radius, roles, spacing } from '@ghar/ui';
+
+import { LanguageSwitcher } from '../../../src/LanguageSwitcher';
+import { copyFor } from '../../../src/copy';
+import { getLocale } from '../../../src/locale';
 
 interface ShareResponse {
   ok: boolean;
@@ -75,25 +79,31 @@ async function fetchShare(token: string): Promise<ShareResponse> {
 
 export default async function SharePage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
-  const data = await fetchShare(token);
+  const [data, locale] = await Promise.all([fetchShare(token), getLocale()]);
+  const C = copyFor(locale);
 
-  if (!data.ok || !data.property) return <ExpiredState reason={data.reason ?? 'not_found'} />;
+  if (!data.ok || !data.property) {
+    return <ExpiredState reason={data.reason ?? 'not_found'} locale={locale} />;
+  }
 
   const { property } = data;
   const onRequest = property.priceVisibility === PriceVisibility.ON_REQUEST;
+  // Was hardcoded `{ locale: 'ur' }`: the price and the countdown are the two
+  // pieces of formatted text on this page, and both would have stayed in
+  // Nastaliq no matter which language the customer picked.
   const price = onRequest
-    ? 'قیمت: رابطہ کریں'
-    : formatPrice(Number(property.pricePaisa ?? 0), { locale: 'ur' });
+    ? C.listing.priceOnRequest
+    : formatPrice(Number(property.pricePaisa ?? 0), { locale });
 
   const remaining = data.expiresAt
-    ? formatTimeRemaining(new Date(data.expiresAt), { locale: 'ur' })
+    ? formatTimeRemaining(new Date(data.expiresAt), { locale })
     : null;
 
   const poster = property.media.find((m) => m.thumbnailUrl)?.thumbnailUrl ?? undefined;
   const video = property.media.find((m) => m.kind === 'video')?.playbackUrl;
 
   return (
-    <main dir="rtl" style={page}>
+    <main style={page}>
       {video ? (
         <video
           controls
@@ -111,52 +121,74 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
       <div style={pill}>{price}</div>
 
       <h1 style={heading}>{property.titleUr}</h1>
-      <p style={subtle}>{[property.locality, property.city].filter(Boolean).join('، ')}</p>
+      {/* The list separator is script-specific: an Arabic comma inside a
+          Latin-script line reads as a glyph error. */}
+      <p style={subtle}>
+        {[property.locality, property.city].filter(Boolean).join(isRtlLocale(locale) ? '، ' : ', ')}
+      </p>
 
       {/* The expiry warning is prominent and states a time, not a policy. The
           customer needs to know to act now, not to understand our rules. */}
-      {remaining ? <div style={warning}>یہ لنک {remaining}</div> : null}
+      {remaining ? (
+        <div style={warning}>
+          {C.listing.linkNotice} {remaining}
+        </div>
+      ) : null}
 
       <dl style={factGrid}>
-        {property.bedrooms !== null ? <Fact label="بیڈرومز" value={property.bedrooms} /> : null}
-        {property.bathrooms !== null ? <Fact label="باتھ رومز" value={property.bathrooms} /> : null}
-        <Fact label="رقبہ" value={`${property.areaValue} ${property.areaUnit}`} />
+        {property.bedrooms !== null ? (
+          <Fact label={C.listing.bedrooms} value={property.bedrooms} />
+        ) : null}
+        {property.bathrooms !== null ? (
+          <Fact label={C.listing.bathrooms} value={property.bathrooms} />
+        ) : null}
+        <Fact label={C.listing.area} value={`${property.areaValue} ${property.areaUnit}`} />
       </dl>
 
       {property.descriptionUr ? <p style={body}>{property.descriptionUr}</p> : null}
 
       <div style={actions}>
         <a href={`tel:${property.agent.user.phone}`} style={primaryButton}>
-          کال کریں
+          {C.listing.call}
         </a>
         <a
           href={`https://wa.me/${property.agent.user.phone.replace('+', '')}`}
           style={secondaryButton}
         >
-          واٹس ایپ
+          {C.listing.whatsapp}
         </a>
+      </div>
+
+      <div style={{ marginTop: spacing.lg }}>
+        <LanguageSwitcher active={locale} label={C.language} />
       </div>
     </main>
   );
 }
 
 /**
- * A dead link gets a polite Urdu explanation and a way forward — never a raw
- * 404. To the customer, a broken page reads as "the agent sent me something
- * fake", which costs the agent a sale and us an agent.
+ * A dead link gets a polite explanation and a way forward — never a raw 404.
+ * To the customer, a broken page reads as "the agent sent me something fake",
+ * which costs the agent a sale and us an agent.
  */
-function ExpiredState({ reason }: { reason: string }) {
+function ExpiredState({ reason, locale }: { reason: string; locale: Locale }) {
+  const C = copyFor(locale);
+
   const message =
     reason === 'view_limit_reached'
-      ? 'یہ لنک صرف ایک بار دیکھا جا سکتا تھا'
+      ? C.expired.onceOnly
       : reason === 'revoked'
-        ? 'ایجنٹ نے یہ لنک بند کر دیا ہے'
-        : 'یہ لنک ختم ہو گیا';
+        ? C.expired.revoked
+        : C.expired.generic;
 
   return (
-    <main dir="rtl" style={{ ...page, textAlign: 'center', paddingTop: 96 }}>
+    <main style={{ ...page, textAlign: 'center', paddingTop: 96 }}>
       <h1 style={heading}>{message}</h1>
-      <p style={subtle}>ایجنٹ سے نیا لنک منگوائیں</p>
+      <p style={subtle}>{C.expired.askForNew}</p>
+
+      <div style={{ marginTop: spacing.lg, justifyContent: 'center', display: 'flex' }}>
+        <LanguageSwitcher active={locale} label={C.language} />
+      </div>
     </main>
   );
 }
@@ -178,13 +210,12 @@ const page: React.CSSProperties = {
   padding: spacing.md,
   background: colors.surface,
   color: colors.onSurface,
-  fontFamily: "'Noto Nastaliq Urdu', serif",
   minHeight: '100vh',
 };
 
-const heading: React.CSSProperties = { fontSize: 24, lineHeight: 2, margin: `${spacing.sm}px 0 0` };
-const subtle: React.CSSProperties = { color: colors.onSurfaceVariant, fontSize: 16, lineHeight: 2 };
-const body: React.CSSProperties = { fontSize: 16, lineHeight: 2 };
+const heading: React.CSSProperties = { fontSize: 24, margin: `${spacing.sm}px 0 0` };
+const subtle: React.CSSProperties = { color: colors.onSurfaceVariant, fontSize: 16 };
+const body: React.CSSProperties = { fontSize: 16 };
 
 const pill: React.CSSProperties = {
   display: 'inline-block',

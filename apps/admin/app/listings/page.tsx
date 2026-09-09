@@ -1,8 +1,9 @@
-import { PropertyPurpose, PropertyStatus, PropertyType } from '@ghar/shared';
+import { isRtlLocale, PropertyPurpose, PropertyStatus, PropertyType } from '@ghar/shared';
 import { colors, radius, roles, spacing } from '@ghar/ui';
 
 import { adminApi } from '../../src/api';
-import { S } from '../../src/strings';
+import { getLocale } from '../../src/locale';
+import { stringsFor } from '../../src/strings';
 import { Badge, Card, PageHeader, muted, rupees, tableStyle, tdStyle, thStyle } from '../../src/ui';
 import { ListingActions } from './row-actions';
 
@@ -46,6 +47,10 @@ export default async function AdminListingsPage({
 }: {
   searchParams: Promise<{ city?: string; purpose?: string; type?: string; status?: string }>;
 }) {
+  // Per request, not module scope: the operator's language is a cookie.
+  const locale = await getLocale();
+  const S = stringsFor(locale);
+
   const params = await searchParams;
   const query = new URLSearchParams();
   for (const key of ['city', 'purpose', 'type', 'status'] as const) {
@@ -138,7 +143,7 @@ export default async function AdminListingsPage({
                       <div style={{ minWidth: 0 }}>
                         <div style={{ fontSize: 15 }}>{listing.titleUr}</div>
                         <div style={muted}>
-                          {[listing.locality, listing.city].filter(Boolean).join('، ')}
+                          {[listing.locality, listing.city].filter(Boolean).join(isRtlLocale(locale) ? '، ' : ', ')}
                         </div>
                         <div style={{ ...muted, direction: 'ltr', textAlign: 'start' }}>
                           {listing.priceVisibility === 'on_request' || listing.pricePaisa === null
@@ -162,6 +167,7 @@ export default async function AdminListingsPage({
                     <ListingActions
                       propertyId={listing.id}
                       archived={listing.status === PropertyStatus.ARCHIVED}
+                      strings={S}
                     />
                   </td>
                 </tr>

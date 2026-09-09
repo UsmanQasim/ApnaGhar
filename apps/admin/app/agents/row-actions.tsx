@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 
 import { spacing } from '@ghar/ui';
 
-import { S } from '../../src/strings';
+import type { AdminStrings } from '../../src/strings';
 import { buttonStyle, dangerButtonStyle, primaryButtonStyle } from '../../src/ui';
 import { setAgentStatus, setAgentVerified } from './actions';
 
@@ -19,10 +19,13 @@ export function RowActions({
   agentId,
   verified,
   suspended,
+  strings: S,
 }: {
   agentId: string;
   verified: boolean;
   suspended: boolean;
+  /** Client component: no server parent to ask, so the labels travel with it. */
+  strings: AdminStrings;
 }) {
   const [pending, startTransition] = useTransition();
   const [confirming, setConfirming] = useState(false);

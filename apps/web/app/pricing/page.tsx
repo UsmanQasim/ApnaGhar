@@ -8,9 +8,12 @@ import {
 } from '@ghar/shared';
 import { colors, radius, spacing } from '@ghar/ui';
 
-import { C } from '../../src/copy';
+import { C, copyFor } from '../../src/copy';
+import { getLocale } from '../../src/locale';
 import { Section, cardStyle, primaryLinkStyle } from '../../src/components/chrome';
 
+// Module scope: metadata is generated per build, not per request, so it
+// cannot read the locale cookie. `C` is the default (Urdu) set.
 export const metadata = { title: `${C.nav.pricing} — ${C.brand}` };
 
 function rupees(paisa: number): string {
@@ -35,7 +38,10 @@ function rupees(paisa: number): string {
  * invoices Rs 100 is not a design inconsistency; it is a consumer-protection
  * problem.
  */
-export default function PricingPage() {
+export default async function PricingPage() {
+  // Per request, not module scope: the visitor's language is a cookie.
+  const C = copyFor(await getLocale());
+
   const breakEven = premiumBreakEvenListings();
 
   const plans = [
