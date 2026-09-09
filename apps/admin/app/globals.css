@@ -1,110 +1,18 @@
 @import 'tailwindcss';
 @import '@ghar/ui/tailwind-theme.css';
+@import '@ghar/ui/web-base.css';
 
 /*
- * The admin panel's base layer.
+ * Admin-only additions.
  *
- * Everything below is either a token consequence or an accessibility floor —
- * there are no arbitrary values here, because a value that exists only in this
- * file is a value that will disagree with the app one day.
+ * The base layer (typography, bidi, focus rings, cards, the 48px floor, the
+ * select chevron) is shared with the landing and share surfaces via
+ * @ghar/ui/web-base.css — a fix applied here and forgotten there is exactly
+ * how "the Urdu looks wrong on some pages" happens. What stays below is only
+ * what the panel alone needs: dense tabular data.
  */
 
-@layer base {
-  :root {
-    /*
-     * Script-dependent type, set by the <html> element's data-script attribute
-     * rather than by language. Roman Urdu is Urdu written in Latin letters, so
-     * "is the user reading Urdu?" is the wrong question — Nastaliq has no
-     * usable Latin glyphs and would fall back glyph by glyph.
-     *
-     * The ~2x leading is a legibility requirement of Nastaliq's descenders,
-     * not a style choice. On Latin the same value reads as double-spaced text,
-     * which is why it is not simply set once and forgotten.
-     */
-    --app-font: var(--ghar-font-nastaliq);
-    --app-leading: var(--ghar-leading-nastaliq);
-  }
-
-  [data-script='latin'] {
-    --app-font: var(--ghar-font-latin);
-    --app-leading: var(--ghar-leading-latin);
-  }
-
-  html {
-    font-family: var(--app-font);
-    line-height: var(--app-leading);
-    -webkit-text-size-adjust: 100%;
-  }
-
-  body {
-    margin: 0;
-    background: var(--ghar-color-surface);
-    color: var(--ghar-color-on-surface);
-  }
-
-  /*
-   * Numerals, IDs, phone numbers and money always sit in the Latin face and
-   * always run left to right, even inside a mirrored Urdu page. A transaction
-   * ID that mirrors is not a cosmetic problem — it is unreadable back to the
-   * person who sent it.
-   */
-  .numeric {
-    font-family: var(--ghar-font-latin);
-    direction: ltr;
-    unicode-bidi: isolate;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /*
-   * A visible focus ring, on everything, in the panel's own green. Operators
-   * work down these tables with a keyboard; the browser default disappears
-   * against the card surfaces.
-   */
-  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
-    outline: 2px solid var(--ghar-color-primary);
-    outline-offset: 2px;
-    border-radius: var(--ghar-radius-sm);
-  }
-
-  /*
-   * Respect the setting. Every transition in this app is decorative; none of
-   * them carries meaning that would be lost.
-   */
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
-}
-
 @layer components {
-  /*
-   * Level 1 elevation is a 1px border, not a shadow — the same rule
-   * packages/ui states for the app. The shadow below is a hairline used only
-   * to lift a card off the tinted page background; it is not a second
-   * elevation level.
-   */
-  .card {
-    background: var(--ghar-role-card-background);
-    border: 1px solid var(--ghar-role-card-border);
-    border-radius: var(--ghar-radius-lg);
-    box-shadow: 0 1px 2px rgb(11 28 48 / 0.04);
-  }
-
-  /*
-   * The 48px floor, from DESIGN.md: users who struggle with fine motor
-   * precision must still be able to hit the target. It applies to an admin
-   * operator on a laptop trackpad too.
-   */
-  .touch {
-    min-height: var(--ghar-space-touch-target);
-  }
-
   /*
    * Tabular data. Borders between rows rather than zebra striping: striping
    * fights the tinted surfaces, and a row that is mid-hover should still read

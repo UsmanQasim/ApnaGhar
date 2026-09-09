@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+@import '@ghar/ui/tailwind-theme.css';
+@import '@ghar/ui/web-base.css';
+
+/*
+ * The marketing site adds nothing to the shared base.
+ *
+ * That is the point: the header, cards, focus rings, bidi isolation and the
+ * select chevron are all defined once in @ghar/ui/web-base.css and used by the
+ * admin panel, this site and the share pages alike.
+ */

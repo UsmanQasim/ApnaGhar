@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 
-import { colors, radius, roles, spacing } from '@ghar/ui';
-
 import { LanguageSwitcher } from '../src/LanguageSwitcher';
 import { copyFor } from '../src/copy';
 import { getLocale } from '../src/locale';
@@ -22,7 +20,6 @@ export const metadata: Metadata = {
   // Static, and therefore in the default locale: metadata is generated once
   // and this host is not indexed anyway.
   title: 'گھر — شیئر لنک',
-  // Same posture as /s/[token]: this host is not for search engines.
   robots: { index: false, follow: false },
 };
 
@@ -33,89 +30,48 @@ export default async function ShareIndexPage() {
   const C = copyFor(locale);
 
   return (
-    <main style={page}>
-      <h1 style={heading}>{C.brand}</h1>
-
-      <p style={body}>{C.index.intro}</p>
-
-      <div style={sample}>
-        <span style={sampleLabel}>{C.index.linkShapeLabel}</span>
-        <code style={sampleCode}>/s/xxxxxxxxxxxx</code>
+    <main className="mx-auto grid max-w-[560px] gap-md px-md py-xl">
+      <div className="flex items-center gap-sm">
+        <span className="grid size-11 shrink-0 place-items-center rounded-md bg-primary text-on-primary">
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M3 10.5 12 4l9 6.5" />
+            <path d="M5.5 12v8h13v-8" />
+            <path d="M10 20v-4.5h4V20" />
+          </svg>
+        </span>
+        <h1 className="m-0 text-[22px] font-bold tracking-tight text-on-surface">{C.brand}</h1>
       </div>
 
-      <p style={subtle}>{C.index.troubleshoot}</p>
+      <p className="m-0 text-[16px] text-on-surface">{C.index.intro}</p>
 
-      <a href={WEB_URL} style={primaryButton}>
+      <div className="card grid gap-1 p-sm">
+        <span className="text-xs text-on-surface-variant">{C.index.linkShapeLabel}</span>
+        {/* Latin path, so force LTR inside an RTL page or the slashes jump. */}
+        <code className="numeric text-[16px] font-bold text-on-surface">/s/xxxxxxxxxxxx</code>
+      </div>
+
+      <p className="m-0 text-[15px] text-on-surface-variant">{C.index.troubleshoot}</p>
+
+      <a
+        href={WEB_URL}
+        className="touch inline-flex items-center justify-center rounded-md bg-primary text-[16px] font-semibold text-on-primary no-underline transition-colors hover:bg-primary-container"
+      >
         {C.index.visitWebsite}
       </a>
 
-      <div style={{ marginTop: spacing.lg }}>
-        <LanguageSwitcher active={locale} label={C.language} />
-      </div>
+      <hr className="hairline my-xs" />
+
+      <LanguageSwitcher active={locale} label={C.language} />
     </main>
   );
 }
-
-// Inline styles, matching /s/[token]: this host serves two small routes and a
-// separate stylesheet would be a render-blocking request on mobile data.
-const page: React.CSSProperties = {
-  maxWidth: 560,
-  margin: '0 auto',
-  padding: spacing.md,
-  background: colors.surface,
-  color: colors.onSurface,
-  minHeight: '100vh',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: spacing.sm,
-};
-
-const heading: React.CSSProperties = {
-  fontSize: 24,
-  margin: `${spacing.lg}px 0 0`,
-};
-
-const body: React.CSSProperties = { fontSize: 16, margin: 0 };
-
-const subtle: React.CSSProperties = {
-  color: colors.onSurfaceVariant,
-  fontSize: 16,
-  margin: 0,
-};
-
-const sample: React.CSSProperties = {
-  background: roles.cardBackground,
-  border: `1px solid ${roles.cardBorder}`,
-  borderRadius: radius.md,
-  padding: spacing.sm,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: spacing.base,
-};
-
-const sampleLabel: React.CSSProperties = {
-  fontSize: 14,
-  color: colors.onSurfaceVariant,
-};
-
-const sampleCode: React.CSSProperties = {
-  // Latin path, so force LTR inside an RTL page or the slashes jump around.
-  direction: 'ltr',
-  textAlign: 'left',
-  fontFamily: "'Plus Jakarta Sans', ui-monospace, monospace",
-  fontWeight: 700,
-  fontSize: 16,
-};
-
-const primaryButton: React.CSSProperties = {
-  minHeight: spacing.touchTarget,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  borderRadius: radius.md,
-  textDecoration: 'none',
-  fontSize: 18,
-  background: colors.primary,
-  color: colors.onPrimary,
-  marginTop: spacing.sm,
-};

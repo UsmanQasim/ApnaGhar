@@ -19,11 +19,13 @@
       "default": "./dist/index.js"
     },
     "./tokens.css": "./tokens.css",
-    "./tailwind-theme.css": "./tailwind-theme.css"
+    "./tailwind-theme.css": "./tailwind-theme.css",
+    "./web-base.css": "./web-base.css"
   },
   "files": [
     "dist",
     "tokens.css",
-    "tailwind-theme.css"
+    "tailwind-theme.css",
+    "web-base.css"
   ]
 }

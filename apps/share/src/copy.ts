@@ -29,6 +29,7 @@ const ur = {
 
   listing: {
     priceOnRequest: 'قیمت: رابطہ کریں',
+    verified: 'تصدیق شدہ',
     linkNotice: 'یہ لنک',
     bedrooms: 'بیڈرومز',
     bathrooms: 'باتھ رومز',
@@ -75,6 +76,7 @@ const urLatn: Copy = {
 
   listing: {
     priceOnRequest: 'Qeemat: rabta karein',
+    verified: 'Tasdeeq shuda',
     linkNotice: 'Yeh link',
     bedrooms: 'Bedrooms',
     bathrooms: 'Bathrooms',
@@ -113,6 +115,7 @@ const en: Copy = {
 
   listing: {
     priceOnRequest: 'Price on request',
+    verified: 'Verified',
     linkNotice: 'This link',
     bedrooms: 'Bedrooms',
     bathrooms: 'Bathrooms',

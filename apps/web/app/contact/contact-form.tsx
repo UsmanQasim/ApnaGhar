@@ -2,8 +2,6 @@
 
 import { useFormState, useFormStatus } from 'react-dom';
 
-import { colors, radius, roles, spacing } from '@ghar/ui';
-
 import type { WebCopy } from '../../src/copy';
 import { submitContact, type ContactState } from './actions';
 
@@ -13,42 +11,33 @@ export function ContactForm({ strings }: { strings: WebCopy['contact'] }) {
   const [state, action] = useFormState(submitContact, INITIAL);
 
   return (
-    <form action={action} style={{ display: 'grid', gap: spacing.sm }}>
+    <form action={action} className="grid gap-sm">
       <Field name="name" label={strings.name} required />
       <Field name="email" label={strings.email} type="email" />
       <Field name="phone" label={strings.phone} type="tel" ltr />
 
-      <label style={{ display: 'grid', gap: spacing.base }}>
-        <span style={{ fontSize: 16 }}>{strings.message}</span>
+      <label className="grid gap-1">
+        <span className="text-[15px] font-medium">{strings.message}</span>
         <textarea
           name="message"
           required
           rows={5}
-          style={{
-            padding: spacing.sm,
-            borderRadius: radius.md,
-            border: `1px solid ${roles.cardBorder}`,
-            fontFamily: 'inherit',
-            fontSize: 16,
-            // `inherit` rather than 2: the body's line-height already follows
-            // the script, and a hardcoded 2 double-spaces a Latin textarea.
-            lineHeight: 'inherit',
-            resize: 'vertical',
-          }}
+          // `leading-normal` rather than inheriting: the body's ~2x Nastaliq
+          // leading turns a textarea into a double-spaced form field, and a
+          // hardcoded 2 does the same to the Latin one.
+          className={fieldClass + ' resize-y py-sm leading-normal'}
         />
       </label>
 
       {state.message ? (
         <p
           role="status"
-          style={{
-            margin: 0,
-            padding: spacing.sm,
-            borderRadius: radius.md,
-            background: state.status === 'sent' ? colors.primaryFixed : colors.errorContainer,
-            color: state.status === 'sent' ? colors.onPrimaryFixed : colors.onErrorContainer,
-            fontSize: 16,
-          }}
+          className={[
+            'm-0 rounded-md px-sm py-2 text-[15px]',
+            state.status === 'sent'
+              ? 'bg-primary-fixed text-on-primary-fixed'
+              : 'bg-error-container text-on-error-container',
+          ].join(' ')}
         >
           {state.message}
         </p>
@@ -59,6 +48,19 @@ export function ContactForm({ strings }: { strings: WebCopy['contact'] }) {
   );
 }
 
+/**
+ * One class for every control on the form.
+ *
+ * The old inline styles gave inputs a border and nothing else — no hover, no
+ * focus ring, no transition — because an inline style cannot express any of
+ * them. That is most of why the form read as unstyled next to the cards
+ * around it.
+ */
+const fieldClass =
+  'w-full rounded-md border border-card-border bg-card-background px-sm text-[16px] ' +
+  'text-on-surface transition-colors duration-150 ' +
+  'hover:border-outline-variant focus:border-primary focus:outline-none';
+
 function SubmitButton({ label }: { label: string }) {
   const { pending } = useFormStatus();
 
@@ -66,17 +68,11 @@ function SubmitButton({ label }: { label: string }) {
     <button
       type="submit"
       disabled={pending}
-      style={{
-        minHeight: spacing.touchTarget,
-        borderRadius: radius.md,
-        border: 'none',
-        background: colors.primary,
-        color: colors.onPrimary,
-        fontFamily: 'inherit',
-        fontSize: 17,
-        cursor: pending ? 'progress' : 'pointer',
-        opacity: pending ? 0.6 : 1,
-      }}
+      className={
+        'touch mt-1 cursor-pointer rounded-md border-0 bg-primary text-[16px] font-semibold ' +
+        'text-on-primary transition-colors duration-150 hover:bg-primary-container ' +
+        'disabled:cursor-progress disabled:opacity-60'
+      }
     >
       {label}
     </button>
@@ -96,24 +92,19 @@ function Field({
   required?: boolean;
   ltr?: boolean;
 }) {
+  // A phone number or an email must not mirror inside the RTL form. `.numeric`
+  // carries the Latin face, LTR direction and bidi isolation together, so the
+  // three cannot be applied inconsistently.
+  const latin = ltr || type === 'email';
+
   return (
-    <label style={{ display: 'grid', gap: spacing.base }}>
-      <span style={{ fontSize: 16 }}>{label}</span>
+    <label className="grid gap-1">
+      <span className="text-[15px] font-medium">{label}</span>
       <input
         name={name}
         type={type}
         required={required}
-        style={{
-          minHeight: spacing.touchTarget,
-          padding: `0 ${spacing.sm}px`,
-          borderRadius: radius.md,
-          border: `1px solid ${roles.cardBorder}`,
-          fontFamily: ltr ? "'Plus Jakarta Sans', sans-serif" : 'inherit',
-          fontSize: 16,
-          // A phone number or an email must not mirror inside the RTL form.
-          direction: ltr || type === 'email' ? 'ltr' : 'rtl',
-          textAlign: ltr || type === 'email' ? 'left' : 'right',
-        }}
+        className={`${fieldClass} touch ${latin ? 'numeric text-start' : ''}`}
       />
     </label>
   );

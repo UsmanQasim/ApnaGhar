@@ -1,11 +1,11 @@
 import Link from 'next/link';
 
 import { PLANS, PlanCode, premiumBreakEvenListings } from '@ghar/shared';
-import { colors, spacing } from '@ghar/ui';
 
 import { C, copyFor } from '../../src/copy';
 import { getLocale } from '../../src/locale';
-import { FeatureCard, Grid, Section, cardStyle, primaryLinkStyle, secondaryLinkStyle } from '../../src/components/chrome';
+import { FeatureCard, Grid, Section, primaryLinkStyle, secondaryLinkStyle } from '../../src/components/chrome';
+import { ChartIcon, LayersIcon, MicIcon, SparkIcon } from '../../src/components/icons';
 
 // Module scope: metadata is generated per build, not per request, so it
 // cannot read the locale cookie. `C` is the default (Urdu) set.
@@ -31,28 +31,37 @@ export default async function AgentsPage() {
   const breakEven = premiumBreakEvenListings();
 
   return (
-    <main>
-      <section style={{ background: colors.primaryFixed, padding: `${spacing.xl * 1.5}px ${spacing.md}px` }}>
-        <div style={{ maxWidth: 880, margin: '0 auto', textAlign: 'center' }}>
-          <h1 style={{ margin: 0, fontSize: 40, lineHeight: 1.6 }}>{C.agents.heroTitle}</h1>
-          <p style={{ fontSize: 19, color: colors.onSurfaceVariant, margin: `${spacing.md}px auto`, maxWidth: 640 }}>
+    <main className="flex-1">
+      <section className="ambient section">
+        <div className="shell max-w-[880px] text-center">
+          <h1 className="m-0 text-[clamp(28px,4.6vw,44px)] font-bold tracking-tight text-on-surface">
+            {C.agents.heroTitle}
+          </h1>
+          <p className="mx-auto mt-sm max-w-[56ch] text-[18px] text-on-surface-variant">
             {C.agents.heroSub}
           </p>
 
-          {/* The price, on the hero. An agent deciding whether to register
-              should not have to hunt for it on another page. */}
-          <p style={{ fontSize: 22, margin: `0 0 ${spacing.lg}px` }}>
-            <strong style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", direction: 'ltr', display: 'inline-block' }}>
+          {/*
+           * The price, on the hero. An agent deciding whether to register
+           * should not have to hunt for it on another page.
+           *
+           * The amount and the "/ month" suffix are separate isolated runs.
+           * Left as one string, the slash in "Rs 100 / ماہ" is placed by the
+           * bidi algorithm relative to whichever neighbour wins, and it ends
+           * up on the wrong side of the number.
+           */}
+          <p className="mt-md mb-lg flex items-baseline justify-center gap-1.5 text-[22px]">
+            <strong className="numeric text-[28px] font-bold text-on-surface">
               {rupees(PLANS[PlanCode.BASIC].pricePaisa)}
-            </strong>{' '}
-            {C.pricing.perMonth}
+            </strong>
+            <span className="text-on-surface-variant">{C.pricing.perMonth}</span>
           </p>
 
-          <div style={{ display: 'flex', gap: spacing.sm, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/#download" style={primaryLinkStyle}>
+          <div className="flex flex-wrap justify-center gap-sm">
+            <Link href="/#download" className={primaryLinkStyle}>
               {C.home.registerAsAgent}
             </Link>
-            <Link href="/pricing" style={secondaryLinkStyle}>
+            <Link href="/pricing" className={secondaryLinkStyle}>
               {C.nav.pricing}
             </Link>
           </div>
@@ -61,22 +70,40 @@ export default async function AgentsPage() {
 
       <Section title={C.agents.toolsTitle}>
         <Grid>
-          <FeatureCard icon="⭐" title={C.agents.premiumListings} body={C.agents.premiumListingsBody} />
-          <FeatureCard icon="📊" title={C.agents.dashboardAnalytics} body={C.agents.dashboardAnalyticsBody} />
-          <FeatureCard icon="📈" title={C.agents.demandInsights} body={C.agents.demandInsightsBody} />
-          <FeatureCard icon="🎤" title={C.agents.voiceListing} body={C.agents.voiceListingBody} />
+          <FeatureCard
+            icon={<SparkIcon />}
+            title={C.agents.premiumListings}
+            body={C.agents.premiumListingsBody}
+          />
+          <FeatureCard
+            icon={<ChartIcon />}
+            title={C.agents.dashboardAnalytics}
+            body={C.agents.dashboardAnalyticsBody}
+          />
+          <FeatureCard
+            icon={<LayersIcon />}
+            title={C.agents.demandInsights}
+            body={C.agents.demandInsightsBody}
+          />
+          <FeatureCard
+            icon={<MicIcon />}
+            title={C.agents.voiceListing}
+            body={C.agents.voiceListingBody}
+          />
         </Grid>
       </Section>
 
       <Section tone="raised">
-        <div style={{ ...cardStyle, textAlign: 'center', padding: spacing.xl }}>
-          <h2 style={{ margin: 0, fontSize: 28 }}>{C.agents.joinTitle}</h2>
+        <div className="card mx-auto max-w-[720px] p-xl text-center">
+          <h2 className="m-0 text-[clamp(20px,2.8vw,28px)] font-bold tracking-tight">
+            {C.agents.joinTitle}
+          </h2>
           {Number.isFinite(breakEven) ? (
-            <p style={{ color: colors.onSurfaceVariant, fontSize: 17, margin: `${spacing.sm}px 0 ${spacing.lg}px` }}>
+            <p className="mx-auto mt-sm mb-lg max-w-[52ch] text-[17px] text-on-surface-variant">
               {C.pricing.breakEvenNote.replace('{count}', String(breakEven))}
             </p>
           ) : null}
-          <Link href="/#download" style={primaryLinkStyle}>
+          <Link href="/#download" className={primaryLinkStyle}>
             {C.home.registerAsAgent}
           </Link>
         </div>

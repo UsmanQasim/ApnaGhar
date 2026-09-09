@@ -11,6 +11,8 @@
     "test:integration": "node --import tsx --test test/*.integration.test.ts",
     "prisma": "prisma",
     "seed": "ts-node prisma/seed.ts",
+    "demo": "ts-node prisma/seed-demo.ts",
+    "demo:clean": "ts-node prisma/seed-demo-clean.ts",
     "vercel-build": "prisma generate && nest build"
   },
   "prisma": {

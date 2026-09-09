@@ -1,0 +1,11 @@
+@import 'tailwindcss';
+@import '@ghar/ui/tailwind-theme.css';
+@import '@ghar/ui/web-base.css';
+
+/*
+ * The share host adds nothing to the shared base.
+ *
+ * That is deliberate: this page is opened from WhatsApp by someone who has
+ * never seen the product, and it should look like the same company as the
+ * landing page they might visit next.
+ */

@@ -6,11 +6,10 @@ import {
   PlanCode,
   premiumBreakEvenListings,
 } from '@ghar/shared';
-import { colors, radius, spacing } from '@ghar/ui';
-
 import { C, copyFor } from '../../src/copy';
 import { getLocale } from '../../src/locale';
-import { Section, cardStyle, primaryLinkStyle } from '../../src/components/chrome';
+import { Section, primaryLinkStyle, secondaryLinkStyle } from '../../src/components/chrome';
+import { CheckIcon } from '../../src/components/icons';
 
 // Module scope: metadata is generated per build, not per request, so it
 // cannot read the locale cookie. `C` is the default (Urdu) set.
@@ -76,98 +75,82 @@ export default async function PricingPage() {
   ] as const;
 
   return (
-    <main>
-      <Section title={C.pricing.title} subtitle={C.pricing.subtitle}>
-        <div
-          style={{
-            display: 'grid',
-            gap: spacing.md,
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            maxWidth: 900,
-            margin: '0 auto',
-          }}
-        >
+    <main className="flex-1">
+      <Section title={C.pricing.title} subtitle={C.pricing.subtitle} tone="ambient">
+        {/*
+         * `items-stretch` plus a column layout inside each card is what keeps
+         * the two CTAs on the same line. Previously the shorter Basic card
+         * ended wherever its feature list ran out, so the two buttons sat at
+         * different heights — the clearest single sign that a pricing table
+         * was not designed.
+         */}
+        <div className="mx-auto grid max-w-[920px] items-stretch gap-md md:grid-cols-2">
           {plans.map((plan) => (
             <article
               key={plan.code}
-              style={{
-                ...cardStyle,
-                display: 'grid',
-                gap: spacing.xs,
-                borderColor: plan.popular ? colors.primary : undefined,
-                borderWidth: plan.popular ? 2 : 1,
-              }}
+              className={[
+                'card flex h-full flex-col p-lg',
+                plan.popular ? 'border-2 border-primary' : '',
+              ].join(' ')}
             >
-              {plan.popular ? (
-                <span
-                  style={{
-                    justifySelf: 'start',
-                    background: colors.primary,
-                    color: colors.onPrimary,
-                    borderRadius: radius.full,
-                    padding: `2px ${spacing.sm}px`,
-                    fontSize: 14,
-                  }}
-                >
-                  {C.pricing.mostPopular}
-                </span>
-              ) : null}
+              {/* Reserved whether or not the badge shows, so both cards start
+                  their title on the same line. */}
+              <div className="h-7">
+                {plan.popular ? (
+                  <span className="inline-block rounded-full bg-primary px-sm py-0.5 text-sm font-semibold text-on-primary">
+                    {C.pricing.mostPopular}
+                  </span>
+                ) : null}
+              </div>
 
-              <h3 style={{ margin: 0, fontSize: 24 }}>{plan.name}</h3>
-              <p style={{ margin: 0, color: colors.onSurfaceVariant, fontSize: 16 }}>{plan.blurb}</p>
+              <h3 className="mt-xs mb-0 text-[22px] font-bold tracking-tight">{plan.name}</h3>
+              <p className="mt-1 mb-md text-[15px] text-on-surface-variant">{plan.blurb}</p>
 
-              <p style={{ margin: `${spacing.xs}px 0`, fontSize: 20 }}>
-                <strong
-                  style={{
-                    fontFamily: "'Plus Jakarta Sans', sans-serif",
-                    fontSize: 34,
-                    direction: 'ltr',
-                    display: 'inline-block',
-                  }}
-                >
+              {/*
+               * Amount and period as separate isolated runs. As one string,
+               * the slash in "Rs 1,000 / ماہ" is placed by the bidi algorithm
+               * relative to whichever neighbour wins, and it lands on the
+               * wrong side of the number — which is exactly how this rendered
+               * before.
+               */}
+              <p className="m-0 flex items-baseline gap-1.5">
+                <strong className="numeric text-[34px] font-bold leading-none tracking-tight text-on-surface">
                   {rupees(PLANS[plan.code].pricePaisa)}
-                </strong>{' '}
-                <span style={{ color: colors.onSurfaceVariant }}>{C.pricing.perMonth}</span>
+                </strong>
+                <span className="text-[15px] text-on-surface-variant">{C.pricing.perMonth}</span>
               </p>
 
-              <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: spacing.xs }}>
+              <ul className="mt-lg mb-lg grid list-none gap-sm p-0">
                 {plan.features.map((feature) => (
-                  <li key={feature} style={{ display: 'flex', gap: spacing.xs, fontSize: 16 }}>
-                    <span aria-hidden style={{ color: colors.primary }}>
-                      ✓
+                  <li key={feature} className="flex items-start gap-xs text-[15px]">
+                    <span className="mt-0.5 shrink-0 text-primary">
+                      <CheckIcon />
                     </span>
-                    <span>{feature}</span>
+                    <span className="min-w-0">{feature}</span>
                   </li>
                 ))}
               </ul>
 
-              <Link href="/#download" style={{ ...primaryLinkStyle, marginTop: spacing.xs }}>
+              {/* `mt-auto` pins the CTA to the bottom of whichever card is
+                  taller, so both align. */}
+              <Link
+                href="/#download"
+                className={`mt-auto w-full ${plan.popular ? primaryLinkStyle : secondaryLinkStyle}`}
+              >
                 {plan.popular ? C.pricing.choose : C.pricing.start}
               </Link>
             </article>
           ))}
         </div>
 
-        {/* Computed from the pricing engine, never typed in. If premium ever
-            gets a listing cap this becomes Infinity, the shared package's test
-            fails, and this line disappears rather than lying. */}
-        {Number.isFinite(breakEven) ? (
-          <p style={{ textAlign: 'center', marginTop: spacing.lg, fontSize: 17 }}>
-            {C.pricing.breakEvenNote.replace('{count}', String(breakEven))}
-          </p>
-        ) : null}
-
-        <p
-          style={{
-            textAlign: 'center',
-            maxWidth: 620,
-            margin: `${spacing.xs}px auto 0`,
-            color: colors.onSurfaceVariant,
-            fontSize: 16,
-          }}
-        >
-          {C.pricing.honestNote}
-        </p>
+        <div className="mx-auto mt-lg grid max-w-[62ch] gap-xs text-center">
+          {Number.isFinite(breakEven) ? (
+            <p className="m-0 text-[15px] font-medium text-on-surface">
+              {C.pricing.breakEvenNote.replace('{count}', String(breakEven))}
+            </p>
+          ) : null}
+          <p className="m-0 text-[15px] text-on-surface-variant">{C.pricing.honestNote}</p>
+        </div>
       </Section>
     </main>
   );

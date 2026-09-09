@@ -1,0 +1,297 @@
+/*
+ * The base and component layer shared by every web surface.
+ *
+ * Hand-written, unlike tokens.css and tailwind-theme.css next to it — those
+ * are generated from tokens.ts. This file holds RULES rather than values, and
+ * every value in it is a var() from the generated pair, so there is still
+ * exactly one place a colour or a spacing step is defined.
+ *
+ * It lives in the package rather than being copied into each app because the
+ * bidi and alignment rules below are the ones that go wrong quietly: a fix
+ * applied to the admin panel and forgotten on the landing page shows up as
+ * "the Urdu looks wrong on some pages", which is precisely the report this
+ * file exists to answer.
+ *
+ * Usage, in an app's globals.css:
+ *   @import 'tailwindcss';
+ *   @import '@ghar/ui/tailwind-theme.css';
+ *   @import '@ghar/ui/web-base.css';
+ */
+
+@layer base {
+  :root {
+    /*
+     * Type follows the SCRIPT, not the language, and the <html> element sets
+     * data-script. Roman Urdu is Urdu written in Latin letters, so "is the
+     * reader an Urdu speaker?" is the wrong question — Nastaliq has no usable
+     * Latin glyphs and a Roman Urdu line left in it falls back glyph by glyph
+     * to whatever the OS supplies.
+     */
+    --app-font: var(--ghar-font-nastaliq);
+    --app-leading: var(--ghar-leading-nastaliq);
+
+    /*
+     * Headings need tighter leading than body copy in BOTH scripts, but the
+     * gap between them is much larger in Nastaliq: 2x on a 40px display line
+     * is a chasm. These are ratios, so they scale with whatever size a
+     * heading is given.
+     */
+    --app-leading-display: 1.6;
+  }
+
+  [data-script='latin'] {
+    --app-font: var(--ghar-font-latin);
+    --app-leading: var(--ghar-leading-latin);
+    --app-leading-display: 1.15;
+  }
+
+  html {
+    font-family: var(--app-font);
+    line-height: var(--app-leading);
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: var(--ghar-color-surface);
+    color: var(--ghar-color-on-surface);
+  }
+
+  /*
+   * Display type. Nastaliq at ~2x leading turns a two-line headline into two
+   * separate sentences with a gap between them; this pulls it back without
+   * touching body copy, where the 2x is a genuine legibility requirement.
+   */
+  h1,
+  h2,
+  h3 {
+    line-height: var(--app-leading-display);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /*
+   * Numerals, IDs, phone numbers, money and anything Latin inside an Urdu
+   * sentence.
+   *
+   * `unicode-bidi: isolate` is the important half. Without it, a Latin run
+   * adjacent to punctuation drags the punctuation to the wrong side — which is
+   * why "Rs 1,000 / ماہ" rendered with the slash orphaned on the wrong end of
+   * the price. Isolating the run fixes the whole class of bug.
+   */
+  .numeric {
+    font-family: var(--ghar-font-latin);
+    direction: ltr;
+    unicode-bidi: isolate;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /*
+   * A Latin word inside an Urdu sentence — a brand name, "WhatsApp", "Basic".
+   * Same isolation, but it keeps the surrounding paragraph's own direction so
+   * it does not become a left-aligned island in a right-aligned paragraph.
+   */
+  .latin {
+    font-family: var(--ghar-font-latin);
+    unicode-bidi: isolate;
+  }
+
+  /*
+   * The mirror image of `.latin`: Urdu content on a page that is not in Urdu.
+   *
+   * Listing titles, descriptions and localities come out of the database in
+   * Nastaliq whatever language the reader picked — a Roman Urdu or English
+   * visitor still sees the agent's own words. Left to inherit, that text is
+   * set in the Latin face (which has no Nastaliq glyphs, so it falls back
+   * character by character), at Latin leading (which clips the descenders
+   * Nastaliq hangs below the baseline), and laid out left-to-right.
+   *
+   * `isolate` rather than `embed`: the paragraph around it keeps its own
+   * direction, so an Urdu title inside an English page stays on the left of
+   * the column while reading correctly right-to-left inside itself.
+   */
+  .urdu {
+    font-family: var(--ghar-font-nastaliq);
+    line-height: var(--ghar-leading-nastaliq);
+    direction: rtl;
+    unicode-bidi: isolate;
+  }
+
+  /*
+   * For database text whose script we genuinely cannot predict — a person's
+   * name, an agency name. `dir="auto"` on the element lets the browser decide
+   * from the first strong character; this only stops that decision leaking
+   * into the surrounding line.
+   */
+  .auto-dir {
+    unicode-bidi: isolate;
+  }
+
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--ghar-color-primary);
+    outline-offset: 2px;
+    border-radius: var(--ghar-radius-sm);
+  }
+
+  /*
+   * Native form controls do not inherit the page's font, and a <select> that
+   * renders in the browser's default face inside a Nastaliq page is the single
+   * most obvious "unstyled" element on a screen. The chevron is drawn here
+   * too, because the OS one cannot be positioned for RTL.
+   */
+  select {
+    font-family: inherit;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233d4a42' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 18px;
+    background-position: left var(--ghar-space-sm) center;
+    padding-inline-end: var(--ghar-space-sm);
+    padding-inline-start: calc(var(--ghar-space-sm) * 2 + 18px);
+  }
+
+  [dir='ltr'] select {
+    background-position: right var(--ghar-space-sm) center;
+  }
+
+  input,
+  textarea,
+  button {
+    font-family: inherit;
+  }
+
+  /* A placeholder in the wrong face is as obvious as a control in one. */
+  ::placeholder {
+    color: var(--ghar-color-outline);
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /*
+   * Level 1 elevation is a 1px border, not a shadow — the rule packages/ui
+   * states for the app. The hairline below only lifts a card off the tinted
+   * page; it is not a second elevation level.
+   */
+  .card {
+    background: var(--ghar-role-card-background);
+    border: 1px solid var(--ghar-role-card-border);
+    border-radius: var(--ghar-radius-lg);
+    box-shadow: 0 1px 2px rgb(11 28 48 / 0.04);
+  }
+
+  .card-hover {
+    transition:
+      box-shadow 160ms ease,
+      transform 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .card-hover:hover {
+    box-shadow: 0 6px 20px rgb(11 28 48 / 0.07);
+    border-color: var(--ghar-color-outline-variant);
+    transform: translateY(-2px);
+  }
+
+  /*
+   * The 48px floor, from DESIGN.md: users who struggle with fine motor
+   * precision must still be able to hit the target.
+   */
+  .touch {
+    min-height: var(--ghar-space-touch-target);
+  }
+
+  /*
+   * Section rhythm. One class so every section on every page breathes the
+   * same, rather than each page inventing its own padding.
+   */
+  .section {
+    padding-block: clamp(48px, 7vw, 96px);
+    padding-inline: var(--ghar-space-md);
+  }
+
+  .shell {
+    max-width: 1180px;
+    margin-inline: auto;
+  }
+
+  /*
+   * A quiet ambient wash for hero and CTA blocks. Two very soft radial tints
+   * rather than a flat colour band: the flat version reads as a coloured
+   * rectangle stuck to the top of the page, which is most of what made the old
+   * hero look cheap.
+   */
+  .ambient {
+    position: relative;
+    isolation: isolate;
+    background:
+      radial-gradient(
+        62% 78% at 78% 4%,
+        color-mix(in oklab, var(--ghar-color-primary-fixed) 55%, transparent) 0%,
+        transparent 62%
+      ),
+      radial-gradient(
+        52% 62% at 12% 0%,
+        color-mix(in oklab, var(--ghar-color-secondary-container) 70%, transparent) 0%,
+        transparent 58%
+      ),
+      var(--ghar-color-surface);
+  }
+
+  /* A hairline that fades out at both ends — a full-width rule reads as a seam. */
+  .hairline {
+    height: 1px;
+    border: 0;
+    background: linear-gradient(
+      to inline-end,
+      transparent,
+      var(--ghar-role-card-border) 18%,
+      var(--ghar-role-card-border) 82%,
+      transparent
+    );
+  }
+
+  /*
+   * Nav links: the underline grows from the reading start, so it runs the
+   * correct way in both directions without a mirrored rule.
+   */
+  .nav-link {
+    position: relative;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: var(--ghar-space-sm);
+    inset-inline-end: var(--ghar-space-sm);
+    bottom: 6px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--ghar-color-primary);
+    transform: scaleX(0);
+    transform-origin: inline-start;
+    transition: transform 160ms ease;
+  }
+
+  .nav-link:hover::after,
+  .nav-link[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+}

@@ -1,5 +1,4 @@
 import { Locale, LOCALES } from '@ghar/shared';
-import { colors, radius, roles, spacing } from '@ghar/ui';
 
 import { setLocale } from './locale-actions';
 
@@ -21,41 +20,42 @@ const LABEL: Record<Locale, string> = {
  */
 export function LanguageSwitcher({ active, label }: { active: Locale; label: string }) {
   return (
-    <form
-      action={setLocale}
-      style={{ display: 'flex', alignItems: 'center', gap: spacing.base, flexWrap: 'wrap' }}
-    >
-      <span style={{ fontSize: 14, color: colors.onSurfaceVariant }}>{label}</span>
+    <form action={setLocale} className="flex flex-wrap items-center gap-xs" aria-label={label}>
+      <span className="text-xs text-on-surface-variant">{label}</span>
 
-      {LOCALES.map((locale) => {
-        const selected = locale === active;
-        return (
-          <button
-            key={locale}
-            type="submit"
-            name="locale"
-            value={locale}
-            aria-current={selected ? 'true' : undefined}
-            style={{
-              // The 48px floor applies here too — this is the control a user
-              // reaches for when the page is in a script they cannot read.
-              minHeight: spacing.touchTarget,
-              padding: `0 ${spacing.sm}px`,
-              borderRadius: radius.full,
-              border: `1px solid ${selected ? colors.primary : roles.cardBorder}`,
-              background: selected ? colors.primaryFixed : roles.cardBackground,
-              color: colors.onSurface,
-              // Latin label in a Nastaliq page and vice versa: let each button
-              // carry its own face rather than inheriting the page's.
-              fontFamily: locale === Locale.UR ? "'Noto Nastaliq Urdu', serif" : "'Plus Jakarta Sans', system-ui, sans-serif",
-              fontSize: 14,
-              cursor: 'pointer',
-            }}
-          >
-            {LABEL[locale]}
-          </button>
-        );
-      })}
+      <div className="flex items-center gap-0.5 rounded-full border border-card-border bg-card-background p-0.5">
+        {LOCALES.map((locale) => {
+          const selected = locale === active;
+
+          return (
+            <button
+              key={locale}
+              type="submit"
+              name="locale"
+              value={locale}
+              aria-current={selected ? 'true' : undefined}
+              className={[
+                // Smaller than the 48px floor on purpose: this is a secondary
+                // control at the foot of the page, and the floor is spent on
+                // the two things that matter here — Call and WhatsApp.
+                'min-h-9 cursor-pointer whitespace-nowrap rounded-full px-3 text-xs leading-none',
+                'transition-colors duration-150',
+                // Each chip carries its own face rather than inheriting the
+                // page's: a Latin label set in Nastaliq falls back glyph by
+                // glyph and stops looking like one typeface.
+                locale === Locale.UR
+                  ? 'font-[family-name:var(--ghar-font-nastaliq)]'
+                  : 'font-[family-name:var(--ghar-font-latin)]',
+                selected
+                  ? 'bg-primary font-semibold text-on-primary'
+                  : 'text-on-surface-variant hover:bg-surface-container-low',
+              ].join(' ')}
+            >
+              {LABEL[locale]}
+            </button>
+          );
+        })}
+      </div>
     </form>
   );
 }
