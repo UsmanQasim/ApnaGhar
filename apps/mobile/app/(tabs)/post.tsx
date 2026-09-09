@@ -48,10 +48,14 @@ export default function PostScreen() {
 
   const step = STEPS[stepIndex] as Step;
 
+  // There is no quote until the draft row exists. `/listings/publish-quote`
+  // was never a route — the API only has `GET /listings/:id/publish-quote`, so
+  // the id-less branch 404'd on every visit to this tab. Gate the query on the
+  // id instead of inventing a path.
   const { data: quote } = useQuery<Quote>({
     queryKey: ['publish-quote', draft.id],
-    queryFn: () =>
-      api<Quote>(draft.id ? `/listings/${draft.id}/publish-quote` : '/listings/publish-quote'),
+    enabled: Boolean(draft.id),
+    queryFn: () => api<Quote>(`/listings/${draft.id}/publish-quote`),
   });
 
   const parsed = toPayload();

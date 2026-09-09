@@ -1,0 +1,7 @@
+{
+  "CFBundleDisplayName": "گھر",
+  "NSMicrophoneUsageDescription": "آواز سے تلاش کرنے اور پراپرٹی کی تفصیل بولنے کے لیے گھر کو مائیکروفون کی ضرورت ہے۔",
+  "NSLocationWhenInUseUsageDescription": "آپ کے قریب کی پراپرٹی دکھانے کے لیے گھر کو آپ کی لوکیشن چاہیے۔",
+  "NSPhotoLibraryUsageDescription": "اشتہار میں تصویریں لگانے کے لیے گھر کو آپ کی تصویروں تک رسائی چاہیے۔",
+  "NSCameraUsageDescription": "پراپرٹی کی تصویر لینے کے لیے گھر کو کیمرے کی ضرورت ہے۔"
+}

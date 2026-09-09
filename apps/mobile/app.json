@@ -13,9 +13,6 @@
     },
     "assetBundlePatterns": ["**/*"],
     "plugins": ["expo-router", "expo-font", "expo-localization"],
-    "extra": {
-      "apiBaseUrl": "http://localhost:3000/api"
-    },
     "android": {
       "package": "pk.ghar.app",
       "adaptiveIcon": { "backgroundColor": "#006948" },

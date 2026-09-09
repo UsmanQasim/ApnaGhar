@@ -1,0 +1,7 @@
+{
+  "CFBundleDisplayName": "Ghar",
+  "NSMicrophoneUsageDescription": "Ghar uses the microphone for voice search and for recording a spoken property description.",
+  "NSLocationWhenInUseUsageDescription": "Ghar uses your location to show properties near you.",
+  "NSPhotoLibraryUsageDescription": "Ghar needs your photos so you can add pictures to a listing.",
+  "NSCameraUsageDescription": "Ghar uses the camera so you can photograph a property for a listing."
+}

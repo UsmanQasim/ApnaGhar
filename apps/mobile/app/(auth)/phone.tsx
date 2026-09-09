@@ -28,8 +28,19 @@ export default function PhoneScreen() {
     setLoading(true);
     setError(null);
     try {
-      await api('/auth/otp/request', { method: 'POST', body: { phone: parsed.data } });
-      router.push({ pathname: '/(auth)/otp', params: { phone: parsed.data } });
+      // While OTP_DEV_MODE=true the API returns the code in its own response
+      // instead of sending an SMS. Forwarding it prefills the next screen, so
+      // the whole login flow is testable without an SMS aggregator. In
+      // production `devCode` is simply absent and the field starts empty.
+      const requested = await api<{ devCode?: string; resendInSeconds: number }>(
+        '/auth/otp/request',
+        { method: 'POST', body: { phone: parsed.data } },
+      );
+
+      router.push({
+        pathname: '/(auth)/otp',
+        params: { phone: parsed.data, ...(requested.devCode ? { devCode: requested.devCode } : {}) },
+      });
     } catch (caught) {
       setError(caught instanceof ApiError ? caught.messageKey : 'errors.somethingWrong');
     } finally {

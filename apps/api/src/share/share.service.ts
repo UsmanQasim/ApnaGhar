@@ -138,7 +138,7 @@ export class ShareService {
 
   /** Per-link analytics for the agent: who opened it, how often, when. */
   async listForProperty(agentId: string, propertyId: string) {
-    return this.prisma.shareLink.findMany({
+    const links = await this.prisma.shareLink.findMany({
       where: { propertyId, createdById: agentId },
       orderBy: { createdAt: 'desc' },
       include: {
@@ -146,5 +146,12 @@ export class ShareService {
         _count: { select: { views: true } },
       },
     });
+
+    // `create` returns a ready-made `url`; this used to return only the raw
+    // token, so any client listing existing links had to know SHARE_BASE_URL
+    // itself. The mobile app has no reason to — build it in the one place that
+    // already holds the value.
+    const base = this.config.getOrThrow<string>('SHARE_BASE_URL');
+    return links.map((link) => ({ ...link, url: `${base}/s/${link.token}` }));
   }
 }
