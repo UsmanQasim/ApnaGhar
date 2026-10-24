@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 
 import { PrismaClient } from '@prisma/client';
 
-import { EXTRA_LISTING_FEE_PAISA, PLANS, PlanCode } from '@ghar/shared';
+import { EXTRA_LISTING_FEE_PAISA, Locale, PLANS, PlanCode } from '@ghar/shared';
 
 /**
  * DEMO DATA — throwaway.
@@ -16,6 +16,14 @@ import { EXTRA_LISTING_FEE_PAISA, PLANS, PlanCode } from '@ghar/shared';
  * ── How to remove it ────────────────────────────────────────────────────────
  *
  *     pnpm --filter @ghar/api demo:clean
+ *
+ * ── Before the first run ────────────────────────────────────────────────────
+ *
+ * The database needs migration 0003_locale_roman_urdu, and the generated
+ * Prisma client needs to be newer than it — a client generated before that
+ * migration still types `users.locale` as an enum with no "ur-Latn" member,
+ * and this file fails to compile against it. `scripts\deploy-db.ps1` does
+ * both, in that order.
  *
  * Every row this script writes is tagged so that removal is exact rather than
  * "delete anything that looks fake":
@@ -110,6 +118,36 @@ const SQFT: Record<DemoListing['areaUnit'], number> = { marla: 272.25, kanal: 5_
 
 const phoneFor = (slot: number) => `${DEMO_PHONE_PREFIX}${String(slot).padStart(2, '0')}`;
 
+/**
+ * Migration 0003 turned `users.locale` from a Postgres enum into a VARCHAR so
+ * it could hold "ur-Latn" (enum labels cannot contain a hyphen). This seed
+ * writes that value, so it fails in a confusing way — a raw enum-cast error
+ * from Postgres, or a TypeScript error from a stale generated client — if the
+ * migration has not been applied yet. Check first and say what to run.
+ */
+async function assertLocaleColumnMigrated(): Promise<void> {
+  const rows = await prisma.$queryRaw<Array<{ data_type: string }>>`
+    SELECT data_type FROM information_schema.columns
+    WHERE table_name = 'users' AND column_name = 'locale'
+  `;
+
+  const FIX =
+    'Run scripts\\deploy-db.ps1 — it regenerates the client, applies the ' +
+    'migrations and reseeds — then try again.';
+
+  if (rows.length === 0) {
+    throw new Error(`No users.locale column: this database has never been migrated.\n${FIX}`);
+  }
+
+  if (rows[0]?.data_type !== 'character varying') {
+    throw new Error(
+      `users.locale is still ${rows[0]?.data_type}, so migration 0003_locale_roman_urdu ` +
+        'has not been applied and Roman Urdu ("ur-Latn") cannot be stored.\n' +
+        FIX,
+    );
+  }
+}
+
 async function main(): Promise<void> {
   if (process.env['NODE_ENV'] === 'production' && !process.env['DEMO_SEED_ALLOW_PRODUCTION']) {
     throw new Error(
@@ -117,6 +155,8 @@ async function main(): Promise<void> {
         'If this really is intended, set DEMO_SEED_ALLOW_PRODUCTION=1.',
     );
   }
+
+  await assertLocaleColumnMigrated();
 
   console.log('Seeding demo data…\n');
 
@@ -133,7 +173,14 @@ async function main(): Promise<void> {
         phone,
         name: spec.name,
         role: 'agent',
-        locale: spec.slot % 3 === 0 ? 'ur-Latn' : 'ur',
+        // `as never` because the generated Prisma client may still be the one
+        // from before migration 0003, which typed this column as a Postgres
+        // enum that has no "ur-Latn" member — the cast is what lets the seed
+        // compile against either client. It is not a licence to write junk:
+        // the values come from the shared Locale constants, and
+        // assertLocaleColumnMigrated() above refuses to run at all against a
+        // database whose column is still that enum.
+        locale: (spec.slot % 3 === 0 ? Locale.UR_LATN : Locale.UR) as never,
         status: spec.suspended ? 'suspended' : 'active',
       },
     });
